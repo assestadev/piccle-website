@@ -3,7 +3,7 @@ import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'ASTRA AI HR OS',
+  title: 'ASSESTA B2B HR',
   description: 'ASTRA delivers a human-centered AI HR operating system blending trust, expertise, and real-time insights for faster hiring.',
 }
 

@@ -75,7 +75,7 @@ const USECASE_CARDS = [
   },
   {
     num: "03", category: "훈련·시뮬레이션",
-    title: "AI 시뮬레이션 실전 훈련 ASTRA",
+    title: "AI 시뮬레이션 실전 훈련",
     body: "실제 업무 현장과 유사한 AI 시뮬레이션 환경을 통해 구성원이 갈등 관리 및 협상 등 고난도 역량의 실전 감각을 즉각적으로 개선하도록 이끕니다.",
     img: "/images/img06.jpg",
     metrics: [{ label: "역량 개선 속도", value: "↑ 2.8x" }, { label: "훈련 만족도", value: "4.7 / 5" }],
@@ -349,7 +349,7 @@ export default function Page() {
               지금 시작하세요.
             </h2>
             <p className="text-lg text-slate-500 mb-12 max-w-xl mx-auto">
-              ASTRA와 함께 조직의 HR을 데이터 기반으로 혁신하고, 채용부터 육성까지 모든 인사 의사결정을 한 단계 높이세요.
+              조직의 HR을 데이터 기반으로 혁신하고, 채용부터 육성까지 모든 인사 의사결정을 한 단계 높이세요.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button onClick={() => router.push("/inquiry")} className="cursor-pointer inline-flex items-center justify-center gap-2 bg-[#0f2d6e] hover:bg-[#1e4fa8] text-white font-semibold px-10 h-14 min-w-[230px] rounded-xl text-base transition-colors shadow-xl shadow-blue-900/20">

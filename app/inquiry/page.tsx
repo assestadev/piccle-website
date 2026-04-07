@@ -40,7 +40,7 @@ export default function InquiryPage() {
       <div className="text-center mb-10">
         <p className="text-xs font-bold tracking-widest text-[#1e4fa8] uppercase mb-3">Inquiry</p>
         <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 mb-3">빠른 상담 접수</h1>
-        <p className="text-slate-500 text-base">3단계만 입력하면 ASTRA 전문가가 빠르게 연락드립니다.</p>
+        <p className="text-slate-500 text-base">3단계만 입력하면 전문가가 빠르게 연락드립니다.</p>
       </div>
 
       {/* Card */}
