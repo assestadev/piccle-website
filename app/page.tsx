@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { FadeIn } from "@/components/fade-in"
 import { AnimatedUnderline } from "@/components/animated-underline"
@@ -64,21 +64,18 @@ const USECASE_CARDS = [
     title: "고성과자 DNA 기반 정밀 채용",
     body: "보안이 검증된 환경에서 고성과자 DNA를 매칭하여 객관적인 적합도 점수(Fit Score)를 산출하고, 지원자의 약점을 파악하는 시나리오 기반 질문으로 정밀 검증을 수행합니다.",
     img: "/images/img04.jpg",
-    metrics: [{ label: "Fit Score 정확도", value: "89.3%" }, { label: "채용 소요 시간", value: "↓ 43%" }],
   },
   {
     num: "02", category: "리더십·조직개발",
     title: "실시간 리더십 코칭 & IDP",
     body: "유출 걱정 없는 내부 성과 데이터를 기반으로 실시간 리더십 코칭을 제공하며, 역량 부족의 근본 원인을 진단하여 맞춤형 성장 계획(IDP) 수립을 돕습니다.",
     img: "/images/img05.jpg",
-    metrics: [{ label: "IDP 수립 완료율", value: "94%" }, { label: "리더십 역량 향상", value: "↑ 31%" }],
   },
   {
     num: "03", category: "훈련·시뮬레이션",
     title: "AI 시뮬레이션 실전 훈련",
     body: "실제 업무 현장과 유사한 AI 시뮬레이션 환경을 통해 구성원이 갈등 관리 및 협상 등 고난도 역량의 실전 감각을 즉각적으로 개선하도록 이끕니다.",
     img: "/images/img06.jpg",
-    metrics: [{ label: "역량 개선 속도", value: "↑ 2.8x" }, { label: "훈련 만족도", value: "4.7 / 5" }],
   },
 ]
 
@@ -100,7 +97,7 @@ const TRUST_CARDS = [
 export default function Page() {
   const router = useRouter()
   const [scrollY, setScrollY] = useState(0)
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const glowRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const h = () => setScrollY(window.scrollY)
@@ -108,9 +105,56 @@ export default function Page() {
     return () => window.removeEventListener("scroll", h)
   }, [])
 
+  // Hero → Problem 섹션 스냅 (PC 전용)
+  useEffect(() => {
+    if (window.matchMedia("(pointer: coarse)").matches) return
+
+    let locked = false
+
+    const onWheel = (e: WheelEvent) => {
+      const problemTop = document.getElementById("problem")?.offsetTop ?? window.innerHeight
+
+      if (locked) {
+        e.preventDefault()
+        return
+      }
+
+      // Hero 영역에서 아래로 스크롤 → Problem 상단으로 snap
+      if (window.scrollY < problemTop - 50 && e.deltaY > 0) {
+        e.preventDefault()
+        locked = true
+        document.getElementById("problem")?.scrollIntoView({ behavior: "smooth" })
+        setTimeout(() => { locked = false }, 1000)
+      }
+      // Problem 상단 근처에서 위로 스크롤 → Hero 상단으로 snap
+      else if (window.scrollY <= problemTop + 50 && e.deltaY < 0) {
+        e.preventDefault()
+        locked = true
+        window.scrollTo({ top: 0, behavior: "smooth" })
+        setTimeout(() => { locked = false }, 1000)
+      }
+    }
+
+    window.addEventListener("wheel", onWheel, { passive: false })
+    return () => window.removeEventListener("wheel", onWheel)
+  }, [])
+
+  const handleHeroMouseMove = (e: React.MouseEvent) => {
+    const el = glowRef.current
+    if (!el) return
+    el.style.left = `${e.clientX - 260}px`
+    el.style.top = `${e.clientY - 260}px`
+    el.style.opacity = "1"
+  }
+
+  const handleHeroMouseLeave = () => {
+    const el = glowRef.current
+    if (!el) return
+    el.style.opacity = "0"
+  }
+
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })
-    setMobileMenuOpen(false)
   }
 
   return (
@@ -130,34 +174,38 @@ export default function Page() {
               </button>
             ))}
           </nav>
-          <button onClick={() => router.push("/inquiry")} className="cursor-pointer hidden md:inline-flex items-center gap-2 bg-[#0f2d6e] hover:bg-[#1e4fa8] text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition-colors">
+          <button onClick={() => router.push("/inquiry")} className="cursor-pointer inline-flex items-center gap-2 bg-[#0f2d6e] hover:bg-[#1e4fa8] text-white text-sm font-semibold px-4 py-2 md:px-5 md:py-2.5 rounded-lg transition-colors">
             문의하기
           </button>
-          <button className="cursor-pointer md:hidden p-2" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
-          </button>
         </div>
-        {mobileMenuOpen && (
-          <div className="md:hidden bg-white border-b border-slate-200 px-5 pb-4">
-            {NAV.map(n => (
-              <button key={n.id} onClick={() => scrollTo(n.id)} className="cursor-pointer block w-full text-left py-2.5 text-sm text-slate-700 border-b border-slate-100 last:border-0">
-                {n.label}
-              </button>
-            ))}
-            <button onClick={() => router.push("/inquiry")} className="cursor-pointer mt-3 w-full bg-[#0f2d6e] text-white text-sm font-semibold py-2.5 rounded-lg">문의하기</button>
-          </div>
-        )}
       </header>
 
+      {/* ── CURSOR GLOW (fixed, hero only, PC only) ── */}
+      <div
+        ref={glowRef}
+        className="cursor-glow fixed pointer-events-none z-[2] rounded-full"
+        style={{
+          width: 520,
+          height: 520,
+          background: "radial-gradient(circle, rgba(59,130,246,0.18) 0%, rgba(59,130,246,0.06) 40%, transparent 70%)",
+          opacity: 0,
+          transition: "opacity 0.4s ease",
+        }}
+      />
+
       {/* ── HERO ── */}
-      <section className="relative min-h-screen flex items-center justify-center pt-24 pb-20 overflow-hidden bg-gradient-to-b from-[#f4f7fc] via-white to-white">
+      <section
+        className="relative min-h-screen flex items-center justify-center pt-24 pb-20 overflow-hidden bg-gradient-to-b from-[#f4f7fc] via-white to-white"
+        onMouseMove={handleHeroMouseMove}
+        onMouseLeave={handleHeroMouseLeave}
+      >
         <div className="absolute inset-0 overflow-hidden">
           <IntelGraph />
           <div className="absolute -top-24 -left-24 w-[520px] h-[520px] rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(59,130,246,0.15) 0%, transparent 70%)" }} />
           <div className="absolute -top-16 right-0 w-[440px] h-[440px] rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(99,102,241,0.13) 0%, transparent 70%)" }} />
           <div className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-white to-transparent pointer-events-none" />
         </div>
-        <div className="relative max-w-5xl mx-auto px-5 sm:px-8 w-full text-center">
+        <div className="relative z-[3] max-w-5xl mx-auto px-5 sm:px-8 w-full text-center">
           <FadeIn delay={200}>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-[1.1] tracking-tight mb-8 text-slate-900">
               멈춰있는 역량 모델,<br />
@@ -182,6 +230,14 @@ export default function Page() {
               </button>
             </div>
           </FadeIn>
+        </div>
+
+        {/* ── SCROLL INDICATOR ── */}
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 pointer-events-none">
+          <span className="text-[10px] tracking-[0.35em] font-semibold text-slate-400 uppercase">Scroll</span>
+          <div className="relative w-px h-12 overflow-hidden" style={{ background: "rgba(148,163,184,0.3)" }}>
+            <div className="scroll-flow-line" />
+          </div>
         </div>
       </section>
 
