@@ -4,7 +4,7 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: 'ASSESTA B2B HR',
-  description: 'ASTRA delivers a human-centered AI HR operating system blending trust, expertise, and real-time insights for faster hiring.',
+  description: 'Piccle delivers a human-centered AI HR operating system blending trust, expertise, and real-time insights for faster hiring.',
 }
 
 export default function RootLayout({

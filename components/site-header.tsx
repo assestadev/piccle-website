@@ -15,7 +15,7 @@ export function SiteHeader() {
           onClick={() => router.push("/")}
           className="cursor-pointer text-xl font-bold tracking-tight text-slate-900 hover:text-[#1e4fa8] transition-colors"
         >
-          ASTRA
+          Piccle
         </button>
         <button
           onClick={() => router.push("/inquiry")}
