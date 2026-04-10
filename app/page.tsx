@@ -172,7 +172,6 @@ export default function Page() {
   const router = useRouter()
   const [scrollY, setScrollY] = useState(0)
   const [showTopBtn, setShowTopBtn] = useState(false)
-  const scrollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const glowRef = useRef<HTMLDivElement>(null)
   const featureRef = useRef<HTMLDivElement>(null)
   const [anim1, setAnim1] = useState(false)
@@ -183,19 +182,10 @@ export default function Page() {
     const h = () => {
       const y = window.scrollY
       setScrollY(y)
-      if (y > 300) {
-        setShowTopBtn(true)
-        if (scrollTimerRef.current) clearTimeout(scrollTimerRef.current)
-        scrollTimerRef.current = setTimeout(() => setShowTopBtn(false), 1200)
-      } else {
-        setShowTopBtn(false)
-      }
+      setShowTopBtn(y > 300)
     }
     window.addEventListener("scroll", h)
-    return () => {
-      window.removeEventListener("scroll", h)
-      if (scrollTimerRef.current) clearTimeout(scrollTimerRef.current)
-    }
+    return () => window.removeEventListener("scroll", h)
   }, [])
 
   useEffect(() => {
