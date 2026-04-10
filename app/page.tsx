@@ -608,13 +608,6 @@ export default function Page() {
               </FadeIn>
             ))}
           </div>
-          <FadeIn>
-            <div className="bg-gradient-to-r from-[#1e4fa8] to-[#2563eb] rounded-2xl px-8 py-7 text-center">
-              <p className="text-white text-lg font-semibold">
-                &ldquo;우리 조직 내에서만 작동하는 <span className="text-blue-200">전용 HR AI 시스템</span>&rdquo;
-              </p>
-            </div>
-          </FadeIn>
         </div>
       </section>
 
