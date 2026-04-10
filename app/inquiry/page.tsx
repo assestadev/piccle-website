@@ -56,7 +56,7 @@ const STEP6_OPTIONS = [
 ]
 
 const PRIVACY_TEXT = `제1조 (수집하는 개인정보 항목)
-피클(Piccle)는 상세 제안서 발송 및 상담 서비스 제공을 위해 아래와 같은 개인정보를 수집합니다.
+피클(Piccle)은 상세 제안서 발송 및 상담 서비스 제공을 위해 아래와 같은 개인정보를 수집합니다.
 - 필수 항목: 이름, 회사명, 연락처(전화번호), 이메일 주소
 
 제2조 (개인정보의 수집 및 이용 목적)
@@ -241,10 +241,10 @@ export default function InquiryPage() {
             {/* 안내 텍스트 */}
             <div>
               <h2 className="text-base sm:text-lg font-bold text-slate-900 mb-3 leading-snug">
-                피클(Piccle) AI의 상세 제안서를 받아보세요
+                피클(Piccle)의 상세 제안서를 받아보세요
               </h2>
               <p className="text-sm text-slate-500 leading-relaxed bg-slate-50 rounded-xl px-4 py-3 border border-slate-100">
-                피클(Piccle)는 AI의 속도와 데이터 기반 객관성에 어세스타 HR 전문가 설계를 더해 채용부터 육성까지 연결되는 역량 기준을 제공합니다. AI의 한계까지 고려해 설계된 방식이 궁금하시다면, 제안서를 통해 확인해보세요.
+                피클(Piccle)은 AI의 속도와 데이터 기반 객관성에 어세스타 HR 전문가 설계를 더해 채용부터 육성까지 연결되는 역량 기준을 제공합니다. AI의 한계까지 고려해 설계된 방식이 궁금하시다면, 제안서를 통해 확인해보세요.
               </p>
             </div>
 
@@ -430,7 +430,7 @@ export default function InquiryPage() {
             <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-3">제출이 완료되었습니다</h2>
             <p className="text-slate-500 text-sm leading-relaxed mb-8">
               소중한 응답 감사드립니다.<br />
-              작성하신 내용을 바탕으로 아스트라(ASTRA) 전문가가<br className="hidden sm:block" />
+              작성하신 내용을 바탕으로 피클(Piccle) 전문가가<br className="hidden sm:block" />
               빠른 시일 내에 연락드리겠습니다.
             </p>
             <div className="w-full h-px bg-slate-100 mb-6" />
