@@ -604,7 +604,7 @@ export default function Page() {
                 </AnimatedUnderline>
               </h2>
               <p className="text-lg text-blue-200/70 max-w-2xl mx-auto">
-                일반 범용 AI와 달리, HR 특화 AI는 조직의 가장 민감한 데이터를 다룰 자격을 갖추고 있습니다.
+                HR AI는 뛰어난 성능 이전에 보안, 통제, 설명 가능성, 그리고 거버넌스를 먼저 갖춰야 합니다.
               </p>
             </div>
           </FadeIn>
