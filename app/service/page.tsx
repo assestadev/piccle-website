@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react"
 import { SiteHeader } from "@/components/site-header"
+import { SiteFooter } from "@/components/site-footer"
 
 /* ── 솔루션 데이터 ── */
 const SOLUTIONS = [
@@ -364,6 +365,8 @@ export default function ServicePage() {
           </a>
         </div>
       </div>
+
+      <SiteFooter />
     </div>
   )
 }

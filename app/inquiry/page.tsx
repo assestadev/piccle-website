@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { SiteHeader } from "@/components/site-header"
+import { SiteFooter } from "@/components/site-footer"
 
 /* ── 질문 데이터 ── */
 const STEP1_OPTIONS = [
@@ -488,6 +489,7 @@ export default function InquiryPage() {
           </div>
         )}
       </div>
+      <SiteFooter />
     </div>
   )
 }
