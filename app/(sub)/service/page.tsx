@@ -146,10 +146,82 @@ function DemoFrame({ url, title }: { url: string; title: string }) {
   )
 }
 
+/* ── 솔루션 콘텐츠 (데모 + 피처) — 타이틀 카드 제외 ── */
+function SolutionBody({ sol }: { sol: typeof SOLUTIONS[number] }) {
+  return (
+    <>
+      {/* 데모 미리보기 */}
+      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm mb-6">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+          <div className="flex items-center gap-3">
+            <span
+              className="text-[10px] font-bold tracking-widest uppercase px-2.5 py-1 rounded-full text-white"
+              style={{ backgroundColor: sol.accent }}
+            >
+              DEMO
+            </span>
+            <div>
+              <p className="text-sm font-bold text-slate-800">{sol.demo.title}</p>
+              <p className="text-xs text-slate-400 mt-0.5">{sol.demo.desc}</p>
+            </div>
+          </div>
+          <a
+            href={sol.demo.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-shrink-0 inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-[#1e4fa8] transition-colors"
+          >
+            새 탭에서 열기
+            <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+              <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3" />
+            </svg>
+          </a>
+        </div>
+        <div className="flex items-center gap-2 px-4 py-2 bg-slate-50 border-b border-slate-100">
+          <div className="flex gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-slate-300" />
+            <span className="w-2.5 h-2.5 rounded-full bg-slate-300" />
+            <span className="w-2.5 h-2.5 rounded-full bg-slate-300" />
+          </div>
+          <span className="text-[10px] text-slate-400 font-mono truncate ml-1">{sol.demo.url}</span>
+        </div>
+        <DemoFrame url={sol.demo.url} title={sol.demo.title} />
+      </div>
+
+      {/* 피처 단일 카드 */}
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        {sol.features.map((f, i) => (
+          <div
+            key={i}
+            className={`flex items-start gap-4 px-7 py-6 ${
+              i < sol.features.length - 1 ? "border-b border-slate-100" : ""
+            }`}
+          >
+            <span
+              className="flex-shrink-0 w-7 h-7 rounded-full text-white text-xs font-bold flex items-center justify-center mt-0.5"
+              style={{ backgroundColor: sol.accent }}
+            >
+              {i + 1}
+            </span>
+            <div>
+              <h3 className="text-sm font-bold text-slate-800 mb-1.5 leading-snug">{f.title}</h3>
+              <p className="text-sm text-slate-500 leading-relaxed">{f.body}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </>
+  )
+}
+
 /* ── 메인 컴포넌트 ── */
 export default function ServicePage() {
+  /* 데스크탑 탭 상태 */
   const [active, setActive] = useState(0)
   const [visible, setVisible] = useState(true)
+
+  /* 모바일 아코디언 상태 — 초기 전체 접힘 */
+  const [openIdx, setOpenIdx] = useState<number | null>(null)
 
   const handleTabChange = (idx: number) => {
     if (idx === active) return
@@ -158,6 +230,10 @@ export default function ServicePage() {
       setActive(idx)
       setVisible(true)
     }, 180)
+  }
+
+  const handleAccordionToggle = (idx: number) => {
+    setOpenIdx(prev => (prev === idx ? null : idx))
   }
 
   const sol = SOLUTIONS[active]
@@ -183,36 +259,96 @@ export default function ServicePage() {
       {/* ── 메인 콘텐츠 ── */}
       <div className="max-w-7xl mx-auto px-5 sm:px-8 py-12 lg:py-16">
 
-        {/* ── 모바일: 상단 세로 탭 ── */}
-        <div className="flex flex-col gap-2 mb-6 lg:hidden">
-          {SOLUTIONS.map((s, i) => (
-            <button
-              key={i}
-              onClick={() => handleTabChange(i)}
-              className={`cursor-pointer w-full text-left px-4 py-3.5 rounded-xl border transition-all duration-200 flex items-center gap-3 ${
-                active === i
-                  ? "bg-[#0f2d6e] border-[#0f2d6e] shadow-sm"
-                  : "bg-white border-slate-200 hover:border-slate-300"
-              }`}
-            >
-              <span
-                className={`flex-shrink-0 text-[10px] font-bold tracking-widest uppercase px-2 py-0.5 rounded-full ${
-                  active === i ? "bg-white/20 text-blue-100" : "bg-slate-100 text-slate-400"
+        {/* ════════════════════════════════════════
+            모바일 전용: 아코디언 UI
+            ════════════════════════════════════════ */}
+        <div className="flex flex-col gap-3 lg:hidden">
+          {SOLUTIONS.map((s, i) => {
+            const isOpen = openIdx === i
+            return (
+              <div
+                key={i}
+                className={`rounded-2xl overflow-hidden transition-all duration-300 ${
+                  isOpen
+                    ? "shadow-[0_8px_32px_-4px_rgba(0,0,0,0.13),0_2px_10px_-2px_rgba(0,0,0,0.07)]"
+                    : "border border-slate-100 bg-white shadow-sm"
                 }`}
               >
-                {s.num}
-              </span>
-              <span className={`text-sm font-semibold ${active === i ? "text-white" : "text-slate-600"}`}>
-                {s.label}
-              </span>
-            </button>
-          ))}
+                {/* 아코디언 헤더
+                    - 닫힘: compact 레이블 (흰 배경)
+                    - 열림: 타이틀 카드 역할 (accent 배경) — 본문 타이틀 카드 대체 */}
+                <button
+                  onClick={() => handleAccordionToggle(i)}
+                  className="w-full text-left cursor-pointer transition-colors duration-300"
+                  style={{ backgroundColor: isOpen ? s.accent : "#ffffff" }}
+                >
+                  {isOpen ? (
+                    /* 열림 상태 — 타이틀 카드 */
+                    <div className="px-6 pt-6 pb-5">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-center gap-2 mb-4">
+                          <span className="text-[11px] font-bold tracking-widest uppercase px-3 py-1.5 rounded-full text-white bg-white/20">
+                            {s.num}
+                          </span>
+                          <span className="text-[11px] font-semibold tracking-widest uppercase text-blue-200">
+                            {s.tag}
+                          </span>
+                        </div>
+                        {/* 닫기 chevron */}
+                        <svg
+                          className="flex-shrink-0 mt-1 text-white/60"
+                          width="18" height="18" fill="none" viewBox="0 0 24 24"
+                          stroke="currentColor" strokeWidth="2.5"
+                        >
+                          <path d="M18 15l-6-6-6 6" />
+                        </svg>
+                      </div>
+                      <h2 className="text-xl font-bold text-white mb-2 leading-tight whitespace-pre-line">
+                        {s.title}
+                      </h2>
+                      <p className="text-sm text-blue-100 leading-relaxed">
+                        {s.subtitle}
+                      </p>
+                    </div>
+                  ) : (
+                    /* 닫힘 상태 — compact 레이블 */
+                    <div className="px-4 py-4 flex items-center gap-3">
+                      <span className="flex-shrink-0 text-[10px] font-bold tracking-widest uppercase px-2 py-0.5 rounded-full bg-slate-100 text-slate-400">
+                        {s.num}
+                      </span>
+                      <span className="text-sm font-semibold text-slate-600 flex-1 leading-snug">
+                        {s.label}
+                      </span>
+                      {/* 열기 chevron */}
+                      <svg
+                        className="flex-shrink-0 text-slate-300"
+                        width="18" height="18" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" strokeWidth="2.5"
+                      >
+                        <path d="M6 9l6 6 6-6" />
+                      </svg>
+                    </div>
+                  )}
+                </button>
+
+                {/* 아코디언 본문 — 타이틀 카드 없이 데모 + 피처만 */}
+                {isOpen && (
+                  <div className="bg-[#f7f9fd] p-4 flex flex-col gap-5">
+                    <SolutionBody sol={s} />
+                  </div>
+                )}
+              </div>
+            )
+          })}
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-6 lg:gap-10">
+        {/* ════════════════════════════════════════
+            데스크탑 전용: 기존 탭 + 사이드바 UI
+            ════════════════════════════════════════ */}
+        <div className="hidden lg:flex flex-row gap-6 lg:gap-10">
 
-          {/* ── 좌: 솔루션 탭 버튼 (데스크탑만) ── */}
-          <aside className="hidden lg:block w-64 xl:w-72 flex-shrink-0">
+          {/* 좌: 솔루션 탭 버튼 */}
+          <aside className="w-64 xl:w-72 flex-shrink-0">
             <div className="flex flex-col gap-3 sticky top-24">
               {SOLUTIONS.map((s, i) => (
                 <button
@@ -243,16 +379,15 @@ export default function ServicePage() {
             </div>
           </aside>
 
-          {/* ── 우: 솔루션 상세 내용 ── */}
+          {/* 우: 솔루션 상세 내용 */}
           <main className="flex-1 min-w-0">
             <div
               className={`transition-all duration-300 ${
                 visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
               }`}
             >
-              {/* 솔루션 카드 상단 */}
+              {/* 솔루션 카드 상단 (데스크탑에서만 표시) */}
               <div className="bg-white rounded-2xl border border-slate-200 p-7 sm:p-9 mb-5 shadow-sm">
-                {/* 태그 */}
                 <div className="flex items-center gap-2 mb-5">
                   <span
                     className="text-[11px] font-bold tracking-widest uppercase px-3 py-1.5 rounded-full text-white"
@@ -264,8 +399,6 @@ export default function ServicePage() {
                     {sol.tag}
                   </span>
                 </div>
-
-                {/* 타이틀 */}
                 <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-3 leading-tight whitespace-pre-line">
                   {sol.title}
                 </h2>
@@ -274,70 +407,7 @@ export default function ServicePage() {
                 </p>
               </div>
 
-              {/* ── 데모 미리보기 ── */}
-              <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm mb-6">
-                {/* 데모 헤더 */}
-                <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-                  <div className="flex items-center gap-3">
-                    <span
-                      className="text-[10px] font-bold tracking-widest uppercase px-2.5 py-1 rounded-full text-white"
-                      style={{ backgroundColor: sol.accent }}
-                    >
-                      DEMO
-                    </span>
-                    <div>
-                      <p className="text-sm font-bold text-slate-800">{sol.demo.title}</p>
-                      <p className="text-xs text-slate-400 mt-0.5">{sol.demo.desc}</p>
-                    </div>
-                  </div>
-                  <a
-                    href={sol.demo.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-shrink-0 inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-[#1e4fa8] transition-colors"
-                  >
-                    새 탭에서 열기
-                    <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                      <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3" />
-                    </svg>
-                  </a>
-                </div>
-                {/* 브라우저 바 */}
-                <div className="flex items-center gap-2 px-4 py-2 bg-slate-50 border-b border-slate-100">
-                  <div className="flex gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-slate-300" />
-                    <span className="w-2.5 h-2.5 rounded-full bg-slate-300" />
-                    <span className="w-2.5 h-2.5 rounded-full bg-slate-300" />
-                  </div>
-                  <span className="text-[10px] text-slate-400 font-mono truncate ml-1">{sol.demo.url}</span>
-                </div>
-                {/* 스케일 iframe */}
-                <DemoFrame url={sol.demo.url} title={sol.demo.title} />
-              </div>
-
-              {/* 피처 단일 카드 */}
-              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                {sol.features.map((f, i) => (
-                  <div
-                    key={i}
-                    className={`flex items-start gap-4 px-7 py-6 ${
-                      i < sol.features.length - 1 ? "border-b border-slate-100" : ""
-                    }`}
-                  >
-                    <span
-                      className="flex-shrink-0 w-7 h-7 rounded-full text-white text-xs font-bold flex items-center justify-center mt-0.5"
-                      style={{ backgroundColor: sol.accent }}
-                    >
-                      {i + 1}
-                    </span>
-                    <div>
-                      <h3 className="text-sm font-bold text-slate-800 mb-1.5 leading-snug">{f.title}</h3>
-                      <p className="text-sm text-slate-500 leading-relaxed">{f.body}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
+              <SolutionBody sol={sol} />
             </div>
           </main>
         </div>
