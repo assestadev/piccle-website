@@ -1,8 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { SiteHeader } from "@/components/site-header"
-import { SiteFooter } from "@/components/site-footer"
 
 /* ── 질문 데이터 ── */
 const STEP1_OPTIONS = [
@@ -187,8 +185,6 @@ export default function InquiryPage() {
       className="min-h-screen bg-[#f7f9fd] flex flex-col items-center px-4 pt-24 pb-16"
       style={{ fontFamily: "'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" }}
     >
-      <SiteHeader />
-
       {/* ── 상단 타이틀 (완료 전만 표시) ── */}
       {step < 8 && (
         <div className="text-center mt-6 mb-8 sm:mb-10">
@@ -489,7 +485,6 @@ export default function InquiryPage() {
           </div>
         )}
       </div>
-      <SiteFooter />
     </div>
   )
 }

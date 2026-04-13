@@ -1,8 +1,6 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { SiteHeader } from "@/components/site-header"
-import { SiteFooter } from "@/components/site-footer"
 
 /* ── 솔루션 데이터 ── */
 const SOLUTIONS = [
@@ -169,8 +167,6 @@ export default function ServicePage() {
       className="min-h-screen bg-[#f7f9fd] text-slate-900"
       style={{ fontFamily: "'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" }}
     >
-      <SiteHeader />
-
       {/* ── 상단 헤더 영역 ── */}
       <div className="bg-white border-b border-slate-200/60 pt-24 pb-12">
         <div className="max-w-7xl mx-auto px-5 sm:px-8 text-center">
@@ -366,7 +362,6 @@ export default function ServicePage() {
         </div>
       </div>
 
-      <SiteFooter />
     </div>
   )
 }
