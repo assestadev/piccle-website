@@ -272,14 +272,16 @@ export default function Page() {
                 {n.label}
               </button>
             ))}
+          </nav>
+          <div className="flex items-center gap-3 sm:gap-6">
             {/* 서비스 소개 링크 — 숨기려면 아래 button을 hidden 처리하세요 */}
             <button onClick={() => router.push("/service")} className="cursor-pointer text-sm text-slate-600 hover:text-[#1e4fa8] transition-colors font-medium">
               서비스 소개
             </button>
-          </nav>
-          <button onClick={() => router.push("/inquiry")} className="cursor-pointer inline-flex items-center gap-2 bg-[#0f2d6e] hover:bg-[#1e4fa8] text-white text-sm font-semibold px-4 py-2 md:px-5 md:py-2.5 rounded-lg transition-colors">
-            문의하기
-          </button>
+            <button onClick={() => router.push("/inquiry")} className="cursor-pointer inline-flex items-center gap-2 bg-[#0f2d6e] hover:bg-[#1e4fa8] text-white text-sm font-semibold px-4 py-2 md:px-5 md:py-2.5 rounded-lg transition-colors">
+              문의하기
+            </button>
+          </div>
         </div>
       </header>
 

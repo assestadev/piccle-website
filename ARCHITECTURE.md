@@ -1,4 +1,4 @@
-# ASTRA HR Project — Architecture
+# Piccle HR Project — Architecture
 
 ## 기술 스택
 
