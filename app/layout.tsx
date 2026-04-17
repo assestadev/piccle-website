@@ -46,6 +46,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <head>
+        <link rel="icon" href="https://img.assesta.com/piccle/favicon.png" type="image/png" />
         <link
           rel="stylesheet"
           as="style"

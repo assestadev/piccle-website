@@ -2,21 +2,18 @@
 
 import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
+import { SiteHeader } from "@/components/site-header"
+import { SiteFooter } from "@/components/site-footer"
 import { FadeIn } from "@/components/fade-in"
 import { AnimatedUnderline } from "@/components/animated-underline"
 import { IntelGraph } from "@/components/intel-graph"
+import { HrFlowDiagram } from "@/components/hr-flow-diagram"
 import {
   Radar, RadarChart, PolarGrid, PolarAngleAxis,
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   BarChart, Bar, Legend,
 } from "recharts"
 
-const NAV = [
-  { label: "문제 제기", id: "problem" },
-  { label: "솔루션",    id: "solution" },
-  { label: "활용사례",  id: "usecase" },
-  { label: "보안 정책", id: "trust" },
-]
 
 const PROBLEM_CARDS = [
   {
@@ -170,7 +167,6 @@ const TRUST_CARDS: { title: string; glow: string; render: () => React.ReactNode 
 
 export default function Page() {
   const router = useRouter()
-  const [scrollY, setScrollY] = useState(0)
   const [showTopBtn, setShowTopBtn] = useState(false)
   const glowRef = useRef<HTMLDivElement>(null)
   const featureRef = useRef<HTMLDivElement>(null)
@@ -180,9 +176,7 @@ export default function Page() {
 
   useEffect(() => {
     const h = () => {
-      const y = window.scrollY
-      setScrollY(y)
-      setShowTopBtn(y > 300)
+      setShowTopBtn(window.scrollY > 300)
     }
     window.addEventListener("scroll", h)
     return () => window.removeEventListener("scroll", h)
@@ -257,33 +251,12 @@ export default function Page() {
   }
 
   return (
-    <div
-      className="min-h-screen bg-white text-slate-900 overflow-x-hidden"
-      style={{ fontFamily: "'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" }}
-    >
-
-      {/* ── HEADER ── */}
-      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrollY > 50 ? "bg-white/96 backdrop-blur-xl border-b border-slate-200/60 shadow-sm" : "bg-transparent"}`}>
-        <div className="max-w-7xl mx-auto px-5 sm:px-8 py-4 flex items-center justify-between">
-          <span className="text-xl font-bold tracking-tight text-slate-900">Piccle</span>
-          <nav className="hidden md:flex items-center gap-8">
-            {NAV.map(n => (
-              <button key={n.id} onClick={() => scrollTo(n.id)} className="cursor-pointer text-sm text-slate-600 hover:text-[#1e4fa8] transition-colors font-medium">
-                {n.label}
-              </button>
-            ))}
-          </nav>
-          <div className="flex items-center gap-3 sm:gap-6">
-            {/* 서비스 소개 링크 — 숨기려면 아래 button을 hidden 처리하세요 */}
-            <button onClick={() => router.push("/service")} className="cursor-pointer text-sm text-slate-600 hover:text-[#1e4fa8] transition-colors font-medium">
-              서비스 소개
-            </button>
-            <button onClick={() => router.push("/inquiry")} className="cursor-pointer inline-flex items-center gap-2 bg-[#0f2d6e] hover:bg-[#1e4fa8] text-white text-sm font-semibold px-4 py-2 md:px-5 md:py-2.5 rounded-lg transition-colors">
-              문의하기
-            </button>
-          </div>
-        </div>
-      </header>
+    <>
+      <SiteHeader />
+      <div
+        className="min-h-screen bg-white text-slate-900 overflow-x-hidden"
+        style={{ fontFamily: "'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" }}
+      >
 
       {/* ── CURSOR GLOW (fixed, hero only, PC only) ── */}
       <div
@@ -310,31 +283,43 @@ export default function Page() {
           <div className="absolute -top-16 right-0 w-[440px] h-[440px] rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(99,102,241,0.13) 0%, transparent 70%)" }} />
           <div className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-white to-transparent pointer-events-none" />
         </div>
-        <div className="relative z-[3] max-w-5xl mx-auto px-5 sm:px-8 w-full text-center">
-          <FadeIn delay={200}>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-[1.1] tracking-tight mb-8 text-slate-900">
-              멈춰있는 역량 모델,<br />
-              이제 <span className="text-[#1e4fa8]">실시간으로</span><br />
-              진화합니다.
-            </h1>
-          </FadeIn>
-          <FadeIn delay={360}>
-            <p className="text-base sm:text-lg text-slate-500 leading-relaxed mb-10 max-w-2xl mx-auto px-2 sm:px-0">
-              우리 조직만의 &apos;성공 공식&apos;을 데이터로 증명하세요. 보안이 설계된 전용 AI가 채용부터 리더십 코칭까지, 파편화된 인사 데이터를 하나의 성장 엔진으로 연결하여 최적의 HR 의사결정 시스템을 구축합니다.
-            </p>
-          </FadeIn>
-          <FadeIn delay={500}>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="cursor-pointer inline-flex items-center justify-center gap-2 bg-[#0f2d6e] hover:bg-[#1e4fa8] text-white font-semibold px-10 h-14 min-w-[230px] rounded-xl text-base transition-colors shadow-lg shadow-blue-900/20">
-                서비스 소개서 다운로드
-                <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" /></svg>
-              </button>
-              <button onClick={() => scrollTo("solution")} className="cursor-pointer relative z-10 inline-flex items-center justify-center gap-2 bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 font-semibold px-10 h-14 min-w-[230px] rounded-xl text-base transition-colors">
-                솔루션 알아보기
-                <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
-              </button>
+        <div className="relative z-[3] max-w-6xl mx-auto px-5 sm:px-8 w-full">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:gap-20 xl:gap-28">
+
+            {/* ── Left: text ── */}
+            <div className="flex-1 text-center lg:text-left">
+              <FadeIn delay={200}>
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-[1.1] tracking-tight mb-8 text-slate-900">
+                  멈춰있는 역량 모델,<br />
+                  이제 <span className="text-[#1e4fa8]">실시간으로</span><br />
+                  진화합니다.
+                </h1>
+              </FadeIn>
+              <FadeIn delay={360}>
+                <p className="text-base sm:text-lg text-slate-500 leading-relaxed mb-10 max-w-2xl mx-auto lg:mx-0 px-2 sm:px-0">
+                  우리 조직만의 &apos;성공 공식&apos;을 데이터로 증명하세요. 보안이 설계된 전용 AI가 채용부터 리더십 코칭까지, 파편화된 인사 데이터를 하나의 성장 엔진으로 연결하여 최적의 HR 의사결정 시스템을 구축합니다.
+                </p>
+              </FadeIn>
+              <FadeIn delay={500}>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                  <button className="cursor-pointer inline-flex items-center justify-center gap-2 bg-[#0f2d6e] hover:bg-[#1e4fa8] text-white font-semibold px-10 h-14 min-w-[230px] rounded-xl text-base transition-colors shadow-lg shadow-blue-900/20">
+                    서비스 소개서 다운로드
+                    <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" /></svg>
+                  </button>
+                  <button onClick={() => scrollTo("solution")} className="cursor-pointer relative z-10 inline-flex items-center justify-center gap-2 bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 font-semibold px-10 h-14 min-w-[230px] rounded-xl text-base transition-colors">
+                    솔루션 알아보기
+                    <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+                  </button>
+                </div>
+              </FadeIn>
             </div>
-          </FadeIn>
+
+            {/* ── Right: HR flow diagram (desktop only) ── */}
+            <FadeIn delay={400} direction="left" className="hidden lg:block w-[360px] xl:w-[420px] shrink-0">
+              <HrFlowDiagram />
+            </FadeIn>
+
+          </div>
         </div>
 
         {/* ── SCROLL INDICATOR ── */}
@@ -646,72 +631,6 @@ export default function Page() {
       </section>
 
       {/* ── FOOTER ── */}
-      <footer className="bg-[#0b1f4a] pt-10 pb-6 px-5 sm:px-8">
-        <div className="max-w-7xl mx-auto">
-
-          {/* 회사명 */}
-          <p className="text-white/80 text-lg font-bold mb-6">(주)어세스타</p>
-
-          {/* 사업자 정보 + 소셜 아이콘 */}
-          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-4">
-            <div className="flex flex-wrap items-center gap-x-0 gap-y-1 text-blue-200/60 text-sm">
-              <span>대표이사 : 김명준</span>
-              <span className="mx-3 text-blue-200/30">|</span>
-              <span>개인정보 관리자 : 손성훈</span>
-              <span className="mx-3 text-blue-200/30">|</span>
-              <span>사업자등록번호 : 107-86-27487</span>
-              <span className="mx-3 text-blue-200/30">|</span>
-              <span>통신판매업신고 : 2013-서울영등포-0153</span>
-              <span className="mx-3 text-blue-200/30">|</span>
-              <a href="https://www.ftc.go.kr/bizCommPop.do?wrkr_no=1078627487" target="_blank" className="inline-block border border-blue-200/30 rounded px-2 py-0.5 text-xs text-blue-200/60 hover:text-blue-200 hover:border-blue-200/60 transition-colors">
-                사업자정보확인
-              </a>
-            </div>
-            {/* 소셜 아이콘 */}
-            <div className="flex items-center gap-4 text-blue-200/50 shrink-0">
-              <a href="#" aria-label="Instagram" className="hover:text-blue-200 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
-                </svg>
-              </a>
-              <a href="#" aria-label="KakaoTalk" className="hover:text-blue-200 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 3C6.477 3 2 6.582 2 11c0 2.836 1.793 5.337 4.5 6.82L5.5 21l4.09-2.154C10.36 18.944 11.17 19 12 19c5.523 0 10-3.582 10-8s-4.477-8-10-8z"/>
-                </svg>
-              </a>
-              <a href="#" aria-label="YouTube" className="hover:text-blue-200 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58zM9.75 15.02V8.98L15.5 12l-5.75 3.02z"/>
-                </svg>
-              </a>
-            </div>
-          </div>
-
-          {/* 주소 및 연락처 */}
-          <div className="text-blue-200/50 text-sm space-y-1 mb-8">
-            <p>서울시 영등포구 국회대로68길 11, 삼보호정빌딩 5, 6층(여의도동)</p>
-            <p>
-              <span>TEL (02)787-1400</span>
-              <span className="mx-4">FAX +82-787-1408</span>
-            </p>
-            <p>assesta@assesta.com</p>
-          </div>
-
-          {/* 구분선 */}
-          <div className="border-t border-blue-200/10 mb-5" />
-
-          {/* 카피라이트 + 링크 */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-blue-200/40 text-xs">
-            <p>copyright 2026. ASSESTA. All Rights Reserved.</p>
-            <div className="flex items-center gap-5">
-              <a href="#" className="hover:text-blue-200 transition-colors">개인정보처리방침</a>
-              <a href="#" className="hover:text-blue-200 transition-colors">서비스 이용 약관</a>
-            </div>
-          </div>
-
-        </div>
-      </footer>
-
       {/* ── SCROLL TO TOP ── */}
       <button
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
@@ -725,5 +644,7 @@ export default function Page() {
         </svg>
       </button>
     </div>
+      <SiteFooter />
+    </>
   )
 }

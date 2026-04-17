@@ -59,7 +59,7 @@ const PRIVACY_TEXT = `제1조 (수집하는 개인정보 항목)
 - 필수 항목: 이름, 회사명, 연락처(전화번호), 이메일 주소
 
 제2조 (개인정보의 수집 및 이용 목적)
-① Piccle AI 서비스 상세 제안서 발송 및 도입 상담 안내
+① Piccle 서비스 상세 제안서 발송 및 도입 상담 안내
 ② 고객 문의 응대 및 서비스 관련 정보 제공
 
 제3조 (개인정보의 보유 및 이용 기간)
@@ -74,7 +74,7 @@ const PRIVACY_TEXT = `제1조 (수집하는 개인정보 항목)
 제6조 (개인정보 처리 문의)
 개인정보 처리와 관련한 문의사항은 아래 연락처로 문의해 주시기 바랍니다.
 - 이메일: assesta@assesta.com
-- 개인정보 보호 책임자: Piccle 개인정보보호팀`
+- 개인정보 관리자: 손성훈`
 
 /* ── 라디오 옵션 ── */
 function RadioOption({ label, selected, onChange }: {
@@ -127,7 +127,7 @@ function CheckOption({ label, selected, onChange }: {
 }
 
 /* ── 메인 컴포넌트 ── */
-// step 1~6: 설문  |  step 7: 제안서 안내 + 연락처  |  step 8: 완료
+// step 1: 연락처 정보  |  step 2~7: 설문 1~6  |  step 8: 완료
 export default function InquiryPage() {
   const [step, setStep] = useState(1)
 
@@ -143,41 +143,45 @@ export default function InquiryPage() {
   const [privacyOpen, setPrivacyOpen] = useState(false)
   const [emailError, setEmailError] = useState("")
 
-  /* 진행률: 설문 1~6 기준 */
-  const progressPct = step <= 6 ? Math.round((step / 6) * 100) : 100
+  /* 진행률: 설문 2~7 기준 */
+  const progressPct = step >= 2 && step <= 7 ? Math.round(((step - 1) / 6) * 100) : 100
+  const surveyStep = step - 1 // 1~6
 
   /* 다음 버튼 활성 조건 */
   const canNext =
-    step === 1 ? !!step1 :
-    step === 2 ? !!step2 :
-    step === 3 ? step3.length > 0 :
-    step === 4 ? step4.length > 0 :
-    step === 5 ? step5.length > 0 :
-    step === 6 ? !!step6 :
-    /* step 7 */ !!(form.name && form.company && form.phone && form.email && privacyAgreed)
+    step === 1 ? !!(form.name && form.company && form.phone && form.email && privacyAgreed) :
+    step === 2 ? !!step1 :
+    step === 3 ? !!step2 :
+    step === 4 ? step3.length > 0 :
+    step === 5 ? step4.length > 0 :
+    step === 6 ? step5.length > 0 :
+    step === 7 ? !!step6 :
+    false
 
   const toggle = (arr: string[], val: string) =>
     arr.includes(val) ? arr.filter((v) => v !== val) : [...arr, val]
 
   const handleNext = () => {
-    if (step <= 6) { setStep((s) => s + 1); return }
-    if (step === 7) { setStep(8) }
+    if (step <= 7) setStep((s) => s + 1)
+  }
+
+  const autoNext = () => {
+    setTimeout(() => setStep((s) => s + 1), 300)
   }
 
   const handlePrev = () => {
-    if (step === 7) { setStep(6); return }
     if (step > 1) setStep((s) => s - 1)
   }
 
-  const isMultiple = step === 3 || step === 4 || step === 5
+  const isMultiple = step === 4 || step === 5 || step === 6
 
   const STEP_TITLES: Record<number, string> = {
     1: "어떤 유형의 조직에 속해 계신가요?",
     2: "현재 우리 조직에는 '일 잘하는 기준(역량 모델)'이 정리되어 있나요?",
     3: "우리 조직에서 '일 잘하는 기준'을 정의하거나 관리할 때, 가장 어려운 점은 무엇인가요?",
     4: "만약 AI가 조직 내부 데이터를 기반으로 '일 잘하는 기준'을 3초 만에 도출해준다면, 가장 기대되는 점은 무엇인가요?",
-    5: "한편, 인사 영역에 AI 도입을 검토할 때 가장 고민(우려)되는 점은 무엇인가요?",
-    6: "도출된 '일 잘하는 기준'을 바탕으로 가장 먼저 해결하고 싶은 인사 과제는 무엇인가요?",
+    5: "한편, HR에 AI 도입을 검토할 때 가장 고민(우려)되는 점은 무엇인가요?",
+    6: "도출된 '일 잘하는 기준'을 바탕으로 가장 먼저 해결하고 싶은 HR 과제는 무엇인가요?",
   }
 
   return (
@@ -188,21 +192,20 @@ export default function InquiryPage() {
       {/* ── 상단 타이틀 (완료 전만 표시) ── */}
       {step < 8 && (
         <div className="text-center mt-6 mb-8 sm:mb-10">
-          <p className="text-xs font-bold tracking-widest text-[#1e4fa8] uppercase mb-2">Survey</p>
-          <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-2">빠른 상담 접수</h1>
+          <p className="text-xs font-bold tracking-widest text-[#1e4fa8] uppercase mb-2">Contact</p>
+          <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-2">문의하기</h1>
           <p className="text-slate-500 text-sm sm:text-base">6가지 질문에 답변하면 맞춤 제안서를 보내드립니다.</p>
         </div>
       )}
 
       {/* ── 카드 ── */}
-      <div className="w-full max-w-lg bg-white rounded-2xl border border-slate-200 shadow-lg p-6 sm:p-8">
+      <div className={`w-full max-w-lg bg-white rounded-2xl border border-slate-200 shadow-lg p-6 sm:p-8 ${step === 8 ? "mt-14 sm:mt-16" : ""}`}>
 
-        {/* ── 진행바 (1~6) ── */}
-        {step <= 6 && (
+        {/* ── 진행바 (step 2~7) ── */}
+        {step >= 2 && step <= 7 && (
           <div className="mb-7">
             <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-semibold text-[#1e4fa8]">질문 {step} / 6</span>
-              <span className="text-sm text-slate-400">{progressPct}%</span>
+              <span className="text-sm font-semibold text-[#1e4fa8]">질문 {surveyStep} / 6</span>
             </div>
             <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
               <div
@@ -216,39 +219,25 @@ export default function InquiryPage() {
           </div>
         )}
 
-        {/* ── step 7 배지 ── */}
-        {step === 7 && (
-          <div className="mb-5">
-            <span className="inline-block text-xs font-bold tracking-widest text-[#1e4fa8] uppercase bg-[#eff6ff] px-3 py-1 rounded-full">
-              마지막 단계
-            </span>
-          </div>
-        )}
-
-        {/* ── 질문 제목 (1~6) ── */}
-        {step <= 6 && (
+        {/* ── 질문 제목 (step 2~7) ── */}
+        {step >= 2 && step <= 7 && (
           <h2 className="text-base sm:text-lg font-bold text-slate-900 mb-5 leading-snug">
-            {STEP_TITLES[step]}
+            {STEP_TITLES[surveyStep]}
           </h2>
         )}
 
-        {/* ── Step 7: 제안서 안내 + 연락처 통합 ── */}
-        {step === 7 && (
+        {/* ── Step 1: 연락처 정보 ── */}
+        {step === 1 && (
           <div className="flex flex-col gap-4">
-            {/* 안내 텍스트 */}
             <div>
-              <h2 className="text-base sm:text-lg font-bold text-slate-900 mb-3 leading-snug">
-                피클(Piccle)의 상세 제안서를 받아보세요
+              <h2 className="text-base sm:text-lg font-bold text-slate-900 mb-1 leading-snug">
+                연락처 정보
               </h2>
-              <p className="text-sm text-slate-500 leading-relaxed bg-slate-50 rounded-xl px-4 py-3 border border-slate-100">
-                피클(Piccle)은 AI의 속도와 데이터 기반 객관성에 어세스타 HR 전문가 설계를 더해 채용부터 육성까지 연결되는 역량 기준을 제공합니다. AI의 한계까지 고려해 설계된 방식이 궁금하시다면, 제안서를 통해 확인해보세요.
-              </p>
+              <p className="text-sm text-slate-400">피클(Piccle)의 상세 제안서를 받아보세요</p>
             </div>
 
-            {/* 구분선 */}
             <div className="w-full h-px bg-slate-100" />
 
-            {/* 연락처 입력 */}
             <div className="flex flex-col gap-3">
               {/* 이름 */}
               <input
@@ -311,7 +300,6 @@ export default function InquiryPage() {
 
             {/* 개인정보 동의 */}
             <div>
-              {/* 헤더 행: 동의 체크 + 라벨 + 보기 토글 */}
               <div className="flex items-center justify-between mb-2">
                 <label
                   className="flex items-center gap-2.5 cursor-pointer group"
@@ -331,11 +319,10 @@ export default function InquiryPage() {
                     <span className="text-red-500 ml-1">*</span>
                   </span>
                 </label>
-                {/* 펼치기/접기 버튼 */}
                 <button
                   type="button"
                   onClick={() => setPrivacyOpen((v) => !v)}
-                  className="flex items-center gap-1 text-xs text-[#1e4fa8] font-medium hover:underline flex-shrink-0 ml-2"
+                  className="cursor-pointer flex items-center gap-1 text-xs text-[#1e4fa8] font-medium hover:text-[#0f2d6e] hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1e4fa8]/40 rounded transition-colors flex-shrink-0 ml-2"
                 >
                   {privacyOpen ? "접기" : "내용 보기"}
                   <svg
@@ -346,7 +333,6 @@ export default function InquiryPage() {
                   </svg>
                 </button>
               </div>
-              {/* 개인정보 전문 (토글) */}
               {privacyOpen && (
                 <div className="w-full h-40 overflow-y-auto rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs text-slate-600 leading-relaxed whitespace-pre-line">
                   {PRIVACY_TEXT}
@@ -356,26 +342,26 @@ export default function InquiryPage() {
           </div>
         )}
 
-        {/* ── Step 1 ── */}
-        {step === 1 && (
-          <div className="flex flex-col gap-2.5">
-            {STEP1_OPTIONS.map((opt) => (
-              <RadioOption key={opt} label={opt} selected={step1 === opt} onChange={() => setStep1(opt)} />
-            ))}
-          </div>
-        )}
-
         {/* ── Step 2 ── */}
         {step === 2 && (
           <div className="flex flex-col gap-2.5">
-            {STEP2_OPTIONS.map((opt) => (
-              <RadioOption key={opt} label={opt} selected={step2 === opt} onChange={() => setStep2(opt)} />
+            {STEP1_OPTIONS.map((opt) => (
+              <RadioOption key={opt} label={opt} selected={step1 === opt} onChange={() => { setStep1(opt); autoNext() }} />
             ))}
           </div>
         )}
 
-        {/* ── Step 3 (복수) ── */}
+        {/* ── Step 3 ── */}
         {step === 3 && (
+          <div className="flex flex-col gap-2.5">
+            {STEP2_OPTIONS.map((opt) => (
+              <RadioOption key={opt} label={opt} selected={step2 === opt} onChange={() => { setStep2(opt); autoNext() }} />
+            ))}
+          </div>
+        )}
+
+        {/* ── Step 4 (복수) ── */}
+        {step === 4 && (
           <div className="flex flex-col gap-2.5">
             {STEP3_OPTIONS.map((opt) => (
               <CheckOption key={opt} label={opt} selected={step3.includes(opt)}
@@ -384,8 +370,8 @@ export default function InquiryPage() {
           </div>
         )}
 
-        {/* ── Step 4 (복수) ── */}
-        {step === 4 && (
+        {/* ── Step 5 (복수) ── */}
+        {step === 5 && (
           <div className="flex flex-col gap-2.5">
             {STEP4_OPTIONS.map((opt) => (
               <CheckOption key={opt} label={opt} selected={step4.includes(opt)}
@@ -394,8 +380,8 @@ export default function InquiryPage() {
           </div>
         )}
 
-        {/* ── Step 5 (복수) ── */}
-        {step === 5 && (
+        {/* ── Step 6 (복수) ── */}
+        {step === 6 && (
           <div className="flex flex-col gap-2.5">
             {STEP5_OPTIONS.map((opt) => (
               <CheckOption key={opt} label={opt} selected={step5.includes(opt)}
@@ -404,11 +390,11 @@ export default function InquiryPage() {
           </div>
         )}
 
-        {/* ── Step 6 ── */}
-        {step === 6 && (
+        {/* ── Step 7 ── */}
+        {step === 7 && (
           <div className="flex flex-col gap-2.5">
             {STEP6_OPTIONS.map((opt) => (
-              <RadioOption key={opt} label={opt} selected={step6 === opt} onChange={() => setStep6(opt)} />
+              <RadioOption key={opt} label={opt} selected={step6 === opt} onChange={() => { setStep6(opt); autoNext() }} />
             ))}
           </div>
         )}
@@ -425,29 +411,10 @@ export default function InquiryPage() {
             </div>
             <p className="text-xs font-bold tracking-widest text-[#1e4fa8] uppercase mb-3">Complete</p>
             <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-3">제출이 완료되었습니다</h2>
-            <p className="text-slate-500 text-sm leading-relaxed mb-8">
-              소중한 응답 감사드립니다.<br />
-              작성하신 내용을 바탕으로 피클(Piccle) 전문가가<br className="hidden sm:block" />
-              빠른 시일 내에 연락드리겠습니다.
+            <p className="text-sm text-slate-500 leading-relaxed bg-slate-50 rounded-xl px-4 py-3 border border-slate-100 text-left mb-6">
+              PICCLE(Pick &amp; Circle)은 AI의 속도와 데이터 기반 객관성에 어세스타 HR 전문가 설계를 더해 채용부터 육성까지 연결되는 역량 기준을 제공합니다. AI의 한계까지 고려해 설계된 방식이 궁금하시다면, 제안서를 통해 확인해보세요.
             </p>
             <div className="w-full h-px bg-slate-100 mb-6" />
-            <div className="bg-[#f7f9fd] rounded-xl px-5 py-4 text-left mb-6 border border-slate-100">
-              <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">다음 단계</p>
-              <ul className="flex flex-col gap-3">
-                {[
-                  "담당자가 영업일 기준 1~2일 내 연락드립니다.",
-                  "조직 현황에 맞는 맞춤 제안서를 준비해드립니다.",
-                  "무료 데모 및 파일럿 프로그램을 안내해드립니다.",
-                ].map((text, i) => (
-                  <li key={i} className="flex items-start gap-3">
-                    <span className="mt-0.5 w-5 h-5 rounded-full bg-[#1e4fa8] text-white text-xs font-bold flex items-center justify-center flex-shrink-0">
-                      {i + 1}
-                    </span>
-                    <span className="text-sm text-slate-600 leading-snug">{text}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
             <a
               href="/"
               className="cursor-pointer inline-flex items-center justify-center gap-2 bg-[#0f2d6e] hover:bg-[#1e4fa8] text-white font-semibold px-8 py-3.5 rounded-xl text-sm transition-colors w-full"
@@ -460,27 +427,24 @@ export default function InquiryPage() {
           </div>
         )}
 
-        {/* ── 이전 / 다음 버튼 (완료 화면 제외) ── */}
-        {step < 8 && (
-          <div className="flex justify-between items-center mt-7">
-            <button
-              onClick={handlePrev}
-              disabled={step === 1}
-              className="cursor-pointer px-5 py-3 rounded-xl border border-slate-200 text-sm font-semibold text-slate-600 bg-white hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-            >
-              이전
-            </button>
+        {/* ── 이전 / 다음 버튼 (step 1~7만 표시) ── */}
+        {step >= 1 && step <= 7 && (
+          <div className={`flex items-center mt-7 ${step === 1 ? "justify-end" : "justify-between"}`}>
+            {step > 1 && (
+              <button
+                onClick={handlePrev}
+                className="cursor-pointer px-5 py-3 rounded-xl border border-slate-200 text-sm font-semibold text-slate-600 bg-white hover:bg-slate-50 transition-colors"
+              >
+                이전
+              </button>
+            )}
 
             <button
               onClick={handleNext}
               disabled={!canNext}
-              className={`cursor-pointer px-7 py-3 rounded-xl text-white text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-colors ${
-                step === 7
-                  ? "bg-[#0f2d6e] hover:bg-[#1e4fa8] min-w-[120px]"
-                  : "bg-[#1e4fa8] hover:bg-[#0f2d6e]"
-              }`}
+              className="cursor-pointer px-7 py-3 rounded-xl text-white text-sm font-semibold bg-[#1e4fa8] hover:bg-[#0f2d6e] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
-              {step === 7 ? "제출하기" : "다음"}
+              다음
             </button>
           </div>
         )}
