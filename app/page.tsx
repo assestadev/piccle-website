@@ -19,22 +19,22 @@ const PROBLEM_CARDS = [
   {
     title: "정적인 역량 모델",
     body: "한 번 구축하면 수 년간 고정되어 급변하는 비즈니스 환경과 기술 트렌드를 반영하지 못합니다.",
-    img: "/images/img01.jpg",
+    img: "https://img.assesta.com/piccle/img01.png",
   },
   {
     title: "주관적 평가 기준",
     body: "평가자의 개인적인 친분이나 편향이 개입돼 평가 결과에 대한 구성원들의 불신이 발생합니다.",
-    img: "/images/img02.jpg",
+    img: "https://img.assesta.com/piccle/img02.png",
   },
   {
     title: "느린 업데이트 주기",
     body: "설문과 인터뷰 등 수동적인 방식으로 진행되어 모델 하나를 수정하는 데 막대한 비용과 시간이 소요됩니다.",
-    img: "/images/img03.jpg",
+    img: "https://img.assesta.com/piccle/img03.png",
   },
   {
     title: "제한적 데이터 활용",
     body: "정형화된 인사 기록 등 단편적인 데이터만 활용하여 개인의 숨겨진 잠재력과 성과 요인을 찾아내기 어렵습니다.",
-    img: "/images/img06.jpg",
+    img: "https://img.assesta.com/piccle/img04.png",
   },
 ]
 
@@ -250,6 +250,7 @@ export default function Page() {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })
   }
 
+
   return (
     <>
       <SiteHeader />
@@ -332,7 +333,7 @@ export default function Page() {
       </section>
 
       {/* ── PROBLEM ── */}
-      <section id="problem" className="py-28 lg:py-36 bg-[#f7f9fd]">
+      <section id="problem" className="py-28 lg:py-36 bg-white">
         <div className="max-w-7xl mx-auto px-5 sm:px-8">
           <FadeIn>
             <div className="text-center mb-20">
@@ -351,14 +352,15 @@ export default function Page() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {PROBLEM_CARDS.map((c, i) => (
               <FadeIn key={i} delay={i * 120} direction="up">
-                <div className="group bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-xl hover:border-blue-200 hover:-translate-y-1.5 transition-all duration-300 h-full flex flex-col">
-                  <div className="aspect-video relative overflow-hidden bg-slate-100">
-                    <img src={c.img} alt={c.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                <div className="group bg-white rounded-2xl border border-slate-200 hover:shadow-xl hover:border-blue-200 hover:-translate-y-1.5 transition-all duration-300 h-full flex flex-col items-center p-7 text-center">
+                  <span className="text-[11px] font-semibold rounded-full px-3 py-1 mb-7" style={{ color: "#1E4FA8", backgroundColor: "#E3EDFF" }}>
+                    Pain Points {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <div className="flex justify-center mb-7">
+                    <img src={c.img} alt={c.title} className="h-20 w-auto object-contain group-hover:scale-105 transition-transform duration-500" />
                   </div>
-                  <div className="p-6 flex flex-col flex-1">
-                    <h3 className="text-base font-bold text-slate-900 mb-2">{c.title}</h3>
-                    <p className="text-slate-500 text-sm leading-relaxed">{c.body}</p>
-                  </div>
+                  <h3 className="text-base font-bold text-slate-900 mb-3">{c.title}</h3>
+                  <p className="text-slate-600 text-sm leading-relaxed">{c.body}</p>
                 </div>
               </FadeIn>
             ))}
