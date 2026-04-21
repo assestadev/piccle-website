@@ -142,6 +142,8 @@ export default function InquiryPage() {
   const [privacyAgreed, setPrivacyAgreed] = useState(false)
   const [privacyOpen, setPrivacyOpen] = useState(false)
   const [emailError, setEmailError] = useState("")
+  const [submitting, setSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState("")
 
   /* 진행률: 설문 2~7 기준 */
   const progressPct = step >= 2 && step <= 7 ? Math.round(((step - 1) / 6) * 100) : 100
@@ -161,12 +163,45 @@ export default function InquiryPage() {
   const toggle = (arr: string[], val: string) =>
     arr.includes(val) ? arr.filter((v) => v !== val) : [...arr, val]
 
-  const handleNext = () => {
-    if (step <= 7) setStep((s) => s + 1)
+  const handleNext = async () => {
+    if (step === 7) {
+      setSubmitting(true)
+      setSubmitError("")
+      try {
+        const res = await fetch("/api/inquiry", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: form.name,
+            company: form.company,
+            phone: form.phone,
+            email: form.email,
+            privacy_agreed: privacyAgreed,
+            org_type: step1,
+            competency_model: step2,
+            difficulties: step3,
+            ai_expectations: step4,
+            ai_concerns: step5,
+            hr_task: step6,
+          }),
+        })
+        if (!res.ok) {
+          const data = await res.json()
+          throw new Error(data.error || "제출 중 오류가 발생했습니다.")
+        }
+        setStep(8)
+      } catch (err) {
+        setSubmitError(err instanceof Error ? err.message : "제출 중 오류가 발생했습니다.")
+      } finally {
+        setSubmitting(false)
+      }
+    } else if (step < 7) {
+      setStep((s) => s + 1)
+    }
   }
 
   const autoNext = () => {
-    setTimeout(() => setStep((s) => s + 1), 300)
+    setTimeout(() => handleNext(), 300)
   }
 
   const handlePrev = () => {
@@ -394,7 +429,7 @@ export default function InquiryPage() {
         {step === 7 && (
           <div className="flex flex-col gap-2.5">
             {STEP6_OPTIONS.map((opt) => (
-              <RadioOption key={opt} label={opt} selected={step6 === opt} onChange={() => { setStep6(opt); autoNext() }} />
+              <RadioOption key={opt} label={opt} selected={step6 === opt} onChange={() => setStep6(opt)} />
             ))}
           </div>
         )}
@@ -427,13 +462,21 @@ export default function InquiryPage() {
           </div>
         )}
 
+        {/* ── 에러 메시지 ── */}
+        {submitError && step <= 7 && (
+          <div className="mt-4 px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-sm text-red-600">
+            {submitError}
+          </div>
+        )}
+
         {/* ── 이전 / 다음 버튼 (step 1~7만 표시) ── */}
         {step >= 1 && step <= 7 && (
           <div className={`flex items-center mt-7 ${step === 1 ? "justify-end" : "justify-between"}`}>
             {step > 1 && (
               <button
                 onClick={handlePrev}
-                className="cursor-pointer px-5 py-3 rounded-xl border border-slate-200 text-sm font-semibold text-slate-600 bg-white hover:bg-slate-50 transition-colors"
+                disabled={submitting}
+                className="cursor-pointer px-5 py-3 rounded-xl border border-slate-200 text-sm font-semibold text-slate-600 bg-white hover:bg-slate-50 disabled:opacity-40 transition-colors"
               >
                 이전
               </button>
@@ -441,10 +484,10 @@ export default function InquiryPage() {
 
             <button
               onClick={handleNext}
-              disabled={!canNext}
+              disabled={!canNext || submitting}
               className="cursor-pointer px-7 py-3 rounded-xl text-white text-sm font-semibold bg-[#1e4fa8] hover:bg-[#0f2d6e] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
-              다음
+              {submitting ? "제출 중..." : step === 7 ? "제출하기" : "다음"}
             </button>
           </div>
         )}
