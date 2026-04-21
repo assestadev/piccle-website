@@ -303,11 +303,11 @@ export default function Page() {
               </FadeIn>
               <FadeIn delay={500}>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                  <button className="cursor-pointer inline-flex items-center justify-center gap-2 bg-[#0f2d6e] hover:bg-[#1e4fa8] text-white font-semibold px-10 h-14 min-w-[230px] rounded-xl text-base transition-colors shadow-lg shadow-blue-900/20">
+                  {/* <button className="cursor-pointer inline-flex items-center justify-center gap-2 bg-[#0f2d6e] hover:bg-[#1e4fa8] text-white font-semibold px-10 h-14 min-w-[230px] rounded-xl text-base transition-colors shadow-lg shadow-blue-900/20">
                     서비스 소개서 다운로드
                     <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" /></svg>
-                  </button>
-                  <button onClick={() => scrollTo("solution")} className="cursor-pointer relative z-10 inline-flex items-center justify-center gap-2 bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 font-semibold px-10 h-14 min-w-[230px] rounded-xl text-base transition-colors">
+                  </button> */}
+                  <button onClick={() => scrollTo("solution")} className="cursor-pointer relative z-10 inline-flex items-center justify-center gap-2 bg-[#0f2d6e] hover:bg-[#1e4fa8] text-white font-semibold px-10 h-14 min-w-[230px] rounded-xl text-base transition-colors shadow-lg shadow-blue-900/20">
                     솔루션 알아보기
                     <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
                   </button>
@@ -623,10 +623,10 @@ export default function Page() {
                 도입 문의하기
                 <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
               </button>
-              <button className="cursor-pointer inline-flex items-center justify-center gap-2 border-2 border-[#0f2d6e] text-[#0f2d6e] hover:bg-[#f0f5ff] font-semibold px-10 h-14 min-w-[230px] rounded-xl text-base transition-colors">
+              {/* <button className="cursor-pointer inline-flex items-center justify-center gap-2 border-2 border-[#0f2d6e] text-[#0f2d6e] hover:bg-[#f0f5ff] font-semibold px-10 h-14 min-w-[230px] rounded-xl text-base transition-colors">
                 <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" /></svg>
                 서비스 소개서 다운로드
-              </button>
+              </button> */}
             </div>
           </FadeIn>
         </div>

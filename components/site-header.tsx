@@ -1,17 +1,16 @@
 "use client"
 
 import Image from "next/image"
-import { useRouter, usePathname } from "next/navigation"
+import { usePathname } from "next/navigation"
 
 const MAIN_NAV = [
-  { label: "문제 제기", id: "problem" },
+  // { label: "문제 제기", id: "problem" },
   { label: "솔루션",    id: "solution" },
   { label: "활용사례",  id: "usecase" },
   { label: "보안 정책", id: "trust" },
 ]
 
 export function SiteHeader() {
-  const router = useRouter()
   const pathname = usePathname()
   const isMain = pathname === "/"
 
@@ -54,7 +53,7 @@ export function SiteHeader() {
               ))}
             </nav>
           )}
-          <button
+          {/* <button
             onClick={() => router.push("/service")}
             className={`cursor-pointer text-sm font-medium transition-colors ${
               pathname === "/service"
@@ -63,7 +62,7 @@ export function SiteHeader() {
             }`}
           >
             서비스 소개
-          </button>
+          </button> */}
           <button
             onClick={() => { window.location.href = "/inquiry" }}
             className="cursor-pointer inline-flex items-center gap-1.5 bg-[#0f2d6e] hover:bg-[#1e4fa8] text-white text-sm font-semibold px-3 py-2 sm:px-5 sm:py-2.5 rounded-lg transition-colors"
