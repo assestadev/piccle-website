@@ -23,17 +23,17 @@ const PROBLEM_CARDS = [
   },
   {
     title: "주관적 평가 기준",
-    body: "평가자의 개인적인 친분이나 편향이 개입돼 평가 결과에 대한 구성원들의 불신이 발생합니다.",
+    body: "평가자의 개인적 친분이나 주관적 편향이 반영되면서, 평가 결과에 대한 구성원들의 신뢰가 낮아집니다.",
     img: "https://img.assesta.com/piccle/img02.png",
   },
   {
     title: "느린 업데이트 주기",
-    body: "설문과 인터뷰 등 수동적인 방식으로 진행되어 모델 하나를 수정하는 데 막대한 비용과 시간이 소요됩니다.",
+    body: "설문과 인터뷰 중심의 수작업 방식으로 운영되어, 모델 하나를 수정하는 데도 많은 시간과 비용이 듭니다.",
     img: "https://img.assesta.com/piccle/img03.png",
   },
   {
     title: "제한적 데이터 활용",
-    body: "정형화된 인사 기록 등 단편적인 데이터만 활용하여 개인의 숨겨진 잠재력과 성과 요인을 찾아내기 어렵습니다.",
+    body: "정형화된 인사 기록처럼 제한된 데이터에만 의존해, 개인의 잠재력과 실제 성과를 만드는 핵심 요인을 충분히 발견하기 어렵습니다.",
     img: "https://img.assesta.com/piccle/img04.png",
   },
 ]
@@ -42,24 +42,24 @@ const SOLUTION_STEPS = [
   {
     num: "01",
     tag: "Smart Interview",
-    title: "AI가 도와주는 스마트한 면접 설계",
-    body: "AI가 지원자의 심리 검사 결과를 분석해 우리 회사와의 적합도를 점수로 확인할 수 있습니다. 지원자의 심리적 특성 중 주의 깊게 봐야 할 '위험 신호'를 확인하여 면접관에게 알려줍니다. 지원자가 특정 역량에서 낮은 점수를 받았다면 AI가 그 부분을 집중적으로 파고 들 수 있는 질문을 자동 생성해줍니다. 그리고 이 화면을 실시간으로 확인할 수 있습니다.",
+    title: "AI로 자동화되는 역량모델링",
+    body: "AI 역량모델링은 우리 조직의 성과를 만드는 행동 기준을 빠르게 도출해 채용·평가·교육에 바로 적용할 수 있도록 돕는 솔루션입니다. 변화하는 환경에 맞춰 필요한 역량을 신속하게 업데이트하고, 다양한 데이터를 기반으로 공정하고 객관적인 기준을 제시해 평가 신뢰도는 높이고 채용·육성의 비효율은 줄여줍니다.",
     accent: "#0f2d6e",
     light: "#eef3fb",
   },
   {
     num: "02",
     tag: "CPI Integration",
-    title: "역량 모델링과 CPI의 통합 모델",
-    body: "전통적인 역량 평가나 면접은 지원자가 과업을 수행할 현재의 능력이나 기술만을 파악할 수 있는 경우가 많습니다. CPI는 이를 보완하여 당장의 기술뿐만 아니라 개인이 큰 압박속에서도 자신의 역량을 일관되게 유지할 힘이 있는지 예측해줍니다. CPI를 통해 역량 부족의 근본 원인을 파악하면 개인 맞춤형 코칭 및 개발이 가능합니다.",
+    title: "스마트한 AI 면접 솔루션",
+    body: "AI가 우리 조직의 역량모델, 직무 요건, 심리검사 데이터를 통합 분석해 행동기반 면접 질문과 평가 기준을 자동으로 설계합니다. 면접관은 적합도 점수, 위험 신호, 맞춤 질문, 실시간 가이드를 한눈에 확인할 수 있어 더 공정하고 정교한 선발 의사결정을 할 수 있습니다.",
     accent: "#1e4fa8",
     light: "#f0f5ff",
   },
   {
     num: "03",
     tag: "AI Simulation",
-    title: "1:1 AI 역량개발 시뮬레이션",
-    body: "AI 역량개발 시스템은 직무에 맞춘 시나리오를 제공하여 사용자가 AI와 직접 대화하며 문제를 해결하도록 합니다. 이는 주어진 상황에서 어떻게 말하고 행동하는지를 실시간으로 분석하여 즉각적인 피드백을 제공합니다. 팀장은 AI가 분석한 객관적인 데이터를 바탕으로 팀원을 육성할 수 있습니다. AI가 만드는 시나리오는 우리 조직의 목표나 기대 행동에 맞춰 반영됩니다.",
+    title: "개인에게 맞춤 설정된 1:1 AI Role Play 시뮬레이션",
+    body: "개인의 직무와 조직 상황에 맞춘 AI 시나리오를 통해 실제 업무처럼 연습하고, 즉각적인 피드백과 객관적 데이터를 바탕으로 반복 학습할 수 있습니다. 단순 평가를 넘어 행동 변화와 성장까지 연결되는 맞춤형 개발 경험을 제공해, 교육 효과와 현업 적용도를 함께 높여줍니다.",
     accent: "#2563eb",
     light: "#eff6ff",
   },
@@ -95,18 +95,18 @@ const LEADERSHIP_DATA = [
 
 const TRUST_CARDS: { title: string; glow: string; render: () => React.ReactNode }[] = [
   {
-    title: "내부 데이터 보호 조치 설계",
+    title: "내부 데이터 보호를 전제로 한 설계",
     glow: "hover:shadow-[0_0_18px_3px_rgba(251,191,36,0.4),0_0_50px_8px_rgba(251,191,36,0.15)] hover:border-amber-300/50",
     render: () => (
       <>
         <p className="text-amber-300 text-lg font-semibold leading-relaxed mb-5">
-          처음부터 <span className="text-amber-300">보호 조치가 설계된 운영 환경</span>을 선택하는 것이 핵심입니다.
+          안전한 HR AI 운영은 처음부터 보호 조치가 반영된 환경 설계에서 시작됩니다.
         </p>
         <ul className="space-y-3">
           {[
-            "외부망 범용 AI 사용 시 민감 정보 유출 리스크 직결",
-            "데이터 경계·접근 권한을 기업 정책에 맞게 설계",
-            "HR 전용 보안 환경에서만 가능한 안심 운영",
+            "민감한 인사 정보의 외부 유출 위험 최소화",
+            "데이터 경계와 접근 권한을 기업 정책에 맞게 정교하게 설계",
+            "HR 전용 보안 환경에서 더욱 안심하고 활용 가능",
           ].map((item) => (
             <li key={item} className="flex items-start gap-2 text-blue-200/70 text-sm leading-relaxed">
               <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-amber-300/60 shrink-0" />
@@ -118,18 +118,18 @@ const TRUST_CARDS: { title: string; glow: string; render: () => React.ReactNode 
     ),
   },
   {
-    title: "우리 기업만의 인사 맥락 반영",
+    title: "우리 기업에 맞춰진 AI",
     glow: "hover:shadow-[0_0_18px_3px_rgba(147,197,253,0.4),0_0_50px_8px_rgba(147,197,253,0.15)] hover:border-blue-300/50",
     render: () => (
       <>
         <p className="text-blue-300 text-lg font-semibold leading-relaxed mb-5">
-          <span className="text-blue-300">Local Private LLM</span>으로 정보 유출 없이 우리 기업만의 AI를 구현합니다.
+          <span className="text-blue-300">Local Private LLM</span> 기반으로, 외부 유출 없이 우리 조직의 인사 맥락을 반영합니다.
         </p>
         <ul className="space-y-3">
           {[
-            "평가 이력·역량 사전·인터뷰 노트 등 사내 데이터 직접 활용",
-            "외부 서버 미전송, 폐쇄망 내 완전 운영",
-            "기업 문화·직무 체계를 깊이 이해하는 전용 AI",
+            "평가 이력, 역량 사전, 인터뷰 기록 등 내부 데이터 직접 활용",
+            "외부 서버 전송 없이 통제된 환경에서 안전하게 운영",
+            "기업 문화와 직무 특성을 이해하는 맞춤형 AI 구현",
           ].map((item) => (
             <li key={item} className="flex items-start gap-2 text-blue-200/70 text-sm leading-relaxed">
               <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-blue-300/60 shrink-0" />
@@ -141,18 +141,18 @@ const TRUST_CARDS: { title: string; glow: string; render: () => React.ReactNode 
     ),
   },
   {
-    title: "고차원적 HR 의사결정 지원",
+    title: "신뢰할 수 있는 HR AI 거버넌스",
     glow: "hover:shadow-[0_0_18px_3px_rgba(52,211,153,0.4),0_0_50px_8px_rgba(52,211,153,0.15)] hover:border-emerald-300/50",
     render: () => (
       <>
         <p className="text-emerald-300 text-lg font-semibold leading-relaxed mb-5">
-          HR AI의 본질은 <span className="text-emerald-300">정교한 통제와 전문가의 관리 감독</span>에 있습니다.
+          정교한 HR AI는 단순한 기술이 아니라, 보안과 윤리, 그리고 전문가의 감독 아래 운영되어야 합니다.
         </p>
         <ul className="space-y-3">
           {[
-            "역량 체계·인사 정책 기반의 심층 분석 제공",
-            "심리·행동 데이터 해석 프레임 내재화",
-            "정교한 역량 모델링과 인재 전략 수립 지원",
+            "중요한 HR 의사결정에는 반드시 전문가의 검토와 감독이 함께합니다",
+            "데이터와 AI 결과의 편향 가능성을 정기적으로 점검하고 관리합니다",
+            "보안과 윤리를 아우르는 통합 거버넌스 체계로 안정적으로 운영합니다",
           ].map((item) => (
             <li key={item} className="flex items-start gap-2 text-blue-200/70 text-sm leading-relaxed">
               <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-emerald-300/60 shrink-0" />
@@ -290,15 +290,15 @@ export default function Page() {
             {/* ── Left: text ── */}
             <div className="flex-1 text-center lg:text-left">
               <FadeIn delay={200}>
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-[1.1] tracking-tight mb-8 text-slate-900">
-                  멈춰있는 역량 모델,<br />
-                  이제 <span className="text-[#1e4fa8]">실시간으로</span><br />
-                  진화합니다.
+                <h1 className="text-4xl sm:text-5xl lg:text-5xl xl:text-6xl font-bold leading-[1.15] tracking-tight mb-8 text-slate-900 break-keep">
+                  감<span className="text-[#1e4fa8]">&#123;feel&#125;</span>이 아닌<br />
+                  데이터<span className="text-[#1e4fa8]">&#123;data&#125;</span>로,<br />
+                  끊김 없는 HR 인사이트
                 </h1>
               </FadeIn>
               <FadeIn delay={360}>
                 <p className="text-base sm:text-lg text-slate-500 leading-relaxed mb-10 max-w-2xl mx-auto lg:mx-0 px-2 sm:px-0">
-                  우리 조직만의 &apos;성공 공식&apos;을 데이터로 증명하세요. 보안이 설계된 전용 AI가 채용부터 리더십 코칭까지, 파편화된 인사 데이터를 하나의 성장 엔진으로 연결하여 최적의 HR 의사결정 시스템을 구축합니다.
+                  우리 조직만의 &apos;성공 공식&apos;을 데이터로 증명하세요. 도메인 특화 HR AI가 채용부터 리더십 코칭까지, 파편화된 데이터를 하나의 성장 엔진으로 연결하여 최적의 HR 의사결정 시스템을 구축합니다.
                 </p>
               </FadeIn>
               <FadeIn delay={500}>
@@ -360,7 +360,7 @@ export default function Page() {
                     <img src={c.img} alt={c.title} className="h-20 w-auto object-contain group-hover:scale-105 transition-transform duration-500" />
                   </div>
                   <h3 className="text-base font-bold text-slate-900 mb-3">{c.title}</h3>
-                  <p className="text-slate-600 text-sm leading-relaxed">{c.body}</p>
+                  <p className="text-slate-600 text-sm leading-relaxed break-keep">{c.body}</p>
                 </div>
               </FadeIn>
             ))}
