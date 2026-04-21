@@ -14,7 +14,7 @@ export async function POST(request: Request) {
       )
     }
 
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('inquiries')
       .insert([
         {
@@ -31,7 +31,6 @@ export async function POST(request: Request) {
           hr_task,
         },
       ])
-      .select()
 
     if (error) {
       console.error('Supabase insert error:', error)
@@ -41,7 +40,7 @@ export async function POST(request: Request) {
       )
     }
 
-    return NextResponse.json({ success: true, data })
+    return NextResponse.json({ success: true })
   } catch (err) {
     console.error('API error:', err)
     return NextResponse.json(
