@@ -201,7 +201,7 @@ export default function InquiryPage() {
   }
 
   const autoNext = () => {
-    setTimeout(() => handleNext(), 300)
+    setTimeout(() => setStep((s) => s + 1), 300)
   }
 
   const handlePrev = () => {
