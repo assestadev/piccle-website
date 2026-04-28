@@ -53,8 +53,8 @@ export function SiteHeader() {
               ))}
             </nav>
           )}
-          {/* <button
-            onClick={() => router.push("/service")}
+          <button
+            onClick={() => { window.location.href = "/service" }}
             className={`cursor-pointer text-sm font-medium transition-colors ${
               pathname === "/service"
                 ? "text-[#1e4fa8] font-semibold"
@@ -62,7 +62,7 @@ export function SiteHeader() {
             }`}
           >
             서비스 소개
-          </button> */}
+          </button>
           <button
             onClick={() => { window.location.href = "/inquiry" }}
             className="cursor-pointer inline-flex items-center gap-1.5 bg-[#0f2d6e] hover:bg-[#1e4fa8] text-white text-sm font-semibold px-3 py-2 sm:px-5 sm:py-2.5 rounded-lg transition-colors"
