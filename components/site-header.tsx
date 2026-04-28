@@ -4,9 +4,8 @@ import Image from "next/image"
 import { usePathname } from "next/navigation"
 
 const MAIN_NAV = [
-  // { label: "문제 제기", id: "problem" },
-  { label: "솔루션",    id: "solution" },
-  { label: "활용사례",  id: "usecase" },
+  { label: "솔루션", id: "solution" },
+  { label: "활용사례", id: "usecase" },
   { label: "보안 정책", id: "trust" },
 ]
 
@@ -37,9 +36,7 @@ export function SiteHeader() {
           />
         </button>
 
-        {/* 우측 메뉴 그룹 */}
         <div className="flex items-center gap-3 sm:gap-6">
-          {/* 메인 페이지 전용 섹션 네비게이션 */}
           {isMain && (
             <nav className="hidden md:flex items-center gap-8">
               {MAIN_NAV.map(n => (
@@ -53,16 +50,6 @@ export function SiteHeader() {
               ))}
             </nav>
           )}
-          <button
-            onClick={() => { window.location.href = "/service" }}
-            className={`cursor-pointer text-sm font-medium transition-colors ${
-              pathname === "/service"
-                ? "text-[#1e4fa8] font-semibold"
-                : "text-slate-600 hover:text-[#1e4fa8]"
-            }`}
-          >
-            서비스 소개
-          </button>
           <button
             onClick={() => { window.location.href = "/inquiry" }}
             className="cursor-pointer inline-flex items-center gap-1.5 bg-[#0f2d6e] hover:bg-[#1e4fa8] text-white text-sm font-semibold px-3 py-2 sm:px-5 sm:py-2.5 rounded-lg transition-colors"
