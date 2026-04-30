@@ -23,10 +23,7 @@ export function SiteHeader() {
         className="max-w-7xl mx-auto px-5 sm:px-8 py-4 flex items-center justify-between"
         style={{ fontFamily: "'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" }}
       >
-        <button
-          onClick={() => { window.location.href = "/" }}
-          className="cursor-pointer"
-        >
+        <button onClick={() => { window.location.href = "/" }} className="cursor-pointer">
           <Image
             src="https://img.assesta.com/piccle/logo.png"
             alt="Piccle"
@@ -39,17 +36,29 @@ export function SiteHeader() {
         <div className="flex items-center gap-3 sm:gap-6">
           {isMain && (
             <nav className="hidden md:flex items-center gap-8">
-              {MAIN_NAV.map(n => (
+              {MAIN_NAV.map((nav) => (
                 <button
-                  key={n.id}
-                  onClick={() => scrollTo(n.id)}
+                  key={nav.id}
+                  onClick={() => scrollTo(nav.id)}
                   className="cursor-pointer text-sm text-slate-600 hover:text-[#1e4fa8] transition-colors font-medium"
                 >
-                  {n.label}
+                  {nav.label}
                 </button>
               ))}
             </nav>
           )}
+
+          <button
+            onClick={() => { window.location.href = "/service" }}
+            className={`cursor-pointer text-sm font-medium transition-colors ${
+              pathname === "/service"
+                ? "text-[#1e4fa8] font-semibold"
+                : "text-slate-600 hover:text-[#1e4fa8]"
+            }`}
+          >
+            서비스 소개
+          </button>
+
           <button
             onClick={() => { window.location.href = "/inquiry" }}
             className="cursor-pointer inline-flex items-center gap-1.5 bg-[#0f2d6e] hover:bg-[#1e4fa8] text-white text-sm font-semibold px-3 py-2 sm:px-5 sm:py-2.5 rounded-lg transition-colors"
