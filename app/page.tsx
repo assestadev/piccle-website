@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
+import { LandingPopup } from "@/components/landing-popup"
 import { FadeIn } from "@/components/fade-in"
 import { AnimatedUnderline } from "@/components/animated-underline"
 import { IntelGraph } from "@/components/intel-graph"
@@ -254,6 +255,7 @@ export default function Page() {
   return (
     <>
       <SiteHeader />
+      <LandingPopup />
       <div
         className="min-h-screen bg-white text-slate-900 overflow-x-hidden"
         style={{ fontFamily: "'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" }}
