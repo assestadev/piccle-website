@@ -18,9 +18,9 @@ export function SiteHeader() {
   }
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white/96 backdrop-blur-xl border-b border-slate-200/60 shadow-sm">
+    <header className="fixed top-0 left-0 right-0 z-50 border-b border-slate-200/60 bg-white/96 shadow-sm backdrop-blur-xl">
       <div
-        className="max-w-7xl mx-auto px-5 sm:px-8 py-4 flex items-center justify-between"
+        className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8"
         style={{ fontFamily: "'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" }}
       >
         <button onClick={() => { window.location.href = "/" }} className="cursor-pointer">
@@ -35,12 +35,12 @@ export function SiteHeader() {
 
         <div className="flex items-center gap-3 sm:gap-6">
           {isMain && (
-            <nav className="hidden md:flex items-center gap-8">
+            <nav className="hidden items-center gap-8 md:flex">
               {MAIN_NAV.map((nav) => (
                 <button
                   key={nav.id}
                   onClick={() => scrollTo(nav.id)}
-                  className="cursor-pointer text-sm text-slate-600 hover:text-[#1e4fa8] transition-colors font-medium"
+                  className="cursor-pointer text-sm font-medium text-slate-600 transition-colors hover:text-[#1e4fa8]"
                 >
                   {nav.label}
                 </button>
@@ -49,19 +49,8 @@ export function SiteHeader() {
           )}
 
           <button
-            onClick={() => { window.location.href = "/service" }}
-            className={`cursor-pointer text-sm font-medium transition-colors ${
-              pathname === "/service"
-                ? "text-[#1e4fa8] font-semibold"
-                : "text-slate-600 hover:text-[#1e4fa8]"
-            }`}
-          >
-            서비스 소개
-          </button>
-
-          <button
             onClick={() => { window.location.href = "/inquiry" }}
-            className="cursor-pointer inline-flex items-center gap-1.5 bg-[#0f2d6e] hover:bg-[#1e4fa8] text-white text-sm font-semibold px-3 py-2 sm:px-5 sm:py-2.5 rounded-lg transition-colors"
+            className="cursor-pointer inline-flex items-center gap-1.5 rounded-lg bg-[#0f2d6e] px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#1e4fa8] sm:px-5 sm:py-2.5"
           >
             문의하기
           </button>
