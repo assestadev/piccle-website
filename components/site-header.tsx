@@ -3,6 +3,8 @@
 import Image from "next/image"
 import { usePathname } from "next/navigation"
 
+const isServicePreviewEnabled = process.env.NEXT_PUBLIC_SERVICE_PREVIEW === "true"
+
 const MAIN_NAV = [
   { label: "솔루션", id: "solution" },
   { label: "활용사례", id: "usecase" },
@@ -12,9 +14,15 @@ const MAIN_NAV = [
 export function SiteHeader() {
   const pathname = usePathname()
   const isMain = pathname === "/"
+  const isServicePage = pathname === "/service"
 
   const scrollTo = (id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })
+    if (isMain) {
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })
+      return
+    }
+
+    window.location.href = `/#${id}`
   }
 
   return (
@@ -46,6 +54,15 @@ export function SiteHeader() {
                 </button>
               ))}
             </nav>
+          )}
+
+          {isServicePreviewEnabled && (isMain || isServicePage) && (
+            <button
+              onClick={() => { window.location.href = "/service" }}
+              className="hidden cursor-pointer text-sm font-semibold text-[#1e4fa8] transition-colors hover:text-[#0f2d6e] md:inline-flex"
+            >
+              서비스 소개
+            </button>
           )}
 
           <button

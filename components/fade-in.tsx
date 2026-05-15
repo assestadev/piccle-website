@@ -11,7 +11,7 @@ interface FadeInProps {
 
 export function FadeIn({ children, delay = 0, className = "", direction = "up" }: FadeInProps) {
   const ref = useRef<HTMLDivElement>(null)
-  const [visible, setVisible] = useState(false)
+  const [visible, setVisible] = useState(true)
 
   useEffect(() => {
     const obs = new IntersectionObserver(
