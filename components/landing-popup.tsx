@@ -20,7 +20,7 @@ const LANDING_POPUPS: LandingPopupItem[] = [
     imageUrl: "https://img.assesta.com/popup/2026_holiday04_02.jpg",
     linkUrl: "https://www.career4u.net/Board/Board_View.asp?Seq=16590&nowPage=1&Board_Cd=A051",
     alt: "6월 휴무 안내 팝업",
-    visible: true,
+    visible: false,
     hideForHours: 24,
   },
 ]
