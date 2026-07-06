@@ -8,24 +8,39 @@ type LandingPopupItem = {
   imageUrl: string
   linkUrl: string
   alt: string
-  visible: boolean
   hideForHours?: number
+  visible?: boolean
 }
 
 const POPUP_HIDE_HOURS = 24
+const LANDING_POPUP_ENABLED = true
 
 const LANDING_POPUPS: LandingPopupItem[] = [
   {
-    id: "2026-holiday04",
-    imageUrl: "https://img.assesta.com/popup/2026_holiday04_02.jpg",
-    linkUrl: "https://www.career4u.net/Board/Board_View.asp?Seq=16590&nowPage=1&Board_Cd=A051",
-    alt: "6월 휴무 안내 팝업",
-    visible: false,
+    id: "2026-holiday05",
+    imageUrl: "https://img.assesta.com/popup/2026_holiday05_02.jpg",
+    linkUrl: "https://www.career4u.net/Board/Board_View.asp?Seq=16756&nowPage=1&Board_Cd=A051",
+    alt: "7월 휴무 안내 팝업",
     hideForHours: 24,
+    visible: true,
   },
 ]
 
 const getStorageKey = (id: string) => `landing-popup:${id}:hidden-until`
+
+const isPopupHidden = (id: string, now: number) => {
+  const hiddenUntil = window.localStorage.getItem(getStorageKey(id))
+  if (!hiddenUntil) return false
+
+  const hiddenUntilNumber = Number(hiddenUntil)
+
+  if (!Number.isFinite(hiddenUntilNumber)) {
+    window.localStorage.removeItem(getStorageKey(id))
+    return false
+  }
+
+  return hiddenUntilNumber > now
+}
 
 export function LandingPopup() {
   const [mounted, setMounted] = useState(false)
@@ -36,26 +51,24 @@ export function LandingPopup() {
   }, [])
 
   const activePopups = useMemo(() => {
-    if (!mounted) return []
+    if (!mounted || !LANDING_POPUP_ENABLED) return []
 
     const now = Date.now()
 
-    return LANDING_POPUPS.filter((popup) => {
-      if (!popup.visible) return false
-
-      const hiddenUntil = window.localStorage.getItem(getStorageKey(popup.id))
-      return !hiddenUntil || Number(hiddenUntil) <= now
-    }).filter((popup) => !closedIds.includes(popup.id))
+    return LANDING_POPUPS.filter((popup) => popup.visible !== false)
+      .filter((popup) => !closedIds.includes(popup.id))
+      .filter((popup) => !isPopupHidden(popup.id, now))
   }, [closedIds, mounted])
 
   const closePopup = (id: string) => {
-    setClosedIds((prev) => [...prev, id])
+    setClosedIds((prev) => (prev.includes(id) ? prev : [...prev, id]))
   }
 
   const hideForToday = (id: string) => {
     const popup = LANDING_POPUPS.find((item) => item.id === id)
     const hideForHours = popup?.hideForHours ?? POPUP_HIDE_HOURS
     const hiddenUntil = Date.now() + hideForHours * 60 * 60 * 1000
+
     window.localStorage.setItem(getStorageKey(id), String(hiddenUntil))
     closePopup(id)
   }
@@ -93,7 +106,7 @@ export function LandingPopup() {
                 onClick={() => hideForToday(popup.id)}
                 className="cursor-pointer text-[13px] leading-none text-white transition-opacity hover:opacity-80"
               >
-                오늘 하루 이 창 열지 않기
+                오늘 하루 보지 않기
               </button>
               <button
                 type="button"

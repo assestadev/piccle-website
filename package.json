@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "powershell -NoProfile -Command \"$env:SERVICE_PREVIEW_MODE='preview'; $env:NEXT_PUBLIC_SERVICE_PREVIEW='true'; npx next dev -p 3001\"",
-    "dev:local": "powershell -NoProfile -Command \"$env:SERVICE_PREVIEW_MODE='preview'; $env:NEXT_PUBLIC_SERVICE_PREVIEW='true'; npx next dev -p 3001\"",
-    "dev:prodlike": "powershell -NoProfile -Command \"$env:SERVICE_PREVIEW_MODE='hidden'; $env:NEXT_PUBLIC_SERVICE_PREVIEW='false'; npx next dev -p 3002\"",
+    "dev": "powershell -NoProfile -Command \"$env:SERVICE_PREVIEW_MODE='preview'; $env:NEXT_PUBLIC_SERVICE_PREVIEW='true'; $env:NEXT_DIST_DIR='.next-dev'; npx next dev -H 0.0.0.0 -p 3001\"",
+    "dev:local": "powershell -NoProfile -Command \"$env:SERVICE_PREVIEW_MODE='preview'; $env:NEXT_PUBLIC_SERVICE_PREVIEW='true'; $env:NEXT_DIST_DIR='.next-dev'; npx next dev -H 0.0.0.0 -p 3001\"",
+    "dev:prodlike": "powershell -NoProfile -Command \"$env:SERVICE_PREVIEW_MODE='hidden'; $env:NEXT_PUBLIC_SERVICE_PREVIEW='false'; $env:NEXT_DIST_DIR='.next-prodlike'; npx next dev -H 0.0.0.0 -p 3002\"",
     "build": "next build",
     "start": "next start",
     "lint": "powershell -NoProfile -Command \"Set-Location $Env:INIT_CWD; npx eslint ./app ./components\""
