@@ -5,7 +5,8 @@ import { HrAiSimulation } from "@/components/hr-ai-simulation"
 import { HrCoachingSimulation } from "@/components/hr-coaching-simulation"
 import { HrInterviewSimulation } from "@/components/hr-interview-simulation"
 import { ScrollReveal } from "@/components/scroll-reveal"
-import { isServicePreviewEnabledOnServer } from "@/lib/service-preview"
+
+const isServicePreviewEnabled = process.env.SERVICE_PREVIEW_MODE === "preview"
 
 const SOLUTIONS = [
   {
@@ -110,8 +111,8 @@ function SolutionSection({
   )
 }
 
-export default async function ServicePage() {
-  if (!isServicePreviewEnabledOnServer()) {
+export default function ServicePage() {
+  if (!isServicePreviewEnabled) {
     notFound()
   }
 
