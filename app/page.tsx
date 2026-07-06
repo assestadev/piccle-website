@@ -9,13 +9,12 @@ import { FadeIn } from "@/components/fade-in"
 import { AnimatedUnderline } from "@/components/animated-underline"
 import { IntelGraph } from "@/components/intel-graph"
 import { HrFlowDiagram } from "@/components/hr-flow-diagram"
+import { isServicePreviewEnabled } from "@/lib/service-preview"
 import {
   Radar, RadarChart, PolarGrid, PolarAngleAxis,
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   BarChart, Bar, Legend,
 } from "recharts"
-
-const isServicePreviewEnabled = process.env.NEXT_PUBLIC_SERVICE_PREVIEW === "true"
 
 
 const PROBLEM_CARDS = [
@@ -176,6 +175,7 @@ export default function Page() {
   const [anim1, setAnim1] = useState(false)
   const [anim2, setAnim2] = useState(false)
   const [anim3, setAnim3] = useState(false)
+  const servicePreviewEnabled = isServicePreviewEnabled()
 
   useEffect(() => {
     const h = () => {
@@ -311,7 +311,7 @@ export default function Page() {
                     서비스 소개서 다운로드
                     <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" /></svg>
                   </button> */}
-                  {isServicePreviewEnabled && (
+                  {servicePreviewEnabled && (
                     <button onClick={() => router.push("/service")} className="cursor-pointer relative z-10 inline-flex items-center justify-center gap-2 border border-[#0f2d6e] bg-white text-[#0f2d6e] font-semibold px-10 h-14 min-w-[230px] rounded-xl text-base transition-colors hover:bg-[#f0f5ff]">
                       서비스 소개 보기
                       <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg>

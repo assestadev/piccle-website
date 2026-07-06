@@ -3,28 +3,9 @@
 import Image from "next/image"
 import { useEffect, useMemo, useState } from "react"
 
-type LandingPopupItem = {
-  id: string
-  imageUrl: string
-  linkUrl: string
-  alt: string
-  hideForHours?: number
-  visible?: boolean
-}
+import { LANDING_POPUPS } from "@/lib/landing-popup-config"
 
 const POPUP_HIDE_HOURS = 24
-const LANDING_POPUP_ENABLED = true
-
-const LANDING_POPUPS: LandingPopupItem[] = [
-  {
-    id: "2026-holiday05",
-    imageUrl: "https://img.assesta.com/popup/2026_holiday05_02.jpg",
-    linkUrl: "https://www.career4u.net/Board/Board_View.asp?Seq=16756&nowPage=1&Board_Cd=A051",
-    alt: "7월 휴무 안내 팝업",
-    hideForHours: 24,
-    visible: true,
-  },
-]
 
 const getStorageKey = (id: string) => `landing-popup:${id}:hidden-until`
 
@@ -51,11 +32,11 @@ export function LandingPopup() {
   }, [])
 
   const activePopups = useMemo(() => {
-    if (!mounted || !LANDING_POPUP_ENABLED) return []
+    if (!mounted) return []
 
     const now = Date.now()
 
-    return LANDING_POPUPS.filter((popup) => popup.visible !== false)
+    return LANDING_POPUPS.filter((popup) => popup.enabled !== false)
       .filter((popup) => !closedIds.includes(popup.id))
       .filter((popup) => !isPopupHidden(popup.id, now))
   }, [closedIds, mounted])

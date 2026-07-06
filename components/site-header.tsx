@@ -2,8 +2,7 @@
 
 import Image from "next/image"
 import { usePathname } from "next/navigation"
-
-const isServicePreviewEnabled = process.env.NEXT_PUBLIC_SERVICE_PREVIEW === "true"
+import { isServicePreviewEnabled } from "@/lib/service-preview"
 
 const MAIN_NAV = [
   { label: "솔루션", id: "solution" },
@@ -15,6 +14,7 @@ export function SiteHeader() {
   const pathname = usePathname()
   const isMain = pathname === "/"
   const isServicePage = pathname === "/service"
+  const servicePreviewEnabled = isServicePreviewEnabled()
 
   const scrollTo = (id: string) => {
     if (isMain) {
@@ -56,7 +56,7 @@ export function SiteHeader() {
             </nav>
           )}
 
-          {isServicePreviewEnabled && (isMain || isServicePage) && (
+          {servicePreviewEnabled && (isMain || isServicePage) && (
             <button
               onClick={() => { window.location.href = "/service" }}
               className="hidden cursor-pointer text-sm font-semibold text-[#1e4fa8] transition-colors hover:text-[#0f2d6e] md:inline-flex"
