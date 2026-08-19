@@ -14,6 +14,6 @@ export const LANDING_POPUPS: LandingPopupItem[] = [
     linkUrl: "https://www.career4u.net/Board/Board_View.asp?Seq=16860&nowPage=1&Board_Cd=A051",
     alt: "8월 휴무안내",
     hideForHours: 24,
-    enabled: true,
+    enabled: false,
   },
 ]
