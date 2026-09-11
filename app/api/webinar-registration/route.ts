@@ -144,7 +144,7 @@ export async function POST(request: Request) {
     }
 
     try {
-      await fetch(GAS_URL, {
+      const updateResponse = await fetch(GAS_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json; charset=utf-8" },
         body: JSON.stringify({
@@ -154,6 +154,31 @@ export async function POST(request: Request) {
           mailStatus,
         }),
       })
+      const updateBody = await updateResponse.text()
+      let updateStatus: unknown
+      let updateMessage: unknown
+      try {
+        const result = JSON.parse(updateBody)
+        updateStatus = result?.status
+        updateMessage = result?.message
+      } catch {
+        // HTML login/error pages are not valid status-update responses.
+      }
+      if (!updateResponse.ok || updateStatus !== "success") {
+        const knownMessages = [
+          "unauthorized",
+          "해당 신청ID를 찾을 수 없습니다.",
+          "신청ID가 없습니다.",
+          "registrations 시트를 찾을 수 없습니다.",
+          "지원하지 않는 요청입니다.",
+        ]
+        console.error("메일발송상태 갱신 실패:", {
+          httpStatus: updateResponse.status,
+          reason: typeof updateMessage === "string" && knownMessages.includes(updateMessage)
+            ? updateMessage
+            : "Apps Script 응답이 성공 JSON이 아닙니다. 웹앱 배포 버전과 실행 기록을 확인하세요.",
+        })
+      }
     } catch (updateErr) {
       console.error("메일발송상태 갱신 실패:", updateErr)
     }
