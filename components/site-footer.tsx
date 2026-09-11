@@ -1,4 +1,5 @@
 import Image from "next/image"
+import { SITE_FOOTER_LOGO_ALT, SITE_FOOTER_LOGO_SRC } from "@/lib/brand-config"
 
 export function SiteFooter() {
   return (
@@ -10,8 +11,8 @@ export function SiteFooter() {
         {/* 로고 */}
         <div className="mb-6">
           <Image
-            src="https://img.assesta.com/piccle/logo_wh.png"
-            alt="Piccle"
+            src={SITE_FOOTER_LOGO_SRC}
+            alt={SITE_FOOTER_LOGO_ALT}
             width={100}
             height={36}
             style={{ width: "100px", height: "auto" }}

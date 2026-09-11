@@ -1,19 +1,21 @@
 "use client"
 
 import Image from "next/image"
+import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { isServicePreviewEnabled } from "@/lib/service-preview"
+import { SITE_HEADER_LOGO_ALT, SITE_HEADER_LOGO_SRC } from "@/lib/brand-config"
 
-const MAIN_NAV = [
+const SCROLL_NAV = [
   { label: "솔루션", id: "solution" },
   { label: "활용사례", id: "usecase" },
-  { label: "보안 정책", id: "trust" },
 ]
 
 export function SiteHeader() {
   const pathname = usePathname()
   const isMain = pathname === "/"
   const isServicePage = pathname === "/service"
+  const isWebinarSection = pathname === "/webinar" || pathname.startsWith("/webinar/")
   const servicePreviewEnabled = isServicePreviewEnabled()
 
   const scrollTo = (id: string) => {
@@ -33,8 +35,8 @@ export function SiteHeader() {
       >
         <button onClick={() => { window.location.href = "/" }} className="cursor-pointer">
           <Image
-            src="https://img.assesta.com/piccle/logo.png"
-            alt="Piccle"
+            src={SITE_HEADER_LOGO_SRC}
+            alt={SITE_HEADER_LOGO_ALT}
             width={100}
             height={36}
             style={{ width: "100px", height: "auto" }}
@@ -42,19 +44,51 @@ export function SiteHeader() {
         </button>
 
         <div className="flex items-center gap-3 sm:gap-6">
-          {isMain && (
-            <nav className="hidden items-center gap-8 md:flex">
-              {MAIN_NAV.map((nav) => (
-                <button
-                  key={nav.id}
-                  onClick={() => scrollTo(nav.id)}
-                  className="cursor-pointer text-sm font-medium text-slate-600 transition-colors hover:text-[#1e4fa8]"
-                >
-                  {nav.label}
-                </button>
-              ))}
-            </nav>
-          )}
+          {/* 메인 페이지에서만 솔루션/활용사례/보안정책 노출, "세미나"는 모든 페이지에서 항상 노출.
+              서브페이지(메인이 아닐 때)에서는 "홈"을 맨 앞에 추가로 노출 — 로고 클릭만으로는
+              홈 이동이 잘 안 보인다는 피드백 반영. 메인 페이지 자체에는 "홈"을 넣지 않음. */}
+          <nav className="hidden items-center gap-8 md:flex">
+            {!isMain && (
+              <Link
+                href="/"
+                className="cursor-pointer text-sm font-medium text-slate-600 transition-colors hover:text-[#1e4fa8]"
+              >
+                홈
+              </Link>
+            )}
+            {isMain && (
+              <button
+                onClick={() => scrollTo(SCROLL_NAV[0].id)}
+                className="cursor-pointer text-sm font-medium text-slate-600 transition-colors hover:text-[#1e4fa8]"
+              >
+                {SCROLL_NAV[0].label}
+              </button>
+            )}
+            {isMain && (
+              <button
+                onClick={() => scrollTo(SCROLL_NAV[1].id)}
+                className="cursor-pointer text-sm font-medium text-slate-600 transition-colors hover:text-[#1e4fa8]"
+              >
+                {SCROLL_NAV[1].label}
+              </button>
+            )}
+            {isMain && (
+              <button
+                onClick={() => scrollTo("trust")}
+                className="cursor-pointer text-sm font-medium text-slate-600 transition-colors hover:text-[#1e4fa8]"
+              >
+                보안 정책
+              </button>
+            )}
+            <Link
+              href="/webinar"
+              className={`cursor-pointer text-sm font-medium transition-colors ${
+                isWebinarSection ? "font-bold text-[#0f2d6e]" : "text-slate-600 hover:text-[#1e4fa8]"
+              }`}
+            >
+              세미나
+            </Link>
+          </nav>
 
           {servicePreviewEnabled && (isMain || isServicePage) && (
             <button
