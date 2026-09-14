@@ -15,6 +15,11 @@ const PREVIEW_BG: Record<Webinar["previewBg"], string> = {
   peach: "bg-[#fbe2d4]",
 }
 
+const PREVIEW_BG_IMAGE: Record<Webinar["previewBg"], string> = {
+  blue: "/webinar-assets/banner-bg-hero-blue.png",
+  peach: "/webinar-assets/banner-bg-card-peach.png",
+}
+
 export function WebinarHero({ webinars }: { webinars: Webinar[] }) {
   const [index, setIndex] = useState(0)
   const [fading, setFading] = useState(false)
@@ -122,16 +127,22 @@ export function WebinarHero({ webinars }: { webinars: Webinar[] }) {
             className={`relative flex h-[175px] flex-col justify-center gap-1.5 overflow-hidden rounded-[15px] p-5 transition-opacity duration-200 min-[900px]:h-[336px] min-[900px]:gap-3 min-[900px]:rounded-[20px] min-[900px]:p-14 ${PREVIEW_BG[current.previewBg]}`}
             style={{ opacity: fading ? 0 : 1 }}
           >
-            <Image src={WEBINAR_CARD_MARK_SRC} alt={WEBINAR_CARD_MARK_ALT} width={98} height={28} className="h-auto w-[51px] min-[900px]:w-[98px]" />
-            <p className="m-0 max-w-[60%] text-xs font-medium leading-tight min-[900px]:max-w-[290px] min-[900px]:text-2xl">
+            <Image
+              src={PREVIEW_BG_IMAGE[current.previewBg]}
+              alt=""
+              fill
+              className="object-cover opacity-40"
+            />
+            <Image src={WEBINAR_CARD_MARK_SRC} alt={WEBINAR_CARD_MARK_ALT} width={98} height={28} className="relative h-auto w-[51px] min-[900px]:w-[98px]" />
+            <p className="relative m-0 max-w-[60%] text-xs font-medium leading-tight min-[900px]:max-w-[290px] min-[900px]:text-2xl">
               {current.title}
             </p>
-            <p className="m-0 text-base font-bold leading-tight min-[900px]:text-[32px]">
+            <p className="relative m-0 text-base font-bold leading-tight min-[900px]:text-[32px]">
               {current.listDate}
               <br />
               {current.listTime}
             </p>
-            <div className="absolute bottom-[14px] right-4 h-[78px] w-[78px] overflow-hidden rounded-full bg-[#d9d9d9] min-[900px]:bottom-5 min-[900px]:right-10 min-[900px]:h-[150px] min-[900px]:w-[150px]">
+            <div className="absolute bottom-[14px] right-4 h-[78px] w-[78px] overflow-hidden rounded-full bg-white min-[900px]:bottom-5 min-[900px]:right-10 min-[900px]:h-[150px] min-[900px]:w-[150px]">
               <Image
                 src={current.speakerPhoto}
                 alt=""
