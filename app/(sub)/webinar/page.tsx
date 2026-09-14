@@ -14,6 +14,7 @@ export default function WebinarListPage() {
 
   return (
     <div
+      className="pt-20"
       style={{ fontFamily: "'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" }}
     >
       <WebinarHero webinars={heroSlides} />

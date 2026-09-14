@@ -11,6 +11,11 @@ const PREVIEW_BG: Record<string, string> = {
   peach: "bg-[#fbe2d4]",
 }
 
+const PREVIEW_BG_IMAGE: Record<string, string> = {
+  blue: "/webinar-assets/banner-bg-detail-blue.png",
+  peach: "/webinar-assets/banner-bg-card-peach.png",
+}
+
 export function generateStaticParams() {
   return webinars.map((w) => ({ slug: w.slug }))
 }
@@ -42,21 +47,27 @@ export default async function WebinarDetailPage({ params }: { params: Promise<{ 
 
           <div className={`relative flex h-[175px] flex-col justify-center gap-2 overflow-hidden rounded-2xl p-5 min-[900px]:h-[459px] min-[900px]:gap-4 min-[900px]:p-16 ${PREVIEW_BG[webinar.previewBg]}`}>
             <Image
+              src={PREVIEW_BG_IMAGE[webinar.previewBg]}
+              alt=""
+              fill
+              className="object-cover opacity-40"
+            />
+            <Image
               src={WEBINAR_CARD_MARK_SRC}
               alt={WEBINAR_CARD_MARK_ALT}
               width={98}
               height={28}
-              className="h-auto w-[51px] min-[900px]:w-[98px]"
+              className="relative h-auto w-[51px] min-[900px]:w-[98px]"
             />
-            <p className="m-0 max-w-[60%] text-xs font-medium leading-tight min-[900px]:max-w-[290px] min-[900px]:text-2xl">
+            <p className="relative m-0 max-w-[60%] text-xs font-medium leading-tight min-[900px]:max-w-[290px] min-[900px]:text-2xl">
               {webinar.title}
             </p>
-            <p className="m-0 text-base font-bold leading-tight min-[900px]:text-[32px]">
+            <p className="relative m-0 text-base font-bold leading-tight min-[900px]:text-[32px]">
               {eventDate}
               <br />
               {eventTime}
             </p>
-            <div className="absolute bottom-[18px] right-5 h-[78px] w-[78px] overflow-hidden rounded-full bg-[#d9d9d9] min-[900px]:bottom-10 min-[900px]:right-16 min-[900px]:h-[200px] min-[900px]:w-[200px]">
+            <div className="absolute bottom-[18px] right-5 h-[78px] w-[78px] overflow-hidden rounded-full bg-white min-[900px]:bottom-10 min-[900px]:right-16 min-[900px]:h-[200px] min-[900px]:w-[200px]">
               <Image src={webinar.speakerPhoto} alt="" width={200} height={200} className="h-full w-full object-cover object-top" />
             </div>
           </div>

@@ -12,12 +12,18 @@ function formatPhone(raw: string) {
   return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7, 11)}`
 }
 
+// "심리검사"를 검사 유형별 4개 옵션으로 분리(2026-09-14). GAS 웹앱/구글시트가 이 문자열들과
+// 정확히 일치하는 고정 컬럼에 체크하는 방식이라면, 시트 쪽에도 동일한 4개 컬럼을 추가해야
+// 응답이 누락되지 않음 — 시트 담당자 확인 필요.
 const INTEREST_OPTIONS = [
   "인재육성, 교육",
   "조직문화",
   "성과보상",
   "웰니스, EAP",
-  "심리검사",
+  "심리검사 (MBTI)",
+  "심리검사 (CPI)",
+  "심리검사 (TKI)",
+  "심리검사 (FIRO-B)",
   "코칭, 상담",
   "AI 교육",
   "플립러닝",
@@ -204,13 +210,13 @@ export function RegistrationForm({
           </label>
           <div className="grid grid-cols-2 gap-x-3 gap-y-2">
             {INTEREST_OPTIONS.map((opt, i) => (
-              <label key={opt} className="flex cursor-pointer items-center gap-2 text-[13px] font-medium text-[#6d7180]">
+              <label key={opt} className="flex cursor-pointer items-start gap-2 text-[13px] font-medium text-[#6d7180]">
                 <input
                   ref={i === 0 ? firstInterestRef : undefined}
                   type="checkbox"
                   checked={interest.includes(opt)}
                   onChange={() => toggleInterest(opt)}
-                  className="h-4 w-4 shrink-0 cursor-pointer rounded border border-[#e3e5f0] accent-[#2f5eff]"
+                  className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded border border-[#e3e5f0] accent-[#2f5eff]"
                 />
                 {opt}
               </label>
