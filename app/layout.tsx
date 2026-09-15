@@ -1,42 +1,44 @@
-﻿// import type { Metadata } from 'next' // TODO: 메타데이터 확정 후 주석 해제
+﻿import type { Metadata } from 'next'
 import { Analytics } from '@vercel/analytics/next'
+import Script from 'next/script'
 import './globals.css'
 
-// TODO: 아래 항목 확정 후 주석 해제
-// - BASE_URL: 실제 도메인 확정 필요
-// - title / description: 카피 문구 확정 필요
-// - og-image.png: 이미지 파일 제작 필요
-// - openGraph / twitter: 위 항목 확정 후 함께 반영
-//
-// const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://piccle.assesta.com'
-//
-// export const metadata: Metadata = {
-//   title: 'Piccle | AI 기반 역량 모델 HR 솔루션',
-//   description: 'AI와 HR 전문가의 협업으로 채용부터 육성까지 연결되는 역량 기준을 제공합니다. 피클(Piccle)로 조직의 일 잘하는 기준을 3초 만에 도출하세요.',
-//   metadataBase: new URL(BASE_URL),
-//   openGraph: {
-//     type: 'website',
-//     url: BASE_URL,
-//     siteName: 'Piccle',
-//     title: 'Piccle | AI 기반 역량 모델 HR 솔루션',
-//     description: 'AI와 HR 전문가의 협업으로 채용부터 육성까지 연결되는 역량 기준을 제공합니다. 피클(Piccle)로 조직의 일 잘하는 기준을 3초 만에 도출하세요.',
-//     images: [
-//       {
-//         url: '/og-image.png',
-//         width: 1200,
-//         height: 630,
-//         alt: 'Piccle — AI 기반 역량 모델 HR 솔루션',
-//       },
-//     ],
-//     locale: 'ko_KR',
-//   },
-//   twitter: {
-//     card: 'summary_large_image',
-//     title: 'Piccle | AI 기반 역량 모델 HR 솔루션',
-//     description: 'AI와 HR 전문가의 협업으로 채용부터 육성까지 연결되는 역량 기준을 제공합니다.',
-//     images: ['/og-image.png'],
-//   },
-// }
+//26.9.15 네이버,GA tag삽입
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://hr.assesta.com'
+const GA_ID = 'G-1H518NNWT3'
+const NAVER_VERIFICATION = '0986f1451b775fbf109ec7e4e950edbdd4915ded'
+// 
+
+export const metadata: Metadata = {
+  title: 'Piccle | HR-AI 워크스페이스',
+  description:
+    '역량모델링부터 채용·진단·인적성검사·배치·교육·개발·코칭 까지 HR의 모든 과정을 잇는 HR–AI 통합 워크스페이스',
+  metadataBase: new URL(BASE_URL),
+  openGraph: {
+    type: 'website',
+    url: BASE_URL,
+    siteName: 'Piccle',
+    title: 'Piccle | HR-AI 워크스페이스',
+    description:
+      '역량모델링부터 채용·진단·인적성검사·배치·교육·개발·코칭 까지 HR의 모든 과정을 잇는 HR–AI 통합 워크스페이스',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Piccle | HR-AI 워크스페이스',
+      },
+    ],
+    locale: 'ko_KR',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Piccle | HR-AI 워크스페이스',
+    description:
+      '역량모델링부터 채용·진단·인적성검사·배치·교육·개발·코칭 까지 HR의 모든 과정을 잇는 HR–AI 통합 워크스페이스',
+    images: ['/og-image.png'],
+  },
+}
 
 export default function RootLayout({
   children,
@@ -46,6 +48,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <head>
+        <meta name="naver-site-verification" content={NAVER_VERIFICATION} />
         <link rel="icon" href="https://img.assesta.com/piccle/favicon.png" type="image/png" />
         <link
           rel="stylesheet"
@@ -57,6 +60,18 @@ export default function RootLayout({
       <body className="font-sans antialiased">
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="ga-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${GA_ID}');
+          `}
+        </Script>
       </body>
     </html>
   )
