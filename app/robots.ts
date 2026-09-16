@@ -1,14 +1,18 @@
 import type { MetadataRoute } from 'next'
+import { headers } from 'next/headers'
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://hr.assesta.com'
+const DEFAULT_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://hr.assesta.com'
 
-export default function robots(): MetadataRoute.Robots {
+export default async function robots(): Promise<MetadataRoute.Robots> {
+  const host = (await headers()).get('host')
+  const baseUrl = host ? `https://${host}` : DEFAULT_BASE_URL
+
   return {
     rules: {
       userAgent: '*',
       allow: '/',
     },
-    sitemap: `${BASE_URL}/sitemap.xml`,
-    host: BASE_URL,
+    sitemap: `${baseUrl}/sitemap.xml`,
+    host: baseUrl,
   }
 }
