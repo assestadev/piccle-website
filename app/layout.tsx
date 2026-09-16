@@ -15,7 +15,10 @@ export const metadata: Metadata = {
     '역량모델링부터 채용·진단·인적성검사·배치·교육·개발·코칭 까지 HR의 모든 과정을 잇는 HR–AI 통합 워크스페이스',
   metadataBase: new URL(BASE_URL),
   verification: {
-    google: 'X67Aqf0oigPLAkwFLLsHBnVctTXBdQnjWLeTljPMv5s',
+    google: [
+      'X67Aqf0oigPLAkwFLLsHBnVctTXBdQnjWLeTljPMv5s',
+      'zEG3wNg_gjRlGli7X3Ng2abmqNPET3V79R6cs8oaKRo',
+    ],
   },
   openGraph: {
     type: 'website',
