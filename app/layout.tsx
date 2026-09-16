@@ -14,6 +14,9 @@ export const metadata: Metadata = {
   description:
     '역량모델링부터 채용·진단·인적성검사·배치·교육·개발·코칭 까지 HR의 모든 과정을 잇는 HR–AI 통합 워크스페이스',
   metadataBase: new URL(BASE_URL),
+  verification: {
+    google: 'X67Aqf0oigPLAkwFLLsHBnVctTXBdQnjWLeTljPMv5s',
+  },
   openGraph: {
     type: 'website',
     url: BASE_URL,
@@ -72,6 +75,11 @@ export default function RootLayout({
             gtag('config', '${GA_ID}');
           `}
         </Script>
+        <Script
+          src="https://analytics.ahrefs.com/analytics.js"
+          data-key="hH11kSTPlKeDg6A+TMhtSA"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   )
