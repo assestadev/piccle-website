@@ -1,6 +1,8 @@
 import type { MetadataRoute } from 'next'
 import { headers } from 'next/headers'
 
+export const dynamic = 'force-dynamic'
+
 const DEFAULT_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://hr.assesta.com'
 
 export default async function robots(): Promise<MetadataRoute.Robots> {
