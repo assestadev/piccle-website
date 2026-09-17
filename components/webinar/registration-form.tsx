@@ -138,7 +138,7 @@ export function RegistrationForm({
   }
 
   return (
-    <aside className="flex flex-col gap-5 border-t-8 border-[#f4f4f4] px-4 py-8 min-[900px]:px-6 min-[1100px]:sticky min-[1100px]:top-6 min-[1100px]:w-[380px] min-[1100px]:shrink-0 min-[1100px]:rounded-2xl min-[1100px]:border min-[1100px]:border-[#e3e5f0] min-[1100px]:p-6 min-[1100px]:shadow-[0_8px_24px_-12px_rgba(18,25,63,0.15)]">
+    <aside className="flex flex-col gap-5 border-t-8 border-[#f4f4f4] px-4 py-8 min-[900px]:px-6 min-[1100px]:w-[380px] min-[1100px]:shrink-0 min-[1100px]:rounded-2xl min-[1100px]:border min-[1100px]:border-[#e3e5f0] min-[1100px]:p-6 min-[1100px]:shadow-[0_8px_24px_-12px_rgba(18,25,63,0.15)]">
       <div className="flex flex-col gap-2.5 border-b border-[#e3e5f0] pb-4">
         <span className="inline-flex w-fit items-center justify-center whitespace-nowrap rounded-full bg-[#eef1fb] px-3 py-1 text-xs font-bold text-[#2f5eff]">
           {categoryTag}

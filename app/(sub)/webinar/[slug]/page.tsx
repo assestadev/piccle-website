@@ -2,7 +2,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { getWebinarBySlug, webinars } from "@/lib/webinars"
-import { WEBINAR_CARD_MARK_ALT, WEBINAR_CARD_MARK_SRC } from "@/lib/webinar-brand-config"
+import { WEBINAR_BANNER_MARK_ALT, WEBINAR_BANNER_MARK_SRC } from "@/lib/webinar-brand-config"
 import { WebinarBreadcrumb } from "@/components/webinar/webinar-breadcrumb"
 import { RegistrationForm } from "@/components/webinar/registration-form"
 
@@ -27,7 +27,7 @@ export default async function WebinarDetailPage({ params }: { params: Promise<{ 
 
   const eventDate = webinar.eventDate ?? webinar.listDate
   const eventTime = webinar.eventTime ?? webinar.listTime
-  const hasDetailContent = Boolean(webinar.eventInfo || webinar.agenda || webinar.program || webinar.recommend)
+  const hasDetailContent = Boolean(webinar.eventInfo || webinar.agenda || webinar.recommend)
 
   return (
     <div style={{ fontFamily: "'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" }}>
@@ -45,7 +45,7 @@ export default async function WebinarDetailPage({ params }: { params: Promise<{ 
           </div>
           <h1 className="m-0 text-[22px] font-bold leading-tight text-[#15172b] min-[900px]:text-[30px]">{webinar.title}</h1>
 
-          <div className={`relative flex h-[175px] flex-col justify-center gap-2 overflow-hidden rounded-2xl p-5 min-[900px]:h-[459px] min-[900px]:gap-4 min-[900px]:p-16 ${PREVIEW_BG[webinar.previewBg]}`}>
+          <div className={`relative flex h-[175px] flex-col justify-center gap-2 overflow-hidden rounded-2xl p-5 min-[900px]:h-[459px] ${PREVIEW_BG[webinar.previewBg]}`}>
             <Image
               src={PREVIEW_BG_IMAGE[webinar.previewBg]}
               alt=""
@@ -53,22 +53,30 @@ export default async function WebinarDetailPage({ params }: { params: Promise<{ 
               className="object-cover opacity-40"
             />
             <Image
-              src={WEBINAR_CARD_MARK_SRC}
-              alt={WEBINAR_CARD_MARK_ALT}
-              width={98}
-              height={28}
-              className="relative h-auto w-[51px] min-[900px]:w-[98px]"
+              src={WEBINAR_BANNER_MARK_SRC}
+              alt={WEBINAR_BANNER_MARK_ALT}
+              width={194}
+              height={20}
+              className="relative h-auto w-[100px] min-[900px]:absolute min-[900px]:left-[66px] min-[900px]:top-[77px] min-[900px]:w-[265px]"
             />
-            <p className="relative m-0 max-w-[60%] text-xs font-medium leading-tight min-[900px]:max-w-[290px] min-[900px]:text-2xl">
+            <p className="relative m-0 max-w-[60%] text-xs font-medium leading-tight min-[900px]:hidden">
               {webinar.title}
             </p>
-            <p className="relative m-0 text-base font-bold leading-tight min-[900px]:text-[32px]">
+            <div className="hidden min-[900px]:absolute min-[900px]:left-[66px] min-[900px]:top-[131px] min-[900px]:block min-[900px]:max-w-[490px]">
+              <p className="m-0 text-[33px] font-bold leading-tight">{webinar.bannerTitleBold ?? webinar.title}</p>
+              {webinar.bannerTitleLines?.map((line) => (
+                <p key={line} className="m-0 whitespace-nowrap text-[33px] font-medium leading-tight">
+                  {line}
+                </p>
+              ))}
+            </div>
+            <p className="relative m-0 text-base font-bold leading-tight min-[900px]:absolute min-[900px]:left-[66px] min-[900px]:top-[295px] min-[900px]:text-[44px]">
               {eventDate}
               <br />
               {eventTime}
             </p>
-            <div className="absolute bottom-[18px] right-5 h-[78px] w-[78px] overflow-hidden rounded-full bg-white min-[900px]:bottom-10 min-[900px]:right-16 min-[900px]:h-[200px] min-[900px]:w-[200px]">
-              <Image src={webinar.speakerPhoto} alt="" width={200} height={200} className="h-full w-full object-cover object-top" />
+            <div className="absolute bottom-[18px] right-5 h-[78px] w-[78px] overflow-hidden rounded-full bg-white min-[900px]:bottom-[66px] min-[900px]:right-[55px] min-[900px]:h-[205px] min-[900px]:w-[205px]">
+              <Image src={webinar.speakerPhoto} alt="" width={205} height={205} className="h-full w-full object-cover object-top" />
             </div>
           </div>
 
@@ -84,7 +92,7 @@ export default async function WebinarDetailPage({ params }: { params: Promise<{ 
               <>
                 <hr className="m-0 w-full border-t border-[#e3e5f0]" />
                 <p className="m-0 text-[15px] leading-relaxed text-[#9296a6]">
-                  이 웨비나의 상세 프로그램(행사 안내·아젠다·세부 프로그램·추천 대상)은 콘텐츠 담당자로부터 전달받는 대로 업데이트될 예정입니다.
+                  이 웨비나의 상세 프로그램(행사 안내·아젠다·추천 대상)은 콘텐츠 담당자로부터 전달받는 대로 업데이트될 예정입니다.
                 </p>
               </>
             )}
@@ -120,29 +128,6 @@ export default async function WebinarDetailPage({ params }: { params: Promise<{ 
                       <p key={i} className="m-0">
                         ✅ {item}
                       </p>
-                    ))}
-                  </div>
-                </div>
-              </>
-            )}
-
-            {webinar.program && webinar.program.length > 0 && (
-              <>
-                <hr className="m-0 w-full border-t border-[#e3e5f0]" />
-                <div className="flex flex-col gap-2.5">
-                  <h2 className="m-0 text-lg font-bold text-[#15172b]">세부 프로그램</h2>
-                  <div className="flex flex-col gap-5">
-                    {webinar.program.map((item, i) => (
-                      <div
-                        key={i}
-                        className={`flex flex-col gap-2 pb-4 ${i < webinar.program!.length - 1 ? "border-b border-dashed border-[#e3e5f0]" : ""}`}
-                      >
-                        <div className="flex items-center justify-between gap-3">
-                          <strong className="text-[17px] font-bold text-[#15172b]">{item.title}</strong>
-                          <span className="whitespace-nowrap text-sm text-[#8b8b8b]">{item.time}</span>
-                        </div>
-                        <p className="m-0 text-[15px] leading-snug text-[#222]">{item.desc}</p>
-                      </div>
                     ))}
                   </div>
                 </div>
