@@ -5,7 +5,7 @@ import Link from "next/link"
 import { useEffect, useRef, useState } from "react"
 import type { Webinar } from "@/lib/webinars"
 import { weekOfMonthLabel } from "@/lib/webinars"
-import { WEBINAR_CARD_MARK_ALT, WEBINAR_CARD_MARK_SRC } from "@/lib/webinar-brand-config"
+import { WEBINAR_BANNER_MARK_ALT, WEBINAR_BANNER_MARK_SRC } from "@/lib/webinar-brand-config"
 
 const AUTOPLAY_MS = 6000
 const FADE_MS = 220
@@ -94,7 +94,7 @@ export function WebinarHero({ webinars }: { webinars: Webinar[] }) {
             {current.title}
           </h1>
           <p className="text-[15px] leading-relaxed text-[#222] min-[900px]:text-lg">
-            {current.quoteDesc}
+            {current.listDesc ?? current.quoteDesc}
           </p>
 
           {hasMultiple && (
@@ -124,7 +124,7 @@ export function WebinarHero({ webinars }: { webinars: Webinar[] }) {
         <div className="mt-2 min-[900px]:mt-0 min-[900px]:w-[600px] min-[900px]:shrink-0">
           <Link
             href={`/webinar/${current.slug}`}
-            className={`relative flex h-[175px] flex-col justify-center gap-1.5 overflow-hidden rounded-[15px] p-5 transition-opacity duration-200 min-[900px]:h-[336px] min-[900px]:gap-3 min-[900px]:rounded-[20px] min-[900px]:p-14 ${PREVIEW_BG[current.previewBg]}`}
+            className={`relative flex h-[175px] flex-col justify-center gap-1.5 overflow-hidden rounded-[15px] p-5 transition-opacity duration-200 min-[900px]:h-[336px] min-[900px]:rounded-[20px] ${PREVIEW_BG[current.previewBg]}`}
             style={{ opacity: fading ? 0 : 1 }}
           >
             <Image
@@ -133,16 +133,24 @@ export function WebinarHero({ webinars }: { webinars: Webinar[] }) {
               fill
               className="object-cover opacity-40"
             />
-            <Image src={WEBINAR_CARD_MARK_SRC} alt={WEBINAR_CARD_MARK_ALT} width={98} height={28} className="relative h-auto w-[51px] min-[900px]:w-[98px]" />
-            <p className="relative m-0 max-w-[60%] text-xs font-medium leading-tight min-[900px]:max-w-[290px] min-[900px]:text-2xl">
+            <Image src={WEBINAR_BANNER_MARK_SRC} alt={WEBINAR_BANNER_MARK_ALT} width={194} height={20} className="relative h-auto w-[100px] min-[900px]:absolute min-[900px]:left-12 min-[900px]:top-14 min-[900px]:w-[194px]" />
+            <p className="relative m-0 max-w-[60%] text-xs font-medium leading-tight min-[900px]:hidden">
               {current.title}
             </p>
-            <p className="relative m-0 text-base font-bold leading-tight min-[900px]:text-[32px]">
+            <div className="hidden min-[900px]:absolute min-[900px]:left-12 min-[900px]:top-24 min-[900px]:block min-[900px]:max-w-[360px]">
+              <p className="m-0 text-2xl font-bold leading-tight">{current.bannerTitleBold ?? current.title}</p>
+              {current.bannerTitleLines?.map((line) => (
+                <p key={line} className="m-0 whitespace-nowrap text-2xl font-medium leading-tight">
+                  {line}
+                </p>
+              ))}
+            </div>
+            <p className="relative m-0 text-base font-bold leading-tight min-[900px]:absolute min-[900px]:left-12 min-[900px]:top-[216px] min-[900px]:text-[32px]">
               {current.listDate}
               <br />
               {current.listTime}
             </p>
-            <div className="absolute bottom-[14px] right-4 h-[78px] w-[78px] overflow-hidden rounded-full bg-white min-[900px]:bottom-5 min-[900px]:right-10 min-[900px]:h-[150px] min-[900px]:w-[150px]">
+            <div className="absolute bottom-[14px] right-4 h-[78px] w-[78px] overflow-hidden rounded-full bg-white min-[900px]:bottom-8 min-[900px]:right-10 min-[900px]:h-[150px] min-[900px]:w-[150px]">
               <Image
                 src={current.speakerPhoto}
                 alt=""

@@ -5,5 +5,9 @@
 export const WEBINAR_CARD_MARK_SRC = "/webinar-assets/piccle-logo-mark.svg"
 export const WEBINAR_CARD_MARK_ALT = "PICCLE"
 
+// 히어로 배너 / 상세페이지 배너 전용 마크 (2026-09-17 Figma 업데이트 반영: "PICCLE HOUR" 풀 워드마크, 194x20 비율)
+export const WEBINAR_BANNER_MARK_SRC = "/webinar-assets/piccle-hour-logo-mark.svg"
+export const WEBINAR_BANNER_MARK_ALT = "PICCLE HOUR"
+
 // 되돌릴 때 참고용 원본 값 (삭제하지 말 것)
 export const PICCLE_LOGO_MARK_SRC = "/webinar-assets/piccle-logo-mark.svg"
