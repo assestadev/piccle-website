@@ -9,9 +9,8 @@ interface WebinarConfirmationEmailInput {
   closingDate: string
 }
 
-// PICCLE 로고. Outlook 데스크톱은 인라인 SVG를 렌더링하지 못하므로 인라인 SVG 대신
-// 사이트 헤더 로고와 동일한 CDN PNG를 <img>로 사용 (lib/brand-config.ts의 PICCLE_HEADER_LOGO_SRC와 동일 자산).
-const PICCLE_LOGO_URL = "https://img.assesta.com/piccle/logo.png"
+// PICCLE HOUR 로고. Outlook 데스크톱은 인라인 SVG를 렌더링하지 못하므로 인라인 SVG 대신 CDN PNG를 <img>로 사용.
+const PICCLE_LOGO_URL = "https://img.assesta.com/piccle/piccle_hour_logo.png"
 
 // XSS/레이아웃 깨짐 방지 — 신청자 입력값(이름 등)이 그대로 HTML에 삽입되므로 이스케이프 필수.
 function escapeHtml(value: string) {
@@ -60,7 +59,7 @@ export function buildWebinarConfirmationEmail({
         <table cellpadding="0" cellspacing="0" style="width: 100%; max-width: 640px; margin: 0 auto; padding: 0; padding-bottom: 50px; table-layout: fixed; font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif; letter-spacing: -0.4px;">
             <tr>
                 <td style="padding: 50px 20px 34px; line-height: 0;">
-                    <img src="${PICCLE_LOGO_URL}" width="160" height="33" alt="PICCLE" style="display: block; border: 0; outline: none; max-width: 160px; height: 33px;" />
+                    <img src="${PICCLE_LOGO_URL}" width="180" height="19" alt="PICCLE HOUR" style="display: block; border: 0; outline: none; max-width: 180px; height: 19px;" />
                 </td>
             </tr>
             <tr>
