@@ -104,6 +104,9 @@ export default async function WebinarDetailPage({ params }: { params: Promise<{ 
                 <div className="flex flex-col gap-2.5">
                   <h2 className="m-0 text-lg font-bold text-[#15172b]">행사 안내</h2>
                   <p className="m-0 text-[15px] leading-relaxed text-[#9296a6]">
+                    연사 <span className="text-[#222]">{webinar.speaker}</span>
+                  </p>
+                  <p className="m-0 text-[15px] leading-relaxed text-[#9296a6]">
                     일시 <span className="text-[#222]">{webinar.eventInfo.date}</span>
                   </p>
                   <p className="m-0 text-[15px] leading-relaxed text-[#9296a6]">
