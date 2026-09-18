@@ -15,7 +15,7 @@ export function SiteHeader() {
   const pathname = usePathname()
   const isMain = pathname === "/"
   const isServicePage = pathname === "/service"
-  const isWebinarSection = pathname === "/webinar" || pathname.startsWith("/webinar/")
+  const isSeminarSection = pathname === "/seminar" || pathname.startsWith("/seminar/")
   const servicePreviewEnabled = isServicePreviewEnabled()
 
   const scrollTo = (id: string) => {
@@ -80,11 +80,11 @@ export function SiteHeader() {
                 보안 정책
               </button>
             )}
-            {isWebinarSection && (
+            {isSeminarSection && (
               <Link
-                href="/webinar"
+                href="/seminar"
                 className={`cursor-pointer text-sm font-medium transition-colors ${
-                  isWebinarSection ? "font-bold text-[#0f2d6e]" : "text-slate-600 hover:text-[#1e4fa8]"
+                  isSeminarSection ? "font-bold text-[#0f2d6e]" : "text-slate-600 hover:text-[#1e4fa8]"
                 }`}
               >
                 세미나

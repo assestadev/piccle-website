@@ -1,13 +1,13 @@
-interface WebinarConfirmationEmailInput {
+interface SeminarConfirmationEmailInput {
   applicantName: string
   seminarTitle: string
   speaker: string
   eventDate: string
   location: string
   audience: string
-  /** "10월 15일 목요일 오후 2시" 형태로 이미 포맷된 마지막 인사말용 일시 (lib/webinars.ts의 getWebinarEmailFields 참고) */
+  /** "10월 15일 목요일 오후 2시" 형태로 이미 포맷된 마지막 인사말용 일시 (lib/seminars.ts의 getSeminarEmailFields 참고) */
   closingDate: string
-  /** "PICCLE HOUR #1 신청 완료 안내" 형태로 이미 계산된 제목 문구 (lib/webinars.ts의 getWebinarEmailFields 참고) */
+  /** "PICCLE HOUR #1 신청 완료 안내" 형태로 이미 계산된 제목 문구 (lib/seminars.ts의 getSeminarEmailFields 참고) */
   emailHeading: string
 }
 
@@ -24,7 +24,7 @@ function escapeHtml(value: string) {
     .replace(/'/g, "&#39;")
 }
 
-export function buildWebinarConfirmationEmail({
+export function buildSeminarConfirmationEmail({
   applicantName,
   seminarTitle,
   speaker,
@@ -33,7 +33,7 @@ export function buildWebinarConfirmationEmail({
   audience,
   closingDate,
   emailHeading,
-}: WebinarConfirmationEmailInput) {
+}: SeminarConfirmationEmailInput) {
   const subject = `[PICCLE 세미나] ${seminarTitle} 신청이 완료되었습니다`
 
   const name = escapeHtml(applicantName)

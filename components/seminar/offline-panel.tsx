@@ -4,7 +4,7 @@ export function OfflinePanel() {
   return (
     <div className="flex flex-col gap-4 border-t-8 border-[#f6f6f6] px-4 py-8 min-[900px]:flex-row min-[900px]:overflow-hidden min-[900px]:rounded-2xl min-[900px]:border min-[900px]:border-[#e3e5f0] min-[900px]:bg-[#fafbfd] min-[900px]:p-0">
       <div className="flex h-[95px] items-center justify-center rounded-2xl bg-[#f6f6f6] min-[900px]:h-auto min-[900px]:w-56 min-[900px]:shrink-0 min-[900px]:rounded-none">
-        <Image src="/webinar-assets/icon-offline.svg" alt="" width={36} height={36} />
+        <Image src="/seminar-assets/icon-offline.svg" alt="" width={36} height={36} />
       </div>
       <div className="flex flex-col gap-2 min-[900px]:flex-1 min-[900px]:p-8">
         <span className="inline-flex w-fit items-center justify-center whitespace-nowrap rounded-full bg-[#eef1fb] px-3 py-1 text-xs font-bold text-[#2f5eff]">

@@ -129,7 +129,7 @@ export function RegistrationForm({
 
     setSubmitting(true)
     try {
-      const res = await fetch("/api/webinar-registration", {
+      const res = await fetch("/api/seminar-registration", {
         method: "POST",
         // charset=utf-8를 명시 — 한글 등 비ASCII 문자가 확실히 UTF-8로 전달되도록 고정
         headers: { "Content-Type": "application/json; charset=utf-8" },
@@ -160,7 +160,7 @@ export function RegistrationForm({
         throw new Error(data.error || "제출 중 오류가 발생했습니다.")
       }
 
-      router.push(`/webinar/${slug}/complete`)
+      router.push(`/seminar/${slug}/complete`)
     } catch (err) {
       setSubmitError(err instanceof Error ? err.message : "제출 중 오류가 발생했습니다.")
     } finally {
@@ -176,7 +176,7 @@ export function RegistrationForm({
         </span>
         <h2 className="m-0 text-lg font-bold text-[#15172b]">{title}</h2>
         <div className="flex items-center gap-1.5 text-sm text-[#6d7180]">
-          <Image src="/webinar-assets/icon-calendar.svg" alt="" width={14} height={14} />
+          <Image src="/seminar-assets/icon-calendar.svg" alt="" width={14} height={14} />
           <span>
             {listDate} {listTime}
           </span>
