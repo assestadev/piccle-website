@@ -158,7 +158,7 @@ export default async function WebinarDetailPage({ params }: { params: Promise<{ 
             )}
           </div>
 
-          <Link href="/webinar" className="flex items-center gap-1.5 pt-2 text-sm font-medium text-[#6d7180]">
+          <Link href="/semina" className="flex items-center gap-1.5 pt-2 text-sm font-medium text-[#6d7180]">
             <Image src="/webinar-assets/icon-arrow-left.svg" alt="" width={16} height={16} />
             세미나 목록으로 돌아가기
           </Link>

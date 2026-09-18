@@ -17,7 +17,7 @@ export function WebinarCard({ webinar }: { webinar: Webinar }) {
   return (
     <article className="flex-1">
       <Link
-        href={`/webinar/${webinar.slug}`}
+        href={`/semina/${webinar.slug}`}
         className="flex flex-col gap-3 min-[900px]:gap-0 min-[900px]:overflow-hidden min-[900px]:rounded-2xl min-[900px]:border min-[900px]:border-[#e3e5f0] min-[900px]:transition-shadow min-[900px]:hover:shadow-[0_8px_24px_-12px_rgba(18,25,63,0.15)]"
       >
         <div className="relative h-[193px] overflow-hidden rounded-xl min-[900px]:h-[338px] min-[900px]:rounded-none">

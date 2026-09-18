@@ -123,7 +123,7 @@ export function WebinarHero({ webinars }: { webinars: Webinar[] }) {
 
         <div className="mt-2 min-[900px]:mt-0 min-[900px]:w-[600px] min-[900px]:shrink-0">
           <Link
-            href={`/webinar/${current.slug}`}
+            href={`/semina/${current.slug}`}
             className={`relative flex h-[175px] flex-col justify-center gap-1.5 overflow-hidden rounded-[15px] p-5 transition-opacity duration-200 min-[900px]:h-[336px] min-[900px]:rounded-[20px] ${PREVIEW_BG[current.previewBg]}`}
             style={{ opacity: fading ? 0 : 1 }}
           >

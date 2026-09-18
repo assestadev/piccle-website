@@ -3,6 +3,7 @@
 // 값을 하나만 바꾸면 노출되는 모든 위치가 자동으로 바뀐다.
 // 새 웨비나를 추가/수정할 때는 piccle-webinar/webinar-content-template.yaml 을 참고해서
 // 이 파일에 항목을 채우면 됨.
+// slug 명명 규칙: 온라인 웨비나는 w01, w02 ... 순서로, 오프라인 세미나는 s01, s02 ... 순서로 부여.
 
 export interface EventInfo {
   date: string
@@ -44,7 +45,7 @@ export interface Webinar {
 
 export const webinars: Webinar[] = [
   {
-    slug: "team-discovery",
+    slug: "w01",
     dataType: "online",
     categoryTag: "[조직문화/진단]",
     title: "'측정'을 넘어 '변화'로: 조직문화를 바꾸고 팀 실행력을 높이는 '팀의 발견'",
@@ -84,7 +85,7 @@ export const webinars: Webinar[] = [
     previewBg: "blue",
   },
   {
-    slug: "cpi-fit-talent",
+    slug: "w02",
     dataType: "online",
     categoryTag: "[채용/인성검사]",
     title: "더 FIT한 인재 찾기: CPI 인성검사의 우리 조직 활용법",

@@ -15,7 +15,7 @@ export function SiteHeader() {
   const pathname = usePathname()
   const isMain = pathname === "/"
   const isServicePage = pathname === "/service"
-  const isWebinarSection = pathname === "/webinar" || pathname.startsWith("/webinar/")
+  const isWebinarSection = pathname === "/semina" || pathname.startsWith("/semina/")
   const servicePreviewEnabled = isServicePreviewEnabled()
 
   const scrollTo = (id: string) => {
@@ -82,7 +82,7 @@ export function SiteHeader() {
             )}
             {isWebinarSection && (
               <Link
-                href="/webinar"
+                href="/semina"
                 className={`cursor-pointer text-sm font-medium transition-colors ${
                   isWebinarSection ? "font-bold text-[#0f2d6e]" : "text-slate-600 hover:text-[#1e4fa8]"
                 }`}

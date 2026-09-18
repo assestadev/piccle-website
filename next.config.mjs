@@ -18,6 +18,35 @@ const nextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: "/webinar/team-discovery/complete",
+        destination: "/semina/w01/complete",
+        permanent: true,
+      },
+      {
+        source: "/webinar/cpi-fit-talent/complete",
+        destination: "/semina/w02/complete",
+        permanent: true,
+      },
+      {
+        source: "/webinar/team-discovery",
+        destination: "/semina/w01",
+        permanent: true,
+      },
+      {
+        source: "/webinar/cpi-fit-talent",
+        destination: "/semina/w02",
+        permanent: true,
+      },
+      {
+        source: "/webinar",
+        destination: "/semina",
+        permanent: true,
+      },
+    ]
+  },
 };
 
 export default nextConfig;

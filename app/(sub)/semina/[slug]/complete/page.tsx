@@ -26,7 +26,7 @@ export default async function WebinarCompletePage({ params }: { params: Promise<
           참여 링크를 보내드릴게요
         </p>
         <Link
-          href="/webinar"
+          href="/semina"
           className="mt-6 inline-flex items-center justify-center whitespace-nowrap rounded-full border border-[#e1e1e1] bg-white px-5 py-2.5 text-sm font-bold text-[#222]"
         >
           다른 세미나 보러가기

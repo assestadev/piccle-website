@@ -160,7 +160,7 @@ export function RegistrationForm({
         throw new Error(data.error || "제출 중 오류가 발생했습니다.")
       }
 
-      router.push(`/webinar/${slug}/complete`)
+      router.push(`/semina/${slug}/complete`)
     } catch (err) {
       setSubmitError(err instanceof Error ? err.message : "제출 중 오류가 발생했습니다.")
     } finally {
