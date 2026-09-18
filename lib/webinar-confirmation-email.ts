@@ -7,6 +7,8 @@ interface WebinarConfirmationEmailInput {
   audience: string
   /** "10월 15일 목요일 오후 2시" 형태로 이미 포맷된 마지막 인사말용 일시 (lib/webinars.ts의 getWebinarEmailFields 참고) */
   closingDate: string
+  /** "PICCLE HOUR #1 신청 완료 안내" 형태로 이미 계산된 제목 문구 (lib/webinars.ts의 getWebinarEmailFields 참고) */
+  emailHeading: string
 }
 
 // PICCLE 로고. Outlook 데스크톱은 인라인 SVG를 렌더링하지 못하므로 인라인 SVG 대신 CDN PNG를 <img>로 사용.
@@ -30,6 +32,7 @@ export function buildWebinarConfirmationEmail({
   location,
   audience,
   closingDate,
+  emailHeading,
 }: WebinarConfirmationEmailInput) {
   const subject = `[PICCLE 세미나] ${seminarTitle} 신청이 완료되었습니다`
 
@@ -40,6 +43,7 @@ export function buildWebinarConfirmationEmail({
   const locationText = escapeHtml(location)
   const audienceText = escapeHtml(audience)
   const closingDateText = escapeHtml(closingDate)
+  const headingText = escapeHtml(emailHeading)
 
   const html = `
 <!DOCTYPE html>
@@ -47,7 +51,7 @@ export function buildWebinarConfirmationEmail({
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${title} 신청 완료 안내</title>
+<title>${headingText}</title>
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
 <style>
@@ -65,7 +69,7 @@ export function buildWebinarConfirmationEmail({
             <tr>
                 <td style="background-color: #fff; padding: 0 20px;">
                     <table cellpadding="0" cellspacing="0" style="width: 100% !important; max-width: 640px; margin: 0; padding: 0;">
-                        <tr><td style="padding-bottom: 20px; font-size: 20px; font-weight: 700; color: #222222; line-height: 140%; font-family: 'Pretendard Variable', Pretendard, sans-serif!important;">세미나 신청 완료 안내</td></tr>
+                        <tr><td style="padding-bottom: 20px; font-size: 20px; font-weight: 700; color: #222222; line-height: 140%; font-family: 'Pretendard Variable', Pretendard, sans-serif!important;">${headingText}</td></tr>
                         <tr><td style="padding-bottom: 30px; line-height: 0; font-size: 0;"><div style="height: 0; line-height: 0; font-size: 0; border-top: 1px solid #ececec;">&nbsp;</div></td></tr>
                         <tr><td style="padding-bottom: 4px; font-size: 16px; font-weight: 400; color: #222222; line-height: 160%; font-family: 'Pretendard Variable', Pretendard, sans-serif!important;">${name}님의, 웨비나 신청이 정상적으로 완료되었습니다.</td></tr>
                         <tr><td style="padding-bottom: 30px; font-size: 16px; font-weight: 400; color: #222222; line-height: 160%; font-family: 'Pretendard Variable', Pretendard, sans-serif!important;">아래 일정을 확인해 주세요.</td></tr>

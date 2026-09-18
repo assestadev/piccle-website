@@ -32,6 +32,7 @@ export async function POST(request: Request) {
       location,
       audience,
       closingDate,
+      emailHeading,
     } = body
 
     if (!name || !company || !email || !phone || !hrIssue || !motivation) {
@@ -130,6 +131,7 @@ export async function POST(request: Request) {
           location,
           audience,
           closingDate,
+          emailHeading,
         })
         const { error: resendError } = await resend.emails.send({
           from: RESEND_FROM_EMAIL,

@@ -166,12 +166,25 @@ export function formatEventDateForClosing(isoDate: string, time24: string): stri
 }
 
 /**
+ * 온라인 웨비나는 "PICCLE HOUR" 시리즈 회차(#1, #2 ...)로 진행된다 (오프라인 웨비나는 아직 이 시리즈에
+ * 속하는지 미정이라 번호를 매기지 않음). webinars 배열에서 online 타입만 추려 등록 순서대로 번호를 매김 —
+ * 배열에 웨비나를 추가/삭제해도 이 함수가 항상 다시 계산하므로 번호를 따로 관리할 필요 없음.
+ */
+function getHourNumber(webinar: Webinar): number | null {
+  if (webinar.dataType !== "online") return null
+  const onlineWebinars = webinars.filter((w) => w.dataType === "online")
+  const index = onlineWebinars.findIndex((w) => w.slug === webinar.slug)
+  return index === -1 ? null : index + 1
+}
+
+/**
  * 신청완료 안내 메일에 필요한 필드를 webinar 데이터 한 곳에서 파생시키는 단일 매핑 함수.
  * 상세페이지 "행사 안내"(eventInfo)를 수정하면 이 함수를 거치는 메일 내용도 함께 바뀐다 —
  * 이메일 쪽에 값을 따로 하드코딩하지 말고 항상 이 함수를 통해서만 가져올 것.
  */
 export function getWebinarEmailFields(webinar: Webinar) {
   const eventTime = webinar.eventTime ?? webinar.listTime
+  const hourNumber = getHourNumber(webinar)
 
   return {
     seminarTitle: webinar.title,
@@ -182,5 +195,6 @@ export function getWebinarEmailFields(webinar: Webinar) {
     location: webinar.eventInfo?.format ?? "",
     audience: webinar.eventInfo?.audience ?? "",
     closingDate: formatEventDateForClosing(webinar.listDateISO, eventTime),
+    emailHeading: hourNumber != null ? `PICCLE HOUR #${hourNumber} 신청 완료 안내` : "세미나 신청 완료 안내",
   }
 }

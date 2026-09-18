@@ -56,6 +56,7 @@ interface RegistrationFormProps {
   location: string
   audience: string
   closingDate: string
+  emailHeading: string
 }
 
 export function RegistrationForm({
@@ -71,6 +72,7 @@ export function RegistrationForm({
   location,
   audience,
   closingDate,
+  emailHeading,
 }: RegistrationFormProps) {
   const router = useRouter()
   const [form, setForm] = useState({
@@ -133,6 +135,7 @@ export function RegistrationForm({
           location,
           audience,
           closingDate,
+          emailHeading,
         }),
       })
 

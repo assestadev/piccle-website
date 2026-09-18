@@ -171,6 +171,7 @@ export default async function WebinarDetailPage({ params }: { params: Promise<{ 
           location={emailFields.location}
           audience={emailFields.audience}
           closingDate={emailFields.closingDate}
+          emailHeading={emailFields.emailHeading}
         />
       </main>
     </div>
