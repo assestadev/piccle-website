@@ -38,6 +38,9 @@ export async function POST(request: Request) {
     if (!name || !company || !email || !phone || !hrIssue || !motivation) {
       return NextResponse.json({ error: "필수 항목을 모두 입력해주세요." }, { status: 400 })
     }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return NextResponse.json({ error: "올바른 이메일 주소를 입력해주세요." }, { status: 400 })
+    }
     if (!Array.isArray(interests) || interests.length === 0) {
       return NextResponse.json({ error: "관심주제를 1개 이상 선택해주세요." }, { status: 400 })
     }
