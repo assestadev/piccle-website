@@ -28,6 +28,10 @@ export async function POST(request: Request) {
       seminarType,
       category,
       eventDate,
+      speaker,
+      location,
+      audience,
+      closingDate,
     } = body
 
     if (!name || !company || !email || !phone || !hrIssue || !motivation) {
@@ -121,9 +125,11 @@ export async function POST(request: Request) {
         const { subject, html } = buildWebinarConfirmationEmail({
           applicantName: name,
           seminarTitle,
-          seminarTypeLabel: seminarType === "online" ? "온라인" : "오프라인",
-          categoryTag: category,
+          speaker,
           eventDate,
+          location,
+          audience,
+          closingDate,
         })
         const { error: resendError } = await resend.emails.send({
           from: RESEND_FROM_EMAIL,

@@ -1,43 +1,120 @@
 interface WebinarConfirmationEmailInput {
   applicantName: string
   seminarTitle: string
-  seminarTypeLabel: string
-  categoryTag: string
+  speaker: string
   eventDate: string
+  location: string
+  audience: string
+  /** "10월 15일 목요일 오후 2시" 형태로 이미 포맷된 마지막 인사말용 일시 (lib/webinars.ts의 getWebinarEmailFields 참고) */
+  closingDate: string
+}
+
+// PICCLE 로고. Outlook 데스크톱은 인라인 SVG를 렌더링하지 못하므로 인라인 SVG 대신
+// 사이트 헤더 로고와 동일한 CDN PNG를 <img>로 사용 (lib/brand-config.ts의 PICCLE_HEADER_LOGO_SRC와 동일 자산).
+const PICCLE_LOGO_URL = "https://img.assesta.com/piccle/logo.png"
+
+// XSS/레이아웃 깨짐 방지 — 신청자 입력값(이름 등)이 그대로 HTML에 삽입되므로 이스케이프 필수.
+function escapeHtml(value: string) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;")
 }
 
 export function buildWebinarConfirmationEmail({
   applicantName,
   seminarTitle,
-  seminarTypeLabel,
-  categoryTag,
+  speaker,
   eventDate,
+  location,
+  audience,
+  closingDate,
 }: WebinarConfirmationEmailInput) {
   const subject = `[PICCLE 세미나] ${seminarTitle} 신청이 완료되었습니다`
 
+  const name = escapeHtml(applicantName)
+  const title = escapeHtml(seminarTitle)
+  const speakerText = escapeHtml(speaker)
+  const dateText = escapeHtml(eventDate)
+  const locationText = escapeHtml(location)
+  const audienceText = escapeHtml(audience)
+  const closingDateText = escapeHtml(closingDate)
+
   const html = `
-<div style="font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; max-width: 520px; margin: 0 auto; padding: 32px 24px; color: #15172b;">
-  <p style="font-size: 13px; font-weight: 700; color: #2f5eff; letter-spacing: 0.05em; margin: 0 0 12px;">PICCLE SEMINAR</p>
-  <h1 style="font-size: 20px; font-weight: 700; margin: 0 0 16px; line-height: 1.4;">${applicantName}님, 신청이 완료되었습니다</h1>
-  <p style="font-size: 14px; line-height: 1.6; color: #6d7180; margin: 0 0 24px;">
-    요청하신 세미나 신청이 정상적으로 접수되었습니다. 웨비나 하루 전, 이 이메일 주소로 참여 링크를 보내드릴게요.
-  </p>
-  <table style="width: 100%; border-collapse: collapse; background: #f9f9f9; border-radius: 12px; overflow: hidden; margin-bottom: 24px;">
-    <tr>
-      <td style="padding: 16px 20px; font-size: 12px; font-weight: 700; color: #2f5eff; background: #eef1fb;">${categoryTag}</td>
-      <td style="padding: 16px 20px; font-size: 12px; color: #6d7180; background: #eef1fb; text-align: right;">${seminarTypeLabel}</td>
-    </tr>
-    <tr>
-      <td colspan="2" style="padding: 16px 20px 4px; font-size: 16px; font-weight: 700; color: #15172b;">${seminarTitle}</td>
-    </tr>
-    <tr>
-      <td colspan="2" style="padding: 0 20px 16px; font-size: 14px; color: #6d7180;">${eventDate}</td>
-    </tr>
-  </table>
-  <p style="font-size: 12px; line-height: 1.6; color: #9296a6; margin: 0;">
-    본 메일은 PICCLE 세미나 신청 확인을 위해 발송되었습니다. 문의사항은 assesta@assesta.com으로 연락 주세요.
-  </p>
-</div>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${title} 신청 완료 안내</title>
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+<style>
+    body, input, textarea, select {font-family: "Pretendard Variable", Pretendard, sans-serif;}
+</style>
+</head>
+<body>
+    <div style="width: 100%; margin: 0; padding: 0; background-color: #ffffff; font-family: 'Pretendard Variable', Pretendard, sans-serif;">
+        <table cellpadding="0" cellspacing="0" style="width: 100%; max-width: 640px; margin: 0 auto; padding: 0; padding-bottom: 50px; table-layout: fixed; font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif; letter-spacing: -0.4px;">
+            <tr>
+                <td style="padding: 50px 20px 34px; line-height: 0;">
+                    <img src="${PICCLE_LOGO_URL}" width="160" height="33" alt="PICCLE" style="display: block; border: 0; outline: none; max-width: 160px; height: 33px;" />
+                </td>
+            </tr>
+            <tr>
+                <td style="background-color: #fff; padding: 0 20px;">
+                    <table cellpadding="0" cellspacing="0" style="width: 100% !important; max-width: 640px; margin: 0; padding: 0;">
+                        <tr><td style="padding-bottom: 20px; font-size: 20px; font-weight: 700; color: #222222; line-height: 140%; font-family: 'Pretendard Variable', Pretendard, sans-serif!important;">세미나 신청 완료 안내</td></tr>
+                        <tr><td style="padding-bottom: 30px; line-height: 0; font-size: 0;"><div style="height: 0; line-height: 0; font-size: 0; border-top: 1px solid #ececec;">&nbsp;</div></td></tr>
+                        <tr><td style="padding-bottom: 4px; font-size: 16px; font-weight: 400; color: #222222; line-height: 160%; font-family: 'Pretendard Variable', Pretendard, sans-serif!important;">${name}님의, 웨비나 신청이 정상적으로 완료되었습니다.</td></tr>
+                        <tr><td style="padding-bottom: 30px; font-size: 16px; font-weight: 400; color: #222222; line-height: 160%; font-family: 'Pretendard Variable', Pretendard, sans-serif!important;">아래 일정을 확인해 주세요.</td></tr>
+                        <tr>
+                            <td style="padding-bottom: 30px;">
+                                <table cellpadding="0" cellspacing="0" style="width: 100%; background-color: #f2f9fd; border-radius: 12px;">
+                                    <tr>
+                                        <td style="padding: 22px 24px; font-size: 15px; font-weight: 400; color: #222222; line-height: 180%; font-family: 'Pretendard Variable', Pretendard, sans-serif!important;">
+                                            <table cellpadding="0" cellspacing="0" style="width:100%;">
+                                                <tr>
+                                                    <td style="padding: 2px 8px 2px 0; vertical-align: top; width: 14px;">·</td>
+                                                    <td style="padding: 2px 0;"><b>주제</b>&nbsp;ㅣ&nbsp;${title}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding: 2px 8px 2px 0; vertical-align: top; width: 14px;">·</td>
+                                                    <td style="padding: 2px 0;"><b>연사</b>&nbsp;ㅣ&nbsp;${speakerText}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding: 2px 8px 2px 0; vertical-align: top; width: 14px;">·</td>
+                                                    <td style="padding: 2px 0;"><b>일시</b>&nbsp;ㅣ&nbsp;${dateText}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding: 2px 8px 2px 0; vertical-align: top; width: 14px;">·</td>
+                                                    <td style="padding: 2px 0;"><b>장소</b>&nbsp;ㅣ&nbsp;${locationText}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding: 2px 8px 2px 0; vertical-align: top; width: 14px;">·</td>
+                                                    <td style="padding: 2px 0;"><b>대상</b>&nbsp;ㅣ&nbsp;${audienceText}</td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr><td style="padding-bottom: 4px; font-size: 14px; font-weight: 400; color: #999999; line-height: 160%; font-family: 'Pretendard Variable', Pretendard, sans-serif!important;">※ 접속 링크는 웨비나 D-1에 메일과 문자로 다시 안내드릴 예정입니다.</td></tr>
+                        <tr><td style="padding-bottom: 30px; font-size: 14px; font-weight: 400; color: #999999; line-height: 160%; font-family: 'Pretendard Variable', Pretendard, sans-serif!important;">※ 본인이 아닌 경우, 입장에 제한이 있을 수 있습니다.</td></tr>
+                        <tr><td style="padding-bottom: 4px; font-size: 16px; font-weight: 400; color: #222222; line-height: 160%; font-family: 'Pretendard Variable', Pretendard, sans-serif!important;">${closingDateText}, 웨비나에서 뵙겠습니다.</td></tr>
+                        <tr><td style="padding-bottom: 30px; font-size: 16px; font-weight: 400; color: #222222; line-height: 160%; font-family: 'Pretendard Variable', Pretendard, sans-serif!important;">PICCLE 팀 드림</td></tr>
+                        <tr><td style="padding-bottom: 30px; font-size: 14px; font-weight: 400; color: #999999; line-height: 160%; font-family: 'Pretendard Variable', Pretendard, sans-serif!important;">문의 | 김석현 선임연구원(shkim2@assesta.com)</td></tr>
+                        <tr><td style="padding-bottom: 50px; text-align: center; font-size: 13px; font-weight: 400; color: #999999; line-height: 160%; font-family: 'Pretendard Variable', Pretendard, sans-serif!important;">PICCLE 웨비나 사전 등록 신청자분들께 발송 드리는 메시지입니다.</td></tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>
 `.trim()
 
   return { subject, html }

@@ -1,7 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { getWebinarBySlug, webinars } from "@/lib/webinars"
+import { getWebinarBySlug, getWebinarEmailFields, webinars } from "@/lib/webinars"
 import { WEBINAR_BANNER_MARK_ALT, WEBINAR_BANNER_MARK_SRC } from "@/lib/webinar-brand-config"
 import { WebinarBreadcrumb } from "@/components/webinar/webinar-breadcrumb"
 import { RegistrationForm } from "@/components/webinar/registration-form"
@@ -28,6 +28,7 @@ export default async function WebinarDetailPage({ params }: { params: Promise<{ 
   const eventDate = webinar.eventDate ?? webinar.listDate
   const eventTime = webinar.eventTime ?? webinar.listTime
   const hasDetailContent = Boolean(webinar.eventInfo || webinar.agenda || webinar.recommend)
+  const emailFields = getWebinarEmailFields(webinar)
 
   return (
     <div style={{ fontFamily: "'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" }}>
@@ -165,7 +166,11 @@ export default async function WebinarDetailPage({ params }: { params: Promise<{ 
           listTime={webinar.listTime}
           durationSummary={webinar.durationSummary}
           seminarType={webinar.dataType}
-          eventDate={`${eventDate} ${eventTime}`}
+          eventDate={emailFields.eventDate}
+          speaker={emailFields.speaker}
+          location={emailFields.location}
+          audience={emailFields.audience}
+          closingDate={emailFields.closingDate}
         />
       </main>
     </div>

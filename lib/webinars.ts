@@ -26,6 +26,8 @@ export interface Webinar {
   eventTime?: string
   durationSummary?: string
   speakerPhoto: string
+  /** 신청완료 안내 메일 등에 쓰이는 연사 이름/직책 */
+  speaker: string
   quoteTitle?: string
   quoteDesc: string
   /** 웨비나 목록(카드) 페이지 전용 짧은 설명. 없으면 quoteDesc를 그대로 씀 */
@@ -55,6 +57,7 @@ export const webinars: Webinar[] = [
     eventTime: "14:00",
     durationSummary: "온라인 · 60분 (발표 40분 · Q&A 20분)",
     speakerPhoto: "/webinar-assets/photo-male.png",
+    speaker: "어세스타 김영재 AX사업 본부장",
     quoteTitle: "진단 결과를 '팀 행동 규칙'으로 바꾸는 방법",
     quoteDesc:
       "진단 후 단순 결과 설명으로 끝내지 않고, 진단 → 팀 대화 → 행동 합의 → 실행 → Follow-up 으로 연결하는 방법을 제시합니다. 조직문화는 구성원들의 반복되는 상호작용에서 만들어집니다. 그 상호작용 속에는 얼마나 참여시키는가(Inclusion), 누가 영향력을 행사하는가(Control), 얼마나 신뢰와 관심을 표현하는가(Affection)라는 관계 패턴이 존재합니다. 그리고 FIRO-B를 활용하면 이를 진단하는 것에서 끝나는 것이 아니라, \"우리 팀이 앞으로 어떻게 함께 일할 것인가?\"라는 구체적인 행동 변화로 연결할 수 있습니다.",
@@ -94,6 +97,7 @@ export const webinars: Webinar[] = [
     eventTime: "14:00",
     durationSummary: "온라인 · 60분 (발표 40분 · Q&A 20분)",
     speakerPhoto: "/webinar-assets/photo-female.png",
+    speaker: "어세스타 최윤희 책임연구원",
     quoteTitle: "“우리 조직에 맞는 사람”은 어떻게 정의할 수 있을까?",
     quoteDesc:
       "조직의 성공 프로파일(Success Profile) 설계부터 CPI 결과 해석, FIT 분석까지 우리 조직만의 인재 프로파일을 만드는 전략을 소개합니다. 인성검사를 하나의 점수가 아닌 '인재를 더 깊이 이해하는 데이터'로 활용하여 우리 조직만의 FIT 기반 채용/승진 체계를 만드는 핵심 포인트를 정리합니다.",
@@ -137,4 +141,46 @@ export function weekOfMonthLabel(isoDate: string): string {
   const day = parseInt(dayStr, 10)
   const week = Math.ceil(day / 7)
   return `${month}월 ${week}주차 웨비나`
+}
+
+const WEEKDAY_KO = ["일", "월", "화", "수", "목", "금", "토"]
+
+/**
+ * ISO 날짜(YYYY-MM-DD) + 24시간 시각(HH:mm) → "10월 15일 목요일 오후 2시" 형태로 변환.
+ * 신청완료 메일 마지막 인사말("~ 웨비나에서 뵙겠습니다.")에 사용.
+ */
+export function formatEventDateForClosing(isoDate: string, time24: string): string {
+  const [year, monthStr, dayStr] = isoDate.split("-")
+  const [hourStr, minuteStr] = time24.split(":")
+  const month = parseInt(monthStr, 10)
+  const day = parseInt(dayStr, 10)
+  const hour24 = parseInt(hourStr, 10)
+  const minute = parseInt(minuteStr, 10)
+
+  const weekday = WEEKDAY_KO[new Date(parseInt(year, 10), month - 1, day).getDay()]
+  const period = hour24 < 12 ? "오전" : "오후"
+  const hour12 = hour24 % 12 === 0 ? 12 : hour24 % 12
+  const minuteText = minute > 0 ? ` ${minute}분` : ""
+
+  return `${month}월 ${day}일 ${weekday}요일 ${period} ${hour12}시${minuteText}`
+}
+
+/**
+ * 신청완료 안내 메일에 필요한 필드를 webinar 데이터 한 곳에서 파생시키는 단일 매핑 함수.
+ * 상세페이지 "행사 안내"(eventInfo)를 수정하면 이 함수를 거치는 메일 내용도 함께 바뀐다 —
+ * 이메일 쪽에 값을 따로 하드코딩하지 말고 항상 이 함수를 통해서만 가져올 것.
+ */
+export function getWebinarEmailFields(webinar: Webinar) {
+  const eventTime = webinar.eventTime ?? webinar.listTime
+
+  return {
+    seminarTitle: webinar.title,
+    speaker: webinar.speaker,
+    // "행사 안내" 카드와 동일한 일시 표기. eventInfo가 없으면 listDate/listTime으로 대체.
+    eventDate: webinar.eventInfo?.date ?? `${webinar.eventDate ?? webinar.listDate} ${eventTime}`,
+    // "행사 안내" 카드의 진행 방식/참석 대상과 동일한 값.
+    location: webinar.eventInfo?.format ?? "",
+    audience: webinar.eventInfo?.audience ?? "",
+    closingDate: formatEventDateForClosing(webinar.listDateISO, eventTime),
+  }
 }
