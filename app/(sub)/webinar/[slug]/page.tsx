@@ -79,6 +79,9 @@ export default async function WebinarDetailPage({ params }: { params: Promise<{ 
             <div className="absolute bottom-[18px] right-5 h-[78px] w-[78px] overflow-hidden rounded-full bg-white min-[900px]:bottom-[66px] min-[900px]:right-[55px] min-[900px]:h-[205px] min-[900px]:w-[205px]">
               <Image src={webinar.speakerPhoto} alt="" width={205} height={205} className="h-full w-full object-cover object-top" />
             </div>
+            <p className="hidden min-[900px]:absolute min-[900px]:bottom-[24px] min-[900px]:right-[55px] min-[900px]:block min-[900px]:w-[205px] min-[900px]:text-center min-[900px]:text-base min-[900px]:text-[#666]">
+              {webinar.speaker}
+            </p>
           </div>
 
           <div className="flex flex-col gap-6 rounded-[20px] bg-[#f9f9f9] p-6 min-[900px]:gap-8 min-[900px]:p-10">
