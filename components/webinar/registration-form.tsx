@@ -12,6 +12,11 @@ function formatPhone(raw: string) {
   return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7, 11)}`
 }
 
+// form에 noValidate가 걸려 있어 <input type="email">의 브라우저 기본 검증이 동작하지 않으므로 직접 검사
+function isValidEmail(email: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+}
+
 // "심리검사"를 검사 유형별 4개 옵션으로 분리(2026-09-14). GAS 웹앱/구글시트가 이 문자열들과
 // 정확히 일치하는 고정 컬럼에 체크하는 방식이라면, 시트 쪽에도 동일한 4개 컬럼을 추가해야
 // 응답이 누락되지 않음 — 시트 담당자 확인 필요.
@@ -102,16 +107,23 @@ export function RegistrationForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setSubmitError("")
 
     if (interest.length === 0) {
       setInterestError(true)
       firstInterestRef.current?.focus()
       return
     }
-    if (!consent) return
+    if (!isValidEmail(form.email)) {
+      setSubmitError("올바른 이메일 주소를 입력해주세요.")
+      return
+    }
+    if (!consent) {
+      setSubmitError("개인정보 수집 및 이용에 동의해주세요.")
+      return
+    }
 
     setSubmitting(true)
-    setSubmitError("")
     try {
       const res = await fetch("/api/webinar-registration", {
         method: "POST",
@@ -184,7 +196,7 @@ export function RegistrationForm({
           <input
             id="regCompany"
             required
-            placeholder="피클 주식회사"
+            placeholder="픽클 주식회사"
             value={form.company}
             onChange={(e) => setForm({ ...form, company: e.target.value })}
             className={inputClass}
@@ -201,7 +213,7 @@ export function RegistrationForm({
             onChange={(e) => setForm({ ...form, email: e.target.value })}
             className={inputClass}
           />
-          <p className="mt-1 text-xs text-[#9296a6]">회사 이메일로 작성해주시기 바랍니다.</p>
+          <p className="mt-1 text-xs text-[#e0453c]">(회사이메일로 작성해주시기 바랍니다.)</p>
         </Field>
 
         <Field label="연락처" required htmlFor="regPhone">
@@ -272,7 +284,7 @@ export function RegistrationForm({
             className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded border border-[#e3e5f0] accent-[#2f5eff]"
           />
           <label htmlFor="consent" className="cursor-pointer text-xs font-normal leading-relaxed text-[#6d7180]">
-            입력하신 개인정보(이름, 회사명, 이메일, 연락처)는 온라인/오프라인 세미나 안내 및 소식지 발송을 위해서 사용됩니다. (보관기간 최대 2년)
+            <span className="font-semibold text-[#2f5eff]">(필수)</span> 입력하신 개인정보(이름, 회사명, 이메일, 연락처)는 온라인/오프라인 세미나 안내 및 소식지 발송을 위해서 사용됩니다. (보관기간 최대 2년)
           </label>
         </div>
 
