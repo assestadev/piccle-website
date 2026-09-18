@@ -76,9 +76,12 @@ export default async function WebinarDetailPage({ params }: { params: Promise<{ 
               <br />
               {eventTime}
             </p>
-            <div className="absolute bottom-[18px] right-5 h-[78px] w-[78px] overflow-hidden rounded-full bg-white min-[900px]:bottom-[66px] min-[900px]:right-[55px] min-[900px]:h-[205px] min-[900px]:w-[205px]">
+            <div className="absolute bottom-[18px] right-5 h-[78px] w-[78px] overflow-hidden rounded-full bg-white min-[900px]:bottom-[96px] min-[900px]:right-[55px] min-[900px]:h-[205px] min-[900px]:w-[205px]">
               <Image src={webinar.speakerPhoto} alt="" width={205} height={205} className="h-full w-full object-cover object-top" />
             </div>
+            <p className="hidden min-[900px]:absolute min-[900px]:bottom-[54px] min-[900px]:right-[55px] min-[900px]:block min-[900px]:w-[205px] min-[900px]:text-center min-[900px]:text-base min-[900px]:text-[#666]">
+              {webinar.speaker}
+            </p>
           </div>
 
           <div className="flex flex-col gap-6 rounded-[20px] bg-[#f9f9f9] p-6 min-[900px]:gap-8 min-[900px]:p-10">
@@ -102,7 +105,7 @@ export default async function WebinarDetailPage({ params }: { params: Promise<{ 
               <>
                 <hr className="m-0 w-full border-t border-[#e3e5f0]" />
                 <div className="flex flex-col gap-2.5">
-                  <h2 className="m-0 text-lg font-bold text-[#15172b]">행사 안내</h2>
+                  <h2 className="m-0 text-lg font-bold text-[#15172b]">📢 행사 안내</h2>
                   <p className="m-0 text-[15px] leading-relaxed text-[#9296a6]">
                     연사 <span className="text-[#222]">{webinar.speaker}</span>
                   </p>
@@ -126,11 +129,11 @@ export default async function WebinarDetailPage({ params }: { params: Promise<{ 
               <>
                 <hr className="m-0 w-full border-t border-[#e3e5f0]" />
                 <div className="flex flex-col gap-2.5">
-                  <h2 className="m-0 text-lg font-bold text-[#15172b]">핵심 아젠다</h2>
+                  <h2 className="m-0 text-lg font-bold text-[#15172b]">🎯 핵심 아젠다</h2>
                   <div className="flex flex-col gap-0.5 text-[15px] leading-relaxed text-[#222]">
                     {webinar.agenda.map((item, i) => (
                       <p key={i} className="m-0">
-                        ✅ {item}
+                        • {item}
                       </p>
                     ))}
                   </div>
@@ -142,7 +145,7 @@ export default async function WebinarDetailPage({ params }: { params: Promise<{ 
               <>
                 <hr className="m-0 w-full border-t border-[#e3e5f0]" />
                 <div className="flex flex-col gap-2.5">
-                  <h2 className="m-0 text-lg font-bold text-[#15172b]">이런 분들께 추천해요</h2>
+                  <h2 className="m-0 text-lg font-bold text-[#15172b]">🙋‍♀️🙋‍♂️ 이런 분들께 추천해요</h2>
                   <div className="flex flex-col text-base leading-6 text-[#222]">
                     {webinar.recommend.map((item, i) => (
                       <p key={i} className="m-0">
