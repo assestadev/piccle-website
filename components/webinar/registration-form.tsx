@@ -52,6 +52,11 @@ interface RegistrationFormProps {
   durationSummary?: string
   seminarType: string
   eventDate: string
+  speaker: string
+  location: string
+  audience: string
+  closingDate: string
+  emailHeading: string
 }
 
 export function RegistrationForm({
@@ -63,6 +68,11 @@ export function RegistrationForm({
   durationSummary,
   seminarType,
   eventDate,
+  speaker,
+  location,
+  audience,
+  closingDate,
+  emailHeading,
 }: RegistrationFormProps) {
   const router = useRouter()
   const [form, setForm] = useState({
@@ -121,6 +131,11 @@ export function RegistrationForm({
           seminarType,
           category: categoryTag,
           eventDate,
+          speaker,
+          location,
+          audience,
+          closingDate,
+          emailHeading,
         }),
       })
 
