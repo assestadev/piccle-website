@@ -3,32 +3,32 @@
 import Image from "next/image"
 import Link from "next/link"
 import { useEffect, useRef, useState } from "react"
-import type { Webinar } from "@/lib/webinars"
-import { weekOfMonthLabel } from "@/lib/webinars"
-import { WEBINAR_BANNER_MARK_ALT, WEBINAR_BANNER_MARK_SRC } from "@/lib/webinar-brand-config"
+import type { Seminar } from "@/lib/seminars"
+import { weekOfMonthLabel } from "@/lib/seminars"
+import { SEMINAR_BANNER_MARK_ALT, SEMINAR_BANNER_MARK_SRC } from "@/lib/seminar-brand-config"
 
 const AUTOPLAY_MS = 6000
 const FADE_MS = 220
 
-const PREVIEW_BG: Record<Webinar["previewBg"], string> = {
+const PREVIEW_BG: Record<Seminar["previewBg"], string> = {
   blue: "bg-[#d6eefb]",
   peach: "bg-[#fbe2d4]",
 }
 
-const PREVIEW_BG_IMAGE: Record<Webinar["previewBg"], string> = {
-  blue: "/webinar-assets/banner-bg-hero-blue.png",
-  peach: "/webinar-assets/banner-bg-card-peach.png",
+const PREVIEW_BG_IMAGE: Record<Seminar["previewBg"], string> = {
+  blue: "/seminar-assets/banner-bg-hero-blue.png",
+  peach: "/seminar-assets/banner-bg-card-peach.png",
 }
 
-export function WebinarHero({ webinars }: { webinars: Webinar[] }) {
+export function SeminarHero({ seminars }: { seminars: Seminar[] }) {
   const [index, setIndex] = useState(0)
   const [fading, setFading] = useState(false)
   const [paused, setPaused] = useState(false)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const fadeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  const current = webinars[index]
-  const hasMultiple = webinars.length > 1
+  const current = seminars[index]
+  const hasMultiple = seminars.length > 1
 
   useEffect(() => {
     const reducedMotion =
@@ -42,13 +42,13 @@ export function WebinarHero({ webinars }: { webinars: Webinar[] }) {
     }
 
     timerRef.current = setInterval(() => {
-      setIndex((i) => (i + 1) % webinars.length)
+      setIndex((i) => (i + 1) % seminars.length)
     }, AUTOPLAY_MS)
 
     return () => {
       if (timerRef.current) clearInterval(timerRef.current)
     }
-  }, [hasMultiple, paused, webinars.length])
+  }, [hasMultiple, paused, seminars.length])
 
   const goTo = (nextIndex: number) => {
     if (!hasMultiple || nextIndex === index) return
@@ -101,7 +101,7 @@ export function WebinarHero({ webinars }: { webinars: Webinar[] }) {
             <div className="mt-1 flex gap-2">
               <button
                 aria-label="이전 웨비나"
-                onClick={() => goTo((index - 1 + webinars.length) % webinars.length)}
+                onClick={() => goTo((index - 1 + seminars.length) % seminars.length)}
                 className="flex h-[41px] w-[41px] cursor-pointer items-center justify-center rounded-full border border-black/25 bg-white"
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -110,7 +110,7 @@ export function WebinarHero({ webinars }: { webinars: Webinar[] }) {
               </button>
               <button
                 aria-label="다음 웨비나"
-                onClick={() => goTo((index + 1) % webinars.length)}
+                onClick={() => goTo((index + 1) % seminars.length)}
                 className="flex h-[41px] w-[41px] cursor-pointer items-center justify-center rounded-full border border-black/25 bg-white"
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -123,7 +123,7 @@ export function WebinarHero({ webinars }: { webinars: Webinar[] }) {
 
         <div className="mt-2 min-[900px]:mt-0 min-[900px]:w-[600px] min-[900px]:shrink-0">
           <Link
-            href={`/semina/${current.slug}`}
+            href={`/seminar/${current.slug}`}
             className={`relative flex h-[175px] flex-col justify-center gap-1.5 overflow-hidden rounded-[15px] p-5 transition-opacity duration-200 min-[900px]:h-[336px] min-[900px]:rounded-[20px] ${PREVIEW_BG[current.previewBg]}`}
             style={{ opacity: fading ? 0 : 1 }}
           >
@@ -133,7 +133,7 @@ export function WebinarHero({ webinars }: { webinars: Webinar[] }) {
               fill
               className="object-cover opacity-40"
             />
-            <Image src={WEBINAR_BANNER_MARK_SRC} alt={WEBINAR_BANNER_MARK_ALT} width={194} height={20} className="relative h-auto w-[100px] min-[900px]:absolute min-[900px]:left-12 min-[900px]:top-14 min-[900px]:w-[194px]" />
+            <Image src={SEMINAR_BANNER_MARK_SRC} alt={SEMINAR_BANNER_MARK_ALT} width={194} height={20} className="relative h-auto w-[100px] min-[900px]:absolute min-[900px]:left-12 min-[900px]:top-14 min-[900px]:w-[194px]" />
             <p className="relative m-0 max-w-[60%] text-xs font-medium leading-tight min-[900px]:hidden">
               {current.title}
             </p>

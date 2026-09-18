@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { Resend } from "resend"
 import { createSupabaseClient } from "@/lib/supabase"
-import { buildWebinarConfirmationEmail } from "@/lib/webinar-confirmation-email"
+import { buildSeminarConfirmationEmail } from "@/lib/seminar-confirmation-email"
 
 // Google Apps Script 웹앱(doPost) 주소와 공유 시크릿 — 둘 다 서버 환경변수로만 보관.
 // 클라이언트(registration-form.tsx)는 이 값들을 절대 직접 알지 못하고, 이 API route를 통해서만 호출함.
@@ -126,7 +126,7 @@ export async function POST(request: Request) {
     if (RESEND_API_KEY) {
       try {
         const resend = new Resend(RESEND_API_KEY)
-        const { subject, html } = buildWebinarConfirmationEmail({
+        const { subject, html } = buildSeminarConfirmationEmail({
           applicantName: name,
           seminarTitle,
           speaker,
@@ -196,7 +196,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true, applicationId: gasData.id })
   } catch (err) {
-    console.error("webinar-registration API error:", err)
+    console.error("seminar-registration API error:", err)
     return NextResponse.json({ error: "서버 오류가 발생했습니다." }, { status: 500 })
   }
 }

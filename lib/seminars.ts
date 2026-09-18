@@ -12,7 +12,7 @@ export interface EventInfo {
   fee: string
 }
 
-export interface Webinar {
+export interface Seminar {
   slug: string
   dataType: "online" | "offline"
   categoryTag: string
@@ -43,7 +43,7 @@ export interface Webinar {
   previewBg: "blue" | "peach"
 }
 
-export const webinars: Webinar[] = [
+export const seminars: Seminar[] = [
   {
     slug: "w01",
     dataType: "online",
@@ -57,7 +57,7 @@ export const webinars: Webinar[] = [
     eventDate: "2026.10.15(목)",
     eventTime: "14:00",
     durationSummary: "온라인 · 60분 (발표 40분 · Q&A 20분)",
-    speakerPhoto: "/webinar-assets/photo-male.png",
+    speakerPhoto: "/seminar-assets/photo-male.png",
     speaker: "어세스타 김영재 AX사업 본부장",
     quoteTitle: "진단 결과를 '팀 행동 규칙'으로 바꾸는 방법",
     quoteDesc:
@@ -97,7 +97,7 @@ export const webinars: Webinar[] = [
     eventDate: "2026.10.29(목)",
     eventTime: "14:00",
     durationSummary: "온라인 · 60분 (발표 40분 · Q&A 20분)",
-    speakerPhoto: "/webinar-assets/photo-female.png",
+    speakerPhoto: "/seminar-assets/photo-female.png",
     speaker: "어세스타 최윤희 책임연구원",
     quoteTitle: "“우리 조직에 맞는 사람”은 어떻게 정의할 수 있을까?",
     quoteDesc:
@@ -126,13 +126,13 @@ export const webinars: Webinar[] = [
   },
 ]
 
-export function getWebinarBySlug(slug: string): Webinar | undefined {
-  return webinars.find((w) => w.slug === slug)
+export function getSeminarBySlug(slug: string): Seminar | undefined {
+  return seminars.find((s) => s.slug === slug)
 }
 
 /** 앞으로 열리는 가까운 일정순 정렬 (히어로 슬라이드용) */
-export function getUpcomingWebinars(): Webinar[] {
-  return [...webinars].sort((a, b) => a.listDateISO.localeCompare(b.listDateISO))
+export function getUpcomingSeminars(): Seminar[] {
+  return [...seminars].sort((a, b) => a.listDateISO.localeCompare(b.listDateISO))
 }
 
 /** "10월 3주차" 형태 라벨. 일자만 보고 계산(1~7일=1주차 ...) */
@@ -168,34 +168,34 @@ export function formatEventDateForClosing(isoDate: string, time24: string): stri
 
 /**
  * 온라인 웨비나는 "PICCLE HOUR" 시리즈 회차(#1, #2 ...)로 진행된다 (오프라인 웨비나는 아직 이 시리즈에
- * 속하는지 미정이라 번호를 매기지 않음). webinars 배열에서 online 타입만 추려 등록 순서대로 번호를 매김 —
+ * 속하는지 미정이라 번호를 매기지 않음). seminars 배열에서 online 타입만 추려 등록 순서대로 번호를 매김 —
  * 배열에 웨비나를 추가/삭제해도 이 함수가 항상 다시 계산하므로 번호를 따로 관리할 필요 없음.
  */
-function getHourNumber(webinar: Webinar): number | null {
-  if (webinar.dataType !== "online") return null
-  const onlineWebinars = webinars.filter((w) => w.dataType === "online")
-  const index = onlineWebinars.findIndex((w) => w.slug === webinar.slug)
+function getHourNumber(seminar: Seminar): number | null {
+  if (seminar.dataType !== "online") return null
+  const onlineSeminars = seminars.filter((s) => s.dataType === "online")
+  const index = onlineSeminars.findIndex((s) => s.slug === seminar.slug)
   return index === -1 ? null : index + 1
 }
 
 /**
- * 신청완료 안내 메일에 필요한 필드를 webinar 데이터 한 곳에서 파생시키는 단일 매핑 함수.
+ * 신청완료 안내 메일에 필요한 필드를 세미나 데이터 한 곳에서 파생시키는 단일 매핑 함수.
  * 상세페이지 "행사 안내"(eventInfo)를 수정하면 이 함수를 거치는 메일 내용도 함께 바뀐다 —
  * 이메일 쪽에 값을 따로 하드코딩하지 말고 항상 이 함수를 통해서만 가져올 것.
  */
-export function getWebinarEmailFields(webinar: Webinar) {
-  const eventTime = webinar.eventTime ?? webinar.listTime
-  const hourNumber = getHourNumber(webinar)
+export function getSeminarEmailFields(seminar: Seminar) {
+  const eventTime = seminar.eventTime ?? seminar.listTime
+  const hourNumber = getHourNumber(seminar)
 
   return {
-    seminarTitle: webinar.title,
-    speaker: webinar.speaker,
+    seminarTitle: seminar.title,
+    speaker: seminar.speaker,
     // "행사 안내" 카드와 동일한 일시 표기. eventInfo가 없으면 listDate/listTime으로 대체.
-    eventDate: webinar.eventInfo?.date ?? `${webinar.eventDate ?? webinar.listDate} ${eventTime}`,
+    eventDate: seminar.eventInfo?.date ?? `${seminar.eventDate ?? seminar.listDate} ${eventTime}`,
     // "행사 안내" 카드의 진행 방식/참석 대상과 동일한 값.
-    location: webinar.eventInfo?.format ?? "",
-    audience: webinar.eventInfo?.audience ?? "",
-    closingDate: formatEventDateForClosing(webinar.listDateISO, eventTime),
+    location: seminar.eventInfo?.format ?? "",
+    audience: seminar.eventInfo?.audience ?? "",
+    closingDate: formatEventDateForClosing(seminar.listDateISO, eventTime),
     emailHeading: hourNumber != null ? `PICCLE HOUR #${hourNumber} 신청 완료 안내` : "세미나 신청 완료 안내",
   }
 }
