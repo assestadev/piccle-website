@@ -102,7 +102,7 @@ export default async function WebinarDetailPage({ params }: { params: Promise<{ 
               <>
                 <hr className="m-0 w-full border-t border-[#e3e5f0]" />
                 <div className="flex flex-col gap-2.5">
-                  <h2 className="m-0 text-lg font-bold text-[#15172b]">행사 안내</h2>
+                  <h2 className="m-0 text-lg font-bold text-[#15172b]">📢 행사 안내</h2>
                   <p className="m-0 text-[15px] leading-relaxed text-[#9296a6]">
                     연사 <span className="text-[#222]">{webinar.speaker}</span>
                   </p>
@@ -126,11 +126,11 @@ export default async function WebinarDetailPage({ params }: { params: Promise<{ 
               <>
                 <hr className="m-0 w-full border-t border-[#e3e5f0]" />
                 <div className="flex flex-col gap-2.5">
-                  <h2 className="m-0 text-lg font-bold text-[#15172b]">핵심 아젠다</h2>
+                  <h2 className="m-0 text-lg font-bold text-[#15172b]">🎯 핵심 아젠다</h2>
                   <div className="flex flex-col gap-0.5 text-[15px] leading-relaxed text-[#222]">
                     {webinar.agenda.map((item, i) => (
                       <p key={i} className="m-0">
-                        ✅ {item}
+                        • {item}
                       </p>
                     ))}
                   </div>
@@ -142,7 +142,7 @@ export default async function WebinarDetailPage({ params }: { params: Promise<{ 
               <>
                 <hr className="m-0 w-full border-t border-[#e3e5f0]" />
                 <div className="flex flex-col gap-2.5">
-                  <h2 className="m-0 text-lg font-bold text-[#15172b]">이런 분들께 추천해요</h2>
+                  <h2 className="m-0 text-lg font-bold text-[#15172b]">🙋‍♀️🙋‍♂️ 이런 분들께 추천해요</h2>
                   <div className="flex flex-col text-base leading-6 text-[#222]">
                     {webinar.recommend.map((item, i) => (
                       <p key={i} className="m-0">

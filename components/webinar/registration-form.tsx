@@ -109,13 +109,17 @@ export function RegistrationForm({
     e.preventDefault()
     setSubmitError("")
 
-    if (interest.length === 0) {
-      setInterestError(true)
-      firstInterestRef.current?.focus()
+    if (!form.name || !form.company || !form.email || !form.phone || !form.hrIssue || !form.expectation) {
+      setSubmitError("필수 항목을 모두 입력해주세요.")
       return
     }
     if (!isValidEmail(form.email)) {
       setSubmitError("올바른 이메일 주소를 입력해주세요.")
+      return
+    }
+    if (interest.length === 0) {
+      setInterestError(true)
+      firstInterestRef.current?.focus()
       return
     }
     if (!consent) {
@@ -213,7 +217,7 @@ export function RegistrationForm({
             onChange={(e) => setForm({ ...form, email: e.target.value })}
             className={inputClass}
           />
-          <p className="mt-1 text-xs text-[#e0453c]">(회사이메일로 작성해주시기 바랍니다.)</p>
+          <p className="mt-1 text-xs text-[#e0453c]">회사이메일로 작성해주시기 바랍니다.</p>
         </Field>
 
         <Field label="연락처" required htmlFor="regPhone">
@@ -284,7 +288,7 @@ export function RegistrationForm({
             className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded border border-[#e3e5f0] accent-[#2f5eff]"
           />
           <label htmlFor="consent" className="cursor-pointer text-xs font-normal leading-relaxed text-[#6d7180]">
-            <span className="font-semibold text-[#2f5eff]">(필수)</span> 입력하신 개인정보(이름, 회사명, 이메일, 연락처)는 온라인/오프라인 세미나 안내 및 소식지 발송을 위해서 사용됩니다. (보관기간 최대 2년)
+            (필수) 입력하신 개인정보(이름, 회사명, 이메일, 연락처)는 온라인/오프라인 세미나 안내 및 소식지 발송을 위해서 사용됩니다. (보관기간 최대 2년)
           </label>
         </div>
 
