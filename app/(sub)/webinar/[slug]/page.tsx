@@ -44,7 +44,7 @@ export default async function WebinarDetailPage({ params }: { params: Promise<{ 
               {webinar.listDate} {webinar.listTime}
             </span>
           </div>
-          <h1 className="m-0 text-[22px] font-bold leading-tight text-[#15172b] min-[900px]:text-[30px]">{webinar.title}</h1>
+          <h1 className="m-0 text-[22px] font-bold leading-tight text-[#15172b] min-[900px]:text-[28px]">{webinar.title}</h1>
 
           <div className={`relative flex h-[175px] flex-col justify-center gap-2 overflow-hidden rounded-2xl p-5 min-[900px]:h-[459px] ${PREVIEW_BG[webinar.previewBg]}`}>
             <Image
