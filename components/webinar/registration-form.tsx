@@ -309,7 +309,7 @@ export function RegistrationForm({
                 type="button"
                 aria-expanded={marketingDetailOpen}
                 onClick={() => setMarketingDetailOpen((v) => !v)}
-                className="cursor-pointer whitespace-nowrap text-xs font-semibold text-[#2f5eff] underline"
+                className="cursor-pointer whitespace-nowrap text-xs font-semibold text-[#6d7180] underline"
               >
                 {marketingDetailOpen ? "접기" : "자세히 보기"}
               </button>
