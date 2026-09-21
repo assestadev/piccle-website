@@ -109,7 +109,7 @@ export function buildSeminarConfirmationEmail({
                         <tr><td style="padding-bottom: 30px; font-size: 14px; font-weight: 400; color: #999999; line-height: 160%; font-family: 'Pretendard Variable', Pretendard, sans-serif!important;">※ 본인이 아닌 경우, 입장에 제한이 있을 수 있습니다.</td></tr>
                         <tr><td style="padding-bottom: 4px; font-size: 16px; font-weight: 400; color: #222222; line-height: 160%; font-family: 'Pretendard Variable', Pretendard, sans-serif!important;">${closingDateText}, 웨비나에서 뵙겠습니다.</td></tr>
                         <tr><td style="padding-bottom: 30px; font-size: 16px; font-weight: 400; color: #222222; line-height: 160%; font-family: 'Pretendard Variable', Pretendard, sans-serif!important;">PICCLE 팀 드림</td></tr>
-                        <tr><td style="padding-bottom: 30px; font-size: 14px; font-weight: 400; color: #999999; line-height: 160%; font-family: 'Pretendard Variable', Pretendard, sans-serif!important;">문의 | 김석현 선임연구원(shkim2@assesta.com)</td></tr>
+                        <tr><td style="padding-bottom: 30px; font-size: 14px; font-weight: 400; color: #999999; line-height: 160%; font-family: 'Pretendard Variable', Pretendard, sans-serif!important;">문의 | 오경민 책임 연구원(kmoh@assesta.com)</td></tr>
                         <tr><td style="padding-bottom: 50px; text-align: center; font-size: 13px; font-weight: 400; color: #999999; line-height: 160%; font-family: 'Pretendard Variable', Pretendard, sans-serif!important;">PICCLE 웨비나 사전 등록 신청자분들께 발송 드리는 메시지입니다.</td></tr>
                     </table>
                 </td>
