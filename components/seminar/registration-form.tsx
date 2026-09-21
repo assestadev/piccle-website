@@ -17,6 +17,12 @@ function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 }
 
+// 마찬가지로 noValidate 때문에 <input>의 pattern="01[0-9]-\d{3,4}-\d{4}"이 브라우저에서 검증되지
+// 않으므로, 010-1234처럼 끊긴 채로도 제출되지 않도록 동일 패턴을 여기서 직접 검사
+function isValidPhone(phone: string) {
+  return /^01[0-9]-\d{3,4}-\d{4}$/.test(phone)
+}
+
 // "심리검사"를 검사 유형별 4개 옵션으로 분리(2026-09-14). GAS 웹앱/구글시트가 이 문자열들과
 // 정확히 일치하는 고정 컬럼에 체크하는 방식이라면, 시트 쪽에도 동일한 4개 컬럼을 추가해야
 // 응답이 누락되지 않음 — 시트 담당자 확인 필요.
@@ -115,6 +121,10 @@ export function RegistrationForm({
     }
     if (!isValidEmail(form.email)) {
       setSubmitError("올바른 이메일 주소를 입력해주세요.")
+      return
+    }
+    if (!isValidPhone(form.phone)) {
+      setSubmitError("연락처를 올바르게 입력해주세요. (예: 010-0000-0000)")
       return
     }
     if (interest.length === 0) {
