@@ -44,7 +44,7 @@ export function SiteHeader() {
         </button>
 
         <div className="flex items-center gap-3 sm:gap-6">
-          {/* 메인 페이지에서만 솔루션/활용사례/보안정책 노출, "세미나"는 직접 접속한 웨비나 섹션에서만 노출.
+          {/* 메인 페이지에서만 솔루션/활용사례/보안정책 노출, "세미나"는 모든 페이지에서 항상 노출.
               서브페이지(메인이 아닐 때)에서는 "홈"을 맨 앞에 추가로 노출 — 로고 클릭만으로는
               홈 이동이 잘 안 보인다는 피드백 반영. 메인 페이지 자체에는 "홈"을 넣지 않음. */}
           <nav className="hidden items-center gap-8 md:flex">
@@ -80,16 +80,14 @@ export function SiteHeader() {
                 보안 정책
               </button>
             )}
-            {isSeminarSection && (
-              <Link
-                href="/seminar"
-                className={`cursor-pointer text-sm font-medium transition-colors ${
-                  isSeminarSection ? "font-bold text-[#0f2d6e]" : "text-slate-600 hover:text-[#1e4fa8]"
-                }`}
-              >
-                세미나
-              </Link>
-            )}
+            <Link
+              href="/seminar"
+              className={`cursor-pointer text-sm font-medium transition-colors ${
+                isSeminarSection ? "font-bold text-[#0f2d6e]" : "text-slate-600 hover:text-[#1e4fa8]"
+              }`}
+            >
+              세미나
+            </Link>
           </nav>
 
           {servicePreviewEnabled && (isMain || isServicePage) && (
