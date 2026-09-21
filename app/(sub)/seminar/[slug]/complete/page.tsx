@@ -21,9 +21,9 @@ export default async function SeminarCompletePage({ params }: { params: Promise<
         <Image src="/seminar-assets/icon-check-circle.svg" alt="" width={32} height={32} />
         <h1 className="m-0 text-2xl font-bold text-[#15172b] min-[900px]:text-[30px]">신청이 완료되었어요</h1>
         <p className="m-0 text-base leading-snug text-[#15172b] min-[900px]:text-lg">
-          웨비나 하루 전, 입력하신 이메일로
+          웨비나 하루 전, 입력하신 이메일과 문자로
           <br />
-          참여 링크를 보내드릴게요
+          참여 링크를 보내드릴게요😊
         </p>
         <Link
           href="/seminar"
