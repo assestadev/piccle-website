@@ -83,35 +83,42 @@ rg -n "LandingPopup|landing-popup|popup|팝업" app components
 
 ## Popup and release handling
 
-- If the request is only to raise or lower the popup:
-  - do not delete the popup component
-  - toggle it with the smallest safe code change
-  - keep popup data in place for later reuse
+Popup changes are frequent (at least monthly) and low-risk, so they use a
+dedicated flow instead of the `dev-b2b` cherry-pick process. Do not create a
+new long-lived branch per change and do not leave branches around after
+merge — this caused branch sprawl (`popup-off-main`, `popup-push-august`,
+`popup-release`, `release-disable-aug-popup` all existed for the same kind
+of change and were deleted on 2026-09-23 after confirming they carried no
+unique commits versus `origin/main`).
 
-- If the request is to update popup content:
-  - keep the current structure
-  - update `imageUrl`, then review `linkUrl` and `alt`
-  - change copy only when new wording was explicitly provided
+Standard popup flow:
 
-- If the request is for development only:
-  - work on `dev-b2b`
-  - create a popup-only commit
-  - push to `b2b` with `git push b2b dev-b2b:main`
-  - do not push anything to `origin`
+1. Start from an up-to-date `main`, always:
+   ```bash
+   git fetch origin
+   git switch -c popup/YYYY-MM origin/main
+   ```
+2. Make exactly one commit that only touches `lib/landing-popup-config.ts`
+   (`enabled`, `imageUrl`, `linkUrl`, `alt`). Do not mix in unrelated
+   changes or leftover working-tree state from other branches.
+3. Push and open a PR into `main`:
+   ```bash
+   git push origin popup/YYYY-MM
+   ```
+4. Verify the change on the Vercel preview deployment attached to the PR
+   before merging — do not merge on faith.
+5. Squash-merge the PR once confirmed. Delete the branch immediately after
+   merge (enable "auto-delete branch" on the GitHub repo if not already on).
+6. Locally: `git switch main && git pull`.
 
-- If the request is for production only:
-  - work on `main`
-  - create a popup-only commit
-  - do not include unrelated `dev-b2b` commits or working tree changes
-  - push only that popup-related commit to `origin/main`
-
-- If the request is to release development work to production:
-  - switch to `main`
-  - do not merge all development history blindly
-  - cherry-pick only the approved commits from `dev-b2b`
-  - push to `origin`
-
-- If the request is ambiguous, prefer the safer development flow first
+- Do not delete the popup component (`components/landing-popup.tsx`) as
+  part of a popup-only change.
+- Full removal is safe only if all three are done together: remove the
+  `LandingPopup` import from `app/page.tsx`, remove the `<LandingPopup />`
+  render, then delete/stop using the component file.
+- If the request is ambiguous, prefer this popup flow over touching
+  `dev-b2b`/`main` directly — it is the safer default for small,
+  frequent, production-only edits.
 
 ## Local safety guards
 
