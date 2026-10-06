@@ -327,6 +327,7 @@ export default function InquiryPage() {
                       : "border-slate-200 focus:border-[#1e4fa8] focus:ring-[#1e4fa8]/10"
                   }`}
                 />
+                <p className="text-xs text-slate-400 mt-1.5 ml-1">회사 이메일로 작성해주시기 바랍니다.</p>
                 {emailError && (
                   <p className="text-xs text-red-500 mt-1.5 ml-1">{emailError}</p>
                 )}
