@@ -13,46 +13,62 @@ const STEP1_OPTIONS = [
 ]
 
 const STEP2_OPTIONS = [
-  "없다 (사람마다 기준이 제각각이다)",
-  "말로는 있지만 구체적으로 문서화되어 있지 않다",
-  "과거에 만들었지만 업데이트가 필요하다",
-  "실제 업무 현장의 모습과 잘 맞지 않는다",
-  "기준이 명확하고 실제 제도에 잘 활용되고 있다",
+  "신규 도입 검토",
+  "기존 프로그램 개편/교체",
+  "예산 편성을 위한 견적 확인",
+  "내부 보고용 자료 수집",
+  "단순 정보 탐색",
 ]
 
-const STEP3_OPTIONS = [
-  "방법론이 막막하다",
-  "비용과 시간이 너무 많이 소요된다",
-  "직무별 특성 반영이 어렵다",
-  "상황 변화 속도를 따라가지 못하는 속도",
-  "실제 인사 제도와 연결하기 어렵다",
-  "아직 시도해 본 적 없다",
+const STEP3_CATEGORIES = [
+  {
+    title: "1. 평가 / 채용 / 선발",
+    items: ["채용, 선발 도구", "역량 관리 (역량 모델링)", "AC (평가센터)", "다면진단", "채용 인터뷰"],
+  },
+  {
+    title: "2. 육성 / 개발 / 코칭",
+    items: ["역량개발", "DC (개발센터)", "AI 시뮬레이션 코칭", "리더십 개발", "팀빌딩 / 조직개발", "코칭 / 상담"],
+  },
+  {
+    title: "3. 심리 검사",
+    items: [
+      "성격유형검사 (MBTI)",
+      "인성검사 (CPI)",
+      "대인관계검사 (FIRO-B)",
+      "갈등관리유형검사 (TKI)",
+      "웰빙/회복탄력성 검사",
+      "조직/업무 몰입검사",
+      "AI역량준비도(Readiness) 검사",
+    ],
+  },
+  {
+    title: "4. 웰니스 & 조직문화",
+    items: ["웰니스, EAP", "조직문화", "조직진단"],
+  },
+  {
+    title: "5. HR Tech (AI / 데이터)",
+    items: ["HR-AI 플랫폼 도입", "HR 데이터 분석", "AI 에이전트 도입", "커스텀 AI 기능 도입"],
+  },
 ]
 
 const STEP4_OPTIONS = [
-  "객관적이고 공정한 기준 확립",
-  "고성과자의 '성공 DNA' 추출",
-  "구성원 설득 및 수용성 제고",
-  "시간과 비용의 획기적 절감",
-  "실시간 기준 업데이트",
-  "특별히 기대되는 점 없음",
+  "3개월 이내",
+  "6개월 이내",
+  "1년 이내",
+  "빠른 시일 내 협의 필요",
+  "도입 시기 미정",
 ]
 
 const STEP5_OPTIONS = [
-  "데이터 보안 유출 우려",
-  "결과의 신뢰성 부족",
-  "결과물 수정/관리의 어려움",
-  "기존 인사 체계와의 연결성 확보",
-  "특별히 우려되는 점 없음",
+  "웹 검색 (네이버, 구글 등)",
+  "SNS / 디지털 광고 (링크드인, 페이스북 등)",
+  "블로그 / 콘텐츠 / 뉴스레터",
+  "세미나 / 웨비나 / 오프라인 행사",
+  "지인 추천 / 사내 추천 / 파트너 소개",
+  "기타",
 ]
 
-const STEP6_OPTIONS = [
-  "채용 (면접 질문 및 선별 기준 수립)",
-  "평가 (성과 지표 수립 및 피드백)",
-  "교육/육성 (1:1 AI 롤플레이 등 실전형 개발)",
-  "HR 데이터 통합 관리",
-  "현재로서는 없음",
-]
+const STEP6_MAX_LENGTH = 1000
 
 const PRIVACY_TEXT = `제1조 (수집하는 개인정보 항목)
 피클(Piccle)은 상세 제안서 발송 및 상담 서비스 제공을 위해 아래와 같은 개인정보를 수집합니다.
@@ -126,15 +142,35 @@ function CheckOption({ label, selected, onChange }: {
   )
 }
 
+/* ── 칩 옵션 (관심 프로그램) ── */
+function ChipOption({ label, selected, onChange }: {
+  label: string; selected: boolean; onChange: () => void
+}) {
+  return (
+    <button
+      type="button"
+      aria-pressed={selected}
+      onClick={onChange}
+      className={`cursor-pointer px-3.5 py-2 rounded-lg border text-[13px] font-medium leading-snug transition-all duration-200 ${
+        selected
+          ? "border-[#1e4fa8] bg-[#1e4fa8] text-white"
+          : "border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50"
+      }`}
+    >
+      {label}
+    </button>
+  )
+}
+
 /* ── 메인 컴포넌트 ── */
 // step 1: 연락처 정보  |  step 2~7: 설문 1~6  |  step 8: 완료
 export default function InquiryPage() {
   const [step, setStep] = useState(1)
 
   const [step1, setStep1] = useState("")
-  const [step2, setStep2] = useState("")
+  const [step2, setStep2] = useState<string[]>([])
   const [step3, setStep3] = useState<string[]>([])
-  const [step4, setStep4] = useState<string[]>([])
+  const [step4, setStep4] = useState("")
   const [step5, setStep5] = useState<string[]>([])
   const [step6, setStep6] = useState("")
 
@@ -153,11 +189,11 @@ export default function InquiryPage() {
   const canNext =
     step === 1 ? !!(form.name && form.company && form.phone && form.email && privacyAgreed) :
     step === 2 ? !!step1 :
-    step === 3 ? !!step2 :
+    step === 3 ? step2.length > 0 :
     step === 4 ? step3.length > 0 :
-    step === 5 ? step4.length > 0 :
+    step === 5 ? !!step4 :
     step === 6 ? step5.length > 0 :
-    step === 7 ? !!step6 :
+    step === 7 ? true : // 자유 문의는 선택 사항
     false
 
   const toggle = (arr: string[], val: string) =>
@@ -178,11 +214,11 @@ export default function InquiryPage() {
             email: form.email,
             privacy_agreed: privacyAgreed,
             org_type: step1,
-            competency_model: step2,
-            difficulties: step3,
-            ai_expectations: step4,
-            ai_concerns: step5,
-            hr_task: step6,
+            purposes: step2,
+            programs: step3,
+            timeline: step4,
+            referral_sources: step5,
+            message: step6.trim(),
           }),
         })
         if (!res.ok) {
@@ -208,15 +244,15 @@ export default function InquiryPage() {
     if (step > 1) setStep((s) => s - 1)
   }
 
-  const isMultiple = step === 4 || step === 5 || step === 6
+  const isMultiple = step === 3 || step === 4 || step === 6
 
   const STEP_TITLES: Record<number, string> = {
     1: "어떤 유형의 조직에 속해 계신가요?",
-    2: "현재 우리 조직에는 '일 잘하는 기준(역량 모델)'이 정리되어 있나요?",
-    3: "우리 조직에서 '일 잘하는 기준'을 정의하거나 관리할 때, 가장 어려운 점은 무엇인가요?",
-    4: "만약 AI가 조직 내부 데이터를 기반으로 '일 잘하는 기준'을 3초 만에 도출해준다면, 가장 기대되는 점은 무엇인가요?",
-    5: "한편, HR에 AI 도입을 검토할 때 가장 고민(우려)되는 점은 무엇인가요?",
-    6: "도출된 '일 잘하는 기준'을 바탕으로 가장 먼저 해결하고 싶은 HR 과제는 무엇인가요?",
+    2: "도입 목적 및 현황을 선택해 주세요.",
+    3: "관심 프로그램을 선택해 주세요.",
+    4: "도입 희망 시기를 선택해 주세요.",
+    5: "유입 경로를 선택해 주세요.",
+    6: "추가로 논의하고 싶으신 사항이나 문의사항이 있다면 자유롭게 적어주세요.",
   }
 
   return (
@@ -234,7 +270,7 @@ export default function InquiryPage() {
       )}
 
       {/* ── 카드 ── */}
-      <div className={`w-full max-w-lg bg-white rounded-2xl border border-slate-200 shadow-lg p-6 sm:p-8 ${step === 8 ? "mt-14 sm:mt-16" : ""}`}>
+      <div className={`w-full ${step === 4 ? "max-w-3xl" : "max-w-lg"} bg-white rounded-2xl border border-slate-200 shadow-lg p-6 sm:p-8 ${step === 8 ? "mt-14 sm:mt-16" : ""}`}>
 
         {/* ── 진행바 (step 2~7) ── */}
         {step >= 2 && step <= 7 && (
@@ -387,31 +423,43 @@ export default function InquiryPage() {
           </div>
         )}
 
-        {/* ── Step 3 ── */}
+        {/* ── Step 3 (복수) ── */}
         {step === 3 && (
           <div className="flex flex-col gap-2.5">
             {STEP2_OPTIONS.map((opt) => (
-              <RadioOption key={opt} label={opt} selected={step2 === opt} onChange={() => { setStep2(opt); autoNext() }} />
+              <CheckOption key={opt} label={opt} selected={step2.includes(opt)}
+                onChange={() => setStep2(toggle(step2, opt))} />
             ))}
           </div>
         )}
 
-        {/* ── Step 4 (복수) ── */}
+        {/* ── Step 4 (복수, 분류형) ── */}
         {step === 4 && (
-          <div className="flex flex-col gap-2.5">
-            {STEP3_OPTIONS.map((opt) => (
-              <CheckOption key={opt} label={opt} selected={step3.includes(opt)}
-                onChange={() => setStep3(toggle(step3, opt))} />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+            {STEP3_CATEGORIES.map((category, idx) => (
+              <div
+                key={category.title}
+                className={`rounded-xl border border-slate-200 bg-white p-4 sm:p-5 ${
+                  idx === STEP3_CATEGORIES.length - 1 ? "sm:col-span-2" : ""
+                }`}
+              >
+                <p className="text-sm font-bold text-[#1e4fa8] mb-3">{category.title}</p>
+                <div className="flex flex-wrap gap-2">
+                  {category.items.map((opt) => (
+                    <ChipOption key={opt} label={opt} selected={step3.includes(opt)}
+                      onChange={() => setStep3(toggle(step3, opt))} />
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
         )}
 
-        {/* ── Step 5 (복수) ── */}
+        {/* ── Step 5 ── */}
         {step === 5 && (
           <div className="flex flex-col gap-2.5">
             {STEP4_OPTIONS.map((opt) => (
-              <CheckOption key={opt} label={opt} selected={step4.includes(opt)}
-                onChange={() => setStep4(toggle(step4, opt))} />
+              <RadioOption key={opt} label={opt} selected={step4 === opt} onChange={() => { setStep4(opt); autoNext() }} />
             ))}
           </div>
         )}
@@ -426,12 +474,18 @@ export default function InquiryPage() {
           </div>
         )}
 
-        {/* ── Step 7 ── */}
+        {/* ── Step 7 (자유 입력, 선택) ── */}
         {step === 7 && (
-          <div className="flex flex-col gap-2.5">
-            {STEP6_OPTIONS.map((opt) => (
-              <RadioOption key={opt} label={opt} selected={step6 === opt} onChange={() => setStep6(opt)} />
-            ))}
+          <div>
+            <textarea
+              placeholder="내용을 입력해 주세요. (선택)"
+              value={step6}
+              onChange={(e) => setStep6(e.target.value)}
+              maxLength={STEP6_MAX_LENGTH}
+              rows={6}
+              className="w-full px-4 py-3.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-700 placeholder-slate-400 leading-relaxed resize-none focus:outline-none focus:border-[#1e4fa8] focus:ring-2 focus:ring-[#1e4fa8]/10 transition-all"
+            />
+            <p className="text-xs text-slate-400 mt-1.5 text-right">{step6.length} / {STEP6_MAX_LENGTH}</p>
           </div>
         )}
 
