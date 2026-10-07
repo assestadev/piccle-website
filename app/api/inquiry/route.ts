@@ -5,7 +5,7 @@ export async function POST(request: Request) {
   try {
     const body = await request.json()
 
-    const { name, company, phone, email, privacy_agreed, org_type, competency_model, difficulties, ai_expectations, ai_concerns, hr_task } = body
+    const { name, company, phone, email, privacy_agreed, org_type, purposes, programs, timeline, referral_sources, message } = body
 
     if (!name || !company || !phone || !email) {
       return NextResponse.json(
@@ -25,11 +25,13 @@ export async function POST(request: Request) {
           email,
           privacy_agreed: privacy_agreed ?? true,
           org_type,
-          competency_model,
-          difficulties,
-          ai_expectations,
-          ai_concerns,
-          hr_task,
+          purposes,
+          programs,
+          timeline,
+          referral_sources,
+          message: message || null,
+          // 운영(Vercel production) 외 환경(devpage, 로컬)에서 제출된 문의는 테스트로 표기
+          is_test: process.env.VERCEL_ENV !== 'production',
         },
       ])
 
