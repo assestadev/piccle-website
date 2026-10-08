@@ -6,7 +6,10 @@ import './globals.css'
 //26.9.15 네이버,GA tag삽입
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://hr.assesta.com'
 const GA_ID = 'G-1H518NNWT3'
-const NAVER_VERIFICATION = '0986f1451b775fbf109ec7e4e950edbdd4915ded'
+const NAVER_VERIFICATIONS = [
+  '0986f1451b775fbf109ec7e4e950edbdd4915ded',
+  '066df014d4bf8c3e29cc7e86ac337b4cc3fd905a',
+]
 // 
 
 export const metadata: Metadata = {
@@ -54,7 +57,9 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <head>
-        <meta name="naver-site-verification" content={NAVER_VERIFICATION} />
+        {NAVER_VERIFICATIONS.map((code) => (
+          <meta key={code} name="naver-site-verification" content={code} />
+        ))}
         <link rel="icon" href="https://img.assesta.com/piccle/favicon.png" type="image/png" />
         <link
           rel="stylesheet"
