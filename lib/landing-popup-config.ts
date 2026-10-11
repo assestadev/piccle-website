@@ -16,7 +16,7 @@ export const LANDING_POPUPS: LandingPopupItem[] = [
     linkUrl: "https://www.career4u.net/Board/Board_View.asp?Seq=17067&nowPage=1&Board_Cd=A051",
     alt: "10월 휴무안내",
     hideForHours: 24,
-    enabled: true,
+    enabled: false,
   },
   {
     id: "2026-service-maintenance",
@@ -24,6 +24,6 @@ export const LANDING_POPUPS: LandingPopupItem[] = [
     linkUrl: "#",
     alt: "서비스점검 팝업",
     hideForHours: 24,
-    enabled: true,
+    enabled: false,
   },
 ]
