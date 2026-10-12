@@ -19,11 +19,11 @@ export const LANDING_POPUPS: LandingPopupItem[] = [
     enabled: false,
   },
   {
-    id: "2026-service-maintenance",
-    imageUrl: "https://img.assesta.com/popup/2026_notice_07.jpg",
+    id: "2026-10-18-system-maintenance",
+    imageUrl: "https://img.assesta.com/popup/2026_notice_08.jpg",
     linkUrl: "#",
-    alt: "서비스점검 팝업",
+    alt: "시스템 점검에 따른 서비스 이용 제한 안내",
     hideForHours: 24,
-    enabled: false,
+    enabled: true,
   },
 ]
