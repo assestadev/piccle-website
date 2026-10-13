@@ -88,6 +88,7 @@ export const seminars: Seminar[] = [
     listDate: "2026.10.15(목)",
     listTime: "14:00",
     listDateISO: "2026-10-15",
+    registrationClosed: true,
     eventDate: "2026.10.15(목)",
     eventTime: "14:00",
     durationSummary: "온라인 · 60분 (발표 40분 · Q&A 20분)",
