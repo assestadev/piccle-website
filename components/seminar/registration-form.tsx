@@ -3,6 +3,9 @@
 import { useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
+import Link from "next/link"
+import { REGISTRATION_STATUS_MESSAGE, type Seminar } from "@/lib/seminars"
+import { useRegistrationStatus } from "@/components/seminar/seminar-status-badge"
 
 // 숫자만 입력해도 010-0000-0000 형태로 자동 정렬 — 사용자가 하이픈을 직접 넣을 필요 없음
 function formatPhone(raw: string) {
@@ -53,6 +56,7 @@ const MARKETING_CONSENT_NOTICE = {
 }
 
 interface RegistrationFormProps {
+  seminar: Seminar
   slug: string
   categoryTag: string
   title: string
@@ -69,6 +73,7 @@ interface RegistrationFormProps {
 }
 
 export function RegistrationForm({
+  seminar,
   slug,
   categoryTag,
   title,
@@ -84,6 +89,7 @@ export function RegistrationForm({
   emailHeading,
 }: RegistrationFormProps) {
   const router = useRouter()
+  const status = useRegistrationStatus(seminar)
   const [form, setForm] = useState({
     name: "",
     company: "",
@@ -151,6 +157,7 @@ export function RegistrationForm({
           motivation: form.expectation,
           privacyAgreed: consent,
           marketingAgreed: marketingConsent,
+          slug,
           seminarTitle: title,
           seminarType,
           category: categoryTag,
@@ -192,167 +199,179 @@ export function RegistrationForm({
         {durationSummary && <p className="m-0 text-sm text-[#6d7180]">{durationSummary}</p>}
       </div>
 
-      <form className="flex flex-col gap-3.5" onSubmit={handleSubmit} noValidate>
-        <Field label="이름" required htmlFor="regName">
-          <input
-            id="regName"
-            required
-            placeholder="홍길동"
-            value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
-            className={inputClass}
-          />
-        </Field>
-
-        <Field label="회사명" required htmlFor="regCompany">
-          <input
-            id="regCompany"
-            required
-            placeholder="픽클 주식회사"
-            value={form.company}
-            onChange={(e) => setForm({ ...form, company: e.target.value })}
-            className={inputClass}
-          />
-        </Field>
-
-        <Field label="이메일" required htmlFor="regEmail">
-          <input
-            id="regEmail"
-            type="email"
-            required
-            placeholder="name@company.com"
-            value={form.email}
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
-            className={inputClass}
-          />
-          <p className="mt-1 text-xs text-[#e0453c]">회사이메일로 작성해주시기 바랍니다.</p>
-        </Field>
-
-        <Field label="연락처" required htmlFor="regPhone">
-          <input
-            id="regPhone"
-            type="tel"
-            inputMode="numeric"
-            required
-            pattern="01[0-9]-\d{3,4}-\d{4}"
-            title="010-0000-0000 형식으로 저장됩니다. 숫자만 입력해주세요."
-            placeholder="010-0000-0000"
-            value={form.phone}
-            onChange={(e) => setForm({ ...form, phone: formatPhone(e.target.value) })}
-            className={inputClass}
-          />
-        </Field>
-
-        <div className="flex flex-col gap-1.5">
-          <label className="text-[13px] font-medium text-[#15172b]">
-            관심주제 (중복체크 가능) <span className="text-[#2f5eff]">*</span>
-          </label>
-          <div className="grid grid-cols-2 gap-x-3 gap-y-2">
-            {INTEREST_OPTIONS.map((opt, i) => (
-              <label key={opt} className="flex cursor-pointer items-start gap-2 text-[13px] font-medium text-[#6d7180]">
-                <input
-                  ref={i === 0 ? firstInterestRef : undefined}
-                  type="checkbox"
-                  checked={interest.includes(opt)}
-                  onChange={() => toggleInterest(opt)}
-                  className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded border border-[#e3e5f0] accent-[#2f5eff]"
-                />
-                {opt}
-              </label>
-            ))}
-          </div>
-          {interestError && <p className="mt-1 text-xs text-[#e0453c]">관심주제를 1개 이상 선택해주세요.</p>}
+      {status !== "open" ? (
+        <div className="flex flex-col items-center gap-4 rounded-xl bg-[#f9f9f9] px-5 py-8 text-center">
+          <p className="m-0 text-base font-bold text-[#15172b]">{REGISTRATION_STATUS_MESSAGE[status]}</p>
+          <Link
+            href="/seminar"
+            className="w-full rounded-[10px] bg-[#222] px-5 py-3.5 text-base font-bold text-white"
+          >
+            다른 웨비나 보기
+          </Link>
         </div>
+      ) : (
+        <form className="flex flex-col gap-3.5" onSubmit={handleSubmit} noValidate>
+          <Field label="이름" required htmlFor="regName">
+            <input
+              id="regName"
+              required
+              placeholder="홍길동"
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              className={inputClass}
+            />
+          </Field>
 
-        <Field label="현재 사내 HR 이슈" required htmlFor="regHrIssue">
-          <textarea
-            id="regHrIssue"
-            required
-            placeholder="현재 사내 HR 업무 또는 조직 운영에서 가장 고민되는 이슈가 있다면 편하게 남겨주세요."
-            value={form.hrIssue}
-            onChange={(e) => setForm({ ...form, hrIssue: e.target.value })}
-            className={`${inputClass} min-h-[72px] resize-y`}
-          />
-        </Field>
+          <Field label="회사명" required htmlFor="regCompany">
+            <input
+              id="regCompany"
+              required
+              placeholder="픽클 주식회사"
+              value={form.company}
+              onChange={(e) => setForm({ ...form, company: e.target.value })}
+              className={inputClass}
+            />
+          </Field>
 
-        <Field label="참가 계기 및 Q&A" required htmlFor="regExpectation">
-          <textarea
-            id="regExpectation"
-            required
-            placeholder="이번 세미나에 참석하게 된 가장 큰 계기나 연사에게 궁금하신 점은 무엇인가요?"
-            value={form.expectation}
-            onChange={(e) => setForm({ ...form, expectation: e.target.value })}
-            className={`${inputClass} min-h-[72px] resize-y`}
-          />
-        </Field>
+          <Field label="이메일" required htmlFor="regEmail">
+            <input
+              id="regEmail"
+              type="email"
+              required
+              placeholder="name@company.com"
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+              className={inputClass}
+            />
+            <p className="mt-1 text-xs text-[#e0453c]">회사이메일로 작성해주시기 바랍니다.</p>
+          </Field>
 
-        <div className="flex items-start gap-2.5 pt-1">
-          <input
-            id="consent"
-            type="checkbox"
-            required
-            checked={consent}
-            onChange={(e) => setConsent(e.target.checked)}
-            className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded border border-[#e3e5f0] accent-[#2f5eff]"
-          />
-          <label htmlFor="consent" className="cursor-pointer text-xs font-normal leading-relaxed text-[#6d7180]">
-            (필수) 입력하신 개인정보(이름, 회사명, 이메일, 연락처)는 온라인/오프라인 세미나 안내 및 소식지 발송을 위해서 사용됩니다. (보관기간 최대 2년)
-          </label>
-        </div>
+          <Field label="연락처" required htmlFor="regPhone">
+            <input
+              id="regPhone"
+              type="tel"
+              inputMode="numeric"
+              required
+              pattern="01[0-9]-\d{3,4}-\d{4}"
+              title="010-0000-0000 형식으로 저장됩니다. 숫자만 입력해주세요."
+              placeholder="010-0000-0000"
+              value={form.phone}
+              onChange={(e) => setForm({ ...form, phone: formatPhone(e.target.value) })}
+              className={inputClass}
+            />
+          </Field>
 
-        <div className="flex items-start gap-2.5">
-          <input
-            id="marketingConsent"
-            type="checkbox"
-            checked={marketingConsent}
-            onChange={(e) => setMarketingConsent(e.target.checked)}
-            className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded border border-[#e3e5f0] accent-[#2f5eff]"
-          />
-          <div className="min-w-0 flex-1">
-            <div className="flex flex-wrap items-center gap-2">
-              <label htmlFor="marketingConsent" className="cursor-pointer text-xs text-[#6d7180]">
-                (선택) 마케팅 정보 수신 동의
-              </label>
-              <button
-                type="button"
-                aria-expanded={marketingDetailOpen}
-                onClick={() => setMarketingDetailOpen((v) => !v)}
-                className="cursor-pointer whitespace-nowrap text-xs font-semibold text-[#6d7180] underline"
-              >
-                {marketingDetailOpen ? "접기" : "자세히 보기"}
-              </button>
+          <div className="flex flex-col gap-1.5">
+            <label className="text-[13px] font-medium text-[#15172b]">
+              관심주제 (중복체크 가능) <span className="text-[#2f5eff]">*</span>
+            </label>
+            <div className="grid grid-cols-2 gap-x-3 gap-y-2">
+              {INTEREST_OPTIONS.map((opt, i) => (
+                <label key={opt} className="flex cursor-pointer items-start gap-2 text-[13px] font-medium text-[#6d7180]">
+                  <input
+                    ref={i === 0 ? firstInterestRef : undefined}
+                    type="checkbox"
+                    checked={interest.includes(opt)}
+                    onChange={() => toggleInterest(opt)}
+                    className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded border border-[#e3e5f0] accent-[#2f5eff]"
+                  />
+                  {opt}
+                </label>
+              ))}
             </div>
-            {marketingDetailOpen && (
-              <dl className="mt-2 rounded-lg bg-[#f9f9f9] p-3 text-[11px] leading-relaxed text-[#6d7180]">
-                <dt className="font-bold text-[#15172b]">개인정보 수집 및 이용 목적</dt>
-                <dd className="mt-0.5 whitespace-pre-line">{MARKETING_CONSENT_NOTICE.purpose}</dd>
-                <dt className="mt-2 font-bold text-[#15172b]">개인정보 수집 항목</dt>
-                <dd className="mt-0.5">{MARKETING_CONSENT_NOTICE.items}</dd>
-                <dt className="mt-2 font-bold text-[#15172b]">마케팅 정보 전송 매체</dt>
-                <dd className="mt-0.5">{MARKETING_CONSENT_NOTICE.channel}</dd>
-                <dt className="mt-2 font-bold text-[#15172b]">보유 및 이용 기간</dt>
-                <dd className="mt-0.5">{MARKETING_CONSENT_NOTICE.retention}</dd>
-                <dt className="mt-2 font-bold text-[#15172b]">동의를 거부할 권리 및 동의 거부에 따른 불이익</dt>
-                <dd className="mt-0.5">{MARKETING_CONSENT_NOTICE.refusal}</dd>
-                <dt className="mt-2 font-bold text-[#15172b]">수신 동의 철회 방법</dt>
-                <dd className="mt-0.5">{MARKETING_CONSENT_NOTICE.withdrawal}</dd>
-              </dl>
-            )}
+            {interestError && <p className="mt-1 text-xs text-[#e0453c]">관심주제를 1개 이상 선택해주세요.</p>}
           </div>
-        </div>
 
-        {submitError && (
-          <p className="rounded-lg bg-[#fdecea] px-3 py-2.5 text-xs text-[#e0453c]">{submitError}</p>
-        )}
+          <Field label="현재 사내 HR 이슈" required htmlFor="regHrIssue">
+            <textarea
+              id="regHrIssue"
+              required
+              placeholder="현재 사내 HR 업무 또는 조직 운영에서 가장 고민되는 이슈가 있다면 편하게 남겨주세요."
+              value={form.hrIssue}
+              onChange={(e) => setForm({ ...form, hrIssue: e.target.value })}
+              className={`${inputClass} min-h-[72px] resize-y`}
+            />
+          </Field>
 
-        <button
-          type="submit"
-          disabled={submitting}
-          className="w-full cursor-pointer rounded-[10px] bg-[#222] px-5 py-3.5 text-lg font-bold text-white disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          {submitting ? "제출 중..." : "신청 완료하기"}
-        </button>
-      </form>
+          <Field label="참가 계기 및 Q&A" required htmlFor="regExpectation">
+            <textarea
+              id="regExpectation"
+              required
+              placeholder="이번 세미나에 참석하게 된 가장 큰 계기나 연사에게 궁금하신 점은 무엇인가요?"
+              value={form.expectation}
+              onChange={(e) => setForm({ ...form, expectation: e.target.value })}
+              className={`${inputClass} min-h-[72px] resize-y`}
+            />
+          </Field>
+
+          <div className="flex items-start gap-2.5 pt-1">
+            <input
+              id="consent"
+              type="checkbox"
+              required
+              checked={consent}
+              onChange={(e) => setConsent(e.target.checked)}
+              className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded border border-[#e3e5f0] accent-[#2f5eff]"
+            />
+            <label htmlFor="consent" className="cursor-pointer text-xs font-normal leading-relaxed text-[#6d7180]">
+              (필수) 입력하신 개인정보(이름, 회사명, 이메일, 연락처)는 온라인/오프라인 세미나 안내 및 소식지 발송을 위해서 사용됩니다. (보관기간 최대 2년)
+            </label>
+          </div>
+
+          <div className="flex items-start gap-2.5">
+            <input
+              id="marketingConsent"
+              type="checkbox"
+              checked={marketingConsent}
+              onChange={(e) => setMarketingConsent(e.target.checked)}
+              className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded border border-[#e3e5f0] accent-[#2f5eff]"
+            />
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-wrap items-center gap-2">
+                <label htmlFor="marketingConsent" className="cursor-pointer text-xs text-[#6d7180]">
+                  (선택) 마케팅 정보 수신 동의
+                </label>
+                <button
+                  type="button"
+                  aria-expanded={marketingDetailOpen}
+                  onClick={() => setMarketingDetailOpen((v) => !v)}
+                  className="cursor-pointer whitespace-nowrap text-xs font-semibold text-[#6d7180] underline"
+                >
+                  {marketingDetailOpen ? "접기" : "자세히 보기"}
+                </button>
+              </div>
+              {marketingDetailOpen && (
+                <dl className="mt-2 rounded-lg bg-[#f9f9f9] p-3 text-[11px] leading-relaxed text-[#6d7180]">
+                  <dt className="font-bold text-[#15172b]">개인정보 수집 및 이용 목적</dt>
+                  <dd className="mt-0.5 whitespace-pre-line">{MARKETING_CONSENT_NOTICE.purpose}</dd>
+                  <dt className="mt-2 font-bold text-[#15172b]">개인정보 수집 항목</dt>
+                  <dd className="mt-0.5">{MARKETING_CONSENT_NOTICE.items}</dd>
+                  <dt className="mt-2 font-bold text-[#15172b]">마케팅 정보 전송 매체</dt>
+                  <dd className="mt-0.5">{MARKETING_CONSENT_NOTICE.channel}</dd>
+                  <dt className="mt-2 font-bold text-[#15172b]">보유 및 이용 기간</dt>
+                  <dd className="mt-0.5">{MARKETING_CONSENT_NOTICE.retention}</dd>
+                  <dt className="mt-2 font-bold text-[#15172b]">동의를 거부할 권리 및 동의 거부에 따른 불이익</dt>
+                  <dd className="mt-0.5">{MARKETING_CONSENT_NOTICE.refusal}</dd>
+                  <dt className="mt-2 font-bold text-[#15172b]">수신 동의 철회 방법</dt>
+                  <dd className="mt-0.5">{MARKETING_CONSENT_NOTICE.withdrawal}</dd>
+                </dl>
+              )}
+            </div>
+          </div>
+
+          {submitError && (
+            <p className="rounded-lg bg-[#fdecea] px-3 py-2.5 text-xs text-[#e0453c]">{submitError}</p>
+          )}
+
+          <button
+            type="submit"
+            disabled={submitting}
+            className="w-full cursor-pointer rounded-[10px] bg-[#222] px-5 py-3.5 text-lg font-bold text-white disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {submitting ? "제출 중..." : "신청 완료하기"}
+          </button>
+        </form>
+      )}
     </aside>
   )
 }
