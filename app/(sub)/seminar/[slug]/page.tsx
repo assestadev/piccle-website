@@ -5,6 +5,7 @@ import { getSeminarBySlug, getSeminarEmailFields, seminars } from "@/lib/seminar
 import { SEMINAR_BANNER_MARK_ALT, SEMINAR_BANNER_MARK_SRC } from "@/lib/seminar-brand-config"
 import { SeminarBreadcrumb } from "@/components/seminar/seminar-breadcrumb"
 import { RegistrationForm } from "@/components/seminar/registration-form"
+import { SeminarStatusBadge } from "@/components/seminar/seminar-status-badge"
 
 const PREVIEW_BG: Record<string, string> = {
   blue: "bg-[#d6eefb]",
@@ -43,6 +44,7 @@ export default async function SeminarDetailPage({ params }: { params: Promise<{ 
             <span>
               {seminar.listDate} {seminar.listTime}
             </span>
+            <SeminarStatusBadge seminar={seminar} />
           </div>
           <h1 className="m-0 text-[22px] font-bold leading-tight text-[#15172b] min-[900px]:text-[28px]">{seminar.title}</h1>
 
@@ -165,6 +167,7 @@ export default async function SeminarDetailPage({ params }: { params: Promise<{ 
         </article>
 
         <RegistrationForm
+          seminar={seminar}
           slug={seminar.slug}
           categoryTag={seminar.categoryTag}
           title={seminar.title}

@@ -2,6 +2,7 @@ import Image from "next/image"
 import Link from "next/link"
 import type { Seminar } from "@/lib/seminars"
 import { SEMINAR_BANNER_MARK_ALT, SEMINAR_BANNER_MARK_SRC } from "@/lib/seminar-brand-config"
+import { SeminarStatusBadge } from "@/components/seminar/seminar-status-badge"
 
 const PREVIEW_BG: Record<Seminar["previewBg"], string> = {
   blue: "bg-[#d6eefb]",
@@ -49,9 +50,12 @@ export function SeminarCard({ seminar }: { seminar: Seminar }) {
               <Image src={seminar.speakerPhoto} alt="" width={150} height={150} className="h-full w-full object-cover object-top" />
             </div>
           </div>
-          <span className="absolute left-2.5 top-2.5 inline-flex items-center justify-center rounded-full bg-white px-3 py-1 text-xs font-bold text-[#0f2d6e]">
-            {seminar.dataType === "online" ? "온라인" : "오프라인"}
-          </span>
+          <div className="absolute left-2.5 top-2.5 flex items-center gap-1.5">
+            <span className="inline-flex items-center justify-center rounded-full bg-white px-3 py-1 text-xs font-bold text-[#0f2d6e]">
+              {seminar.dataType === "online" ? "온라인" : "오프라인"}
+            </span>
+            <SeminarStatusBadge seminar={seminar} />
+          </div>
         </div>
 
         <div className="flex flex-col gap-2 px-1 min-[900px]:gap-4 min-[900px]:p-6">

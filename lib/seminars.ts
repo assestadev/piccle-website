@@ -41,6 +41,40 @@ export interface Seminar {
   agenda?: string[]
   recommend?: string[]
   previewBg: "blue" | "peach"
+  /** 수동 마감 플래그. true면 일정 전이라도 신청을 받지 않음 (정원 초과 등 조기 마감용) */
+  registrationClosed?: boolean
+}
+
+/** open: 신청 가능 / closed: 신청 마감(수동 마감 또는 시작 시각 경과) / ended: 웨비나 종료 */
+export type RegistrationStatus = "open" | "closed" | "ended"
+
+export const REGISTRATION_STATUS_LABEL: Record<Exclude<RegistrationStatus, "open">, string> = {
+  closed: "신청 마감",
+  ended: "종료",
+}
+
+export const REGISTRATION_STATUS_MESSAGE: Record<Exclude<RegistrationStatus, "open">, string> = {
+  closed: "신청이 마감된 웨비나입니다.",
+  ended: "해당 웨비나는 종료되었습니다.",
+}
+
+// 자동 "종료" 판정에 쓰는 진행 시간 — 현재 웨비나는 모두 60분
+const SEMINAR_DURATION_MS = 60 * 60 * 1000
+
+/**
+ * 신청 가능 여부 단일 판정 함수 — 신청폼/배지/API가 전부 이 함수만 사용한다.
+ * 자동: 시작 시각(KST)이 지나면 closed, 시작 + 진행 시간이 지나면 ended.
+ * 수동: registrationClosed가 true면 일정 전이라도 closed.
+ * now가 null이면(정적 렌더링 등 현재 시각을 모를 때) 수동 플래그만 반영.
+ */
+export function getRegistrationStatus(seminar: Seminar, now: Date | null): RegistrationStatus {
+  if (now) {
+    const startTime = seminar.eventTime ?? seminar.listTime
+    const startMs = new Date(`${seminar.listDateISO}T${startTime}:00+09:00`).getTime()
+    if (now.getTime() >= startMs + SEMINAR_DURATION_MS) return "ended"
+    if (now.getTime() >= startMs) return "closed"
+  }
+  return seminar.registrationClosed ? "closed" : "open"
 }
 
 export const seminars: Seminar[] = [
@@ -54,6 +88,7 @@ export const seminars: Seminar[] = [
     listDate: "2026.10.15(목)",
     listTime: "14:00",
     listDateISO: "2026-10-15",
+    registrationClosed: true,
     eventDate: "2026.10.15(목)",
     eventTime: "14:00",
     durationSummary: "온라인 · 60분 (발표 40분 · Q&A 20분)",
