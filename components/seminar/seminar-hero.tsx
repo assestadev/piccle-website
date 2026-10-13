@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react"
 import type { Seminar } from "@/lib/seminars"
 import { weekOfMonthLabel } from "@/lib/seminars"
 import { SEMINAR_BANNER_MARK_ALT, SEMINAR_BANNER_MARK_SRC } from "@/lib/seminar-brand-config"
+import { SeminarStatusBadge } from "@/components/seminar/seminar-status-badge"
 
 const AUTOPLAY_MS = 6000
 const FADE_MS = 220
@@ -88,6 +89,7 @@ export function SeminarHero({ seminars }: { seminars: Seminar[] }) {
             <span className="inline-flex items-center justify-center whitespace-nowrap rounded-full bg-[#27afd2] px-3 py-1 text-xs font-bold text-white">
               {current.categoryTag}
             </span>
+            <SeminarStatusBadge seminar={current} />
           </div>
 
           <h1 className="text-[26px] font-bold leading-[1.25] text-[#15172b] min-[900px]:text-[40px]">

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { Resend } from "resend"
 import { createSupabaseClient } from "@/lib/supabase"
 import { buildSeminarConfirmationEmail } from "@/lib/seminar-confirmation-email"
+import { REGISTRATION_STATUS_MESSAGE, getRegistrationStatus, getSeminarBySlug, seminars } from "@/lib/seminars"
 
 // Google Apps Script 웹앱(doPost) 주소와 공유 시크릿 — 둘 다 서버 환경변수로만 보관.
 // 클라이언트(registration-form.tsx)는 이 값들을 절대 직접 알지 못하고, 이 API route를 통해서만 호출함.
@@ -24,6 +25,7 @@ export async function POST(request: Request) {
       motivation,
       privacyAgreed,
       marketingAgreed,
+      slug,
       seminarTitle,
       seminarType,
       category,
@@ -49,6 +51,16 @@ export async function POST(request: Request) {
     }
     if (!privacyAgreed) {
       return NextResponse.json({ error: "개인정보 수집 및 이용에 동의해주세요." }, { status: 400 })
+    }
+
+    // 마감/종료된 웨비나는 저장·메일 발송 전에 거절 — 화면에서 폼을 숨기는 것만으로는 마감 전에 열어둔 탭의
+    // 제출을 막을 수 없음. slug를 보내지 않는 예전 화면(캐시)도 걸러지도록 제목으로도 찾는다.
+    const seminar = getSeminarBySlug(slug) ?? seminars.find((s) => s.title === seminarTitle)
+    if (seminar) {
+      const status = getRegistrationStatus(seminar, new Date())
+      if (status !== "open") {
+        return NextResponse.json({ error: REGISTRATION_STATUS_MESSAGE[status] }, { status: 409 })
+      }
     }
 
     if (!GAS_URL || !GAS_SECRET) {

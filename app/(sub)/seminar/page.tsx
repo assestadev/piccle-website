@@ -5,11 +5,18 @@ import { SeminarHero } from "@/components/seminar/seminar-hero"
 import { SeminarFilterTabs, type SeminarFilterType } from "@/components/seminar/seminar-filter-tabs"
 import { SeminarCard } from "@/components/seminar/seminar-card"
 import { OfflinePanel } from "@/components/seminar/offline-panel"
-import { getUpcomingSeminars, seminars } from "@/lib/seminars"
+import { useNow } from "@/components/seminar/seminar-status-badge"
+import { getRegistrationStatus, getUpcomingSeminars, seminars } from "@/lib/seminars"
 
 export default function SeminarListPage() {
   const [filter, setFilter] = useState<SeminarFilterType>("all")
-  const heroSlides = useMemo(() => getUpcomingSeminars(), [])
+  const now = useNow()
+  // 종료된 웨비나는 히어로 슬라이드에서 제외 (신청 마감이어도 아직 열리기 전이면 배지와 함께 노출).
+  // 전부 종료되면 히어로 자체가 렌더링되지 않는다.
+  const heroSlides = useMemo(
+    () => getUpcomingSeminars().filter((s) => getRegistrationStatus(s, now) !== "ended"),
+    [now],
+  )
   const visibleSeminars = seminars.filter((s) => filter === "all" || filter === s.dataType)
 
   return (
