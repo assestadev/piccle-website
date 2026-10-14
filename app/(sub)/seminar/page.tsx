@@ -13,10 +13,12 @@ export default function SeminarListPage() {
   const now = useNow()
   // 종료된 웨비나는 히어로 슬라이드에서 제외 (신청 마감이어도 아직 열리기 전이면 배지와 함께 노출).
   // 전부 종료되면 히어로 자체가 렌더링되지 않는다.
-  const heroSlides = useMemo(
-    () => getUpcomingSeminars().filter((s) => getRegistrationStatus(s, now) !== "ended"),
-    [now],
-  )
+  // 신청 가능한 웨비나를 앞에, 신청 마감된 웨비나를 뒤에 둔다 (각 그룹 안에서는 가까운 일정순 유지).
+  const heroSlides = useMemo(() => {
+    const upcoming = getUpcomingSeminars().filter((s) => getRegistrationStatus(s, now) !== "ended")
+    const isOpen = (s: (typeof upcoming)[number]) => getRegistrationStatus(s, now) === "open"
+    return [...upcoming.filter(isOpen), ...upcoming.filter((s) => !isOpen(s))]
+  }, [now])
   const visibleSeminars = seminars.filter((s) => filter === "all" || filter === s.dataType)
 
   return (
