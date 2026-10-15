@@ -6,7 +6,7 @@ import { SeminarFilterTabs, type SeminarFilterType } from "@/components/seminar/
 import { SeminarCard } from "@/components/seminar/seminar-card"
 import { OfflinePanel } from "@/components/seminar/offline-panel"
 import { useNow } from "@/components/seminar/seminar-status-badge"
-import { getRegistrationStatus, getUpcomingSeminars, seminars } from "@/lib/seminars"
+import { getRegistrationStatus, getUpcomingSeminars, seminars, sortSeminarsForList } from "@/lib/seminars"
 
 export default function SeminarListPage() {
   const [filter, setFilter] = useState<SeminarFilterType>("all")
@@ -19,7 +19,12 @@ export default function SeminarListPage() {
     const isOpen = (s: (typeof upcoming)[number]) => getRegistrationStatus(s, now) === "open"
     return [...upcoming.filter(isOpen), ...upcoming.filter((s) => !isOpen(s))]
   }, [now])
-  const visibleSeminars = seminars.filter((s) => filter === "all" || filter === s.dataType)
+  const visibleSeminars = useMemo(
+    () => sortSeminarsForList(seminars.filter((s) => filter === "all" || filter === s.dataType), now),
+    [filter, now],
+  )
+  // 예정된 오프라인 세미나가 생기기 전까지는 "오프라인 세미나, 곧 만나요" 안내를 목록 아래에 유지
+  const hasUpcomingOffline = seminars.some((s) => s.dataType === "offline" && getRegistrationStatus(s, now) !== "ended")
 
   return (
     <div
@@ -30,17 +35,15 @@ export default function SeminarListPage() {
       <SeminarFilterTabs active={filter} onChange={setFilter} />
 
       <section className="mx-auto max-w-[1280px] px-4 py-6 min-[900px]:px-6 min-[900px]:py-8">
-        {(filter === "all" || filter === "online") && (
-          <div className="mb-8 flex flex-col gap-8 min-[900px]:flex-row">
-            {visibleSeminars
-              .filter((s) => s.dataType === "online")
-              .map((s) => (
-                <SeminarCard key={s.slug} seminar={s} />
-              ))}
+        {visibleSeminars.length > 0 && (
+          <div className="mb-8 grid grid-cols-1 gap-8 min-[900px]:grid-cols-2">
+            {visibleSeminars.map((s) => (
+              <SeminarCard key={s.slug} seminar={s} />
+            ))}
           </div>
         )}
 
-        {(filter === "all" || filter === "offline") && <OfflinePanel />}
+        {(filter === "all" || filter === "offline") && !hasUpcomingOffline && <OfflinePanel />}
       </section>
     </div>
   )
