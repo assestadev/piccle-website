@@ -61,6 +61,24 @@ export const REGISTRATION_STATUS_MESSAGE: Record<Exclude<RegistrationStatus, "op
 // 자동 "종료" 판정에 쓰는 진행 시간 — 현재 웨비나는 모두 60분
 const SEMINAR_DURATION_MS = 60 * 60 * 1000
 
+/** 시작 시각(KST)의 epoch ms */
+function getStartMs(seminar: Seminar): number {
+  const startTime = seminar.eventTime ?? seminar.listTime
+  return new Date(`${seminar.listDateISO}T${startTime}:00+09:00`).getTime()
+}
+
+/**
+ * 세미나 목록(카드) 정렬 — 온라인/오프라인 구분 없이 하나의 목록.
+ * 예정된 세미나(신청 가능 + 신청 마감)는 가까운 일정순, 종료된 세미나는 그 뒤에 최근에 끝난 순.
+ * 배열에 추가하는 순서와 상관없이 항상 이 규칙으로 노출된다.
+ */
+export function sortSeminarsForList(list: Seminar[], now: Date | null): Seminar[] {
+  const isEnded = (s: Seminar) => getRegistrationStatus(s, now) === "ended"
+  const upcoming = list.filter((s) => !isEnded(s)).sort((a, b) => getStartMs(a) - getStartMs(b))
+  const ended = list.filter(isEnded).sort((a, b) => getStartMs(b) - getStartMs(a))
+  return [...upcoming, ...ended]
+}
+
 /**
  * 신청 가능 여부 단일 판정 함수 — 신청폼/배지/API가 전부 이 함수만 사용한다.
  * 자동: 시작 시각(KST)이 지나면 closed, 시작 + 진행 시간이 지나면 ended.
@@ -69,8 +87,7 @@ const SEMINAR_DURATION_MS = 60 * 60 * 1000
  */
 export function getRegistrationStatus(seminar: Seminar, now: Date | null): RegistrationStatus {
   if (now) {
-    const startTime = seminar.eventTime ?? seminar.listTime
-    const startMs = new Date(`${seminar.listDateISO}T${startTime}:00+09:00`).getTime()
+    const startMs = getStartMs(seminar)
     if (now.getTime() >= startMs + SEMINAR_DURATION_MS) return "ended"
     if (now.getTime() >= startMs) return "closed"
   }
