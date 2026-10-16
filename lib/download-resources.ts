@@ -23,8 +23,8 @@ export const downloadResources: DownloadResource[] = [
   },
 ]
 
-// 직급(의사결정 단계) 기준 — 직무(HR/채용 등)는 별도 텍스트 항목으로 받으므로 여기엔 섞지 않음
-export const DOWNLOAD_POSITION_OPTIONS = ["실무자 (사원~대리)", "중간관리자 (과장~차장)", "팀장/부서장", "임원/대표", "기타"]
+// 의사결정 단계 기준 — 세부 직무는 별도 텍스트 항목(직무)으로 받음
+export const DOWNLOAD_POSITION_OPTIONS = ["실무자 (팀원, HR 담당자 등)", "팀장 이상", "대표/임원", "기타"]
 
 export function getActiveDownloadResources() {
   return downloadResources.filter((r) => r.active)
