@@ -10,7 +10,7 @@ export interface DownloadResource {
   title: string
   /** 회사 서버에 올린 PDF 주소 — 폼 화면에는 내려보내지 않고 API가 메일에 넣을 때만 사용 */
   pdfUrl: string
-  /** false면 폼 선택지에서 숨김 (시트의 노출 = N) */
+  /** 시트의 노출이 Y일 때만 true — 빈칸·N·오타는 모두 숨김 */
   active: boolean
 }
 
@@ -28,7 +28,8 @@ function sanitize(raw: unknown): DownloadResource[] {
     slug: String(r?.slug ?? "").trim(),
     title: String(r?.title ?? "").trim(),
     pdfUrl: String(r?.pdfUrl ?? "").trim(),
-    active: r?.active !== false,
+    // 스크립트가 명확히 true를 준 경우만 노출 (값이 없거나 이상하면 숨김)
+    active: r?.active === true,
   }))
   const slugCount = new Map<string, number>()
   rows.forEach((r) => slugCount.set(r.slug, (slugCount.get(r.slug) ?? 0) + 1))
