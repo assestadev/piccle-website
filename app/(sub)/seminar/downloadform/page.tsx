@@ -24,8 +24,9 @@ export default async function DownloadFormPage({ searchParams }: { searchParams:
       className="pt-20"
       style={{ fontFamily: "'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" }}
     >
-      <div className="relative h-[120px] w-full overflow-hidden bg-[#1a1b1d] min-[600px]:h-auto min-[600px]:aspect-[3840/900]">
-        <Image src="/seminar-assets/download-header.png" alt="PICCLE" fill priority sizes="100vw" className="object-cover" />
+      {/* 화면 폭에 비례해 커지면 넓은 모니터에서 폼이 밀려 내려가므로 높이를 고정하고, 이미지 배경색(#17181a)으로 좌우를 채운다 */}
+      <div className="relative h-[120px] w-full overflow-hidden bg-[#17181a] min-[600px]:h-[200px] min-[900px]:h-[272px]">
+        <Image src="/seminar-assets/download-header.png" alt="PICCLE" fill priority sizes="100vw" className="object-contain" />
       </div>
 
       <main className="mx-auto flex max-w-[560px] flex-col gap-8 px-4 py-12 min-[900px]:py-16">
