@@ -5,8 +5,8 @@ import { DOWNLOAD_POSITION_OPTIONS, getActiveDownloadResources } from "@/lib/dow
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>
 
-function firstParam(value: string | string[] | undefined) {
-  return (Array.isArray(value) ? value[0] : value)?.slice(0, 100)
+function firstParam(value: string | string[] | undefined, maxLength = 100) {
+  return (Array.isArray(value) ? value[0] : value)?.slice(0, maxLength)
 }
 
 export default async function DownloadFormPage({ searchParams }: { searchParams: SearchParams }) {
@@ -14,7 +14,8 @@ export default async function DownloadFormPage({ searchParams }: { searchParams:
   // 홍보메일 링크(?topic=doc-001 또는 ?topic=doc-001,doc-002)로 들어오면 그 자료들만 보여준다 — 다른 자료는 고를 수 없고,
   // 지정된 자료가 숨김(N)이 됐으면 다른 자료로 바꿔치기하지 않고 빼거나(전부 숨김이면 마감 안내) 한다.
   // topic 없이 들어오면 노출 중인 자료 전체에서 고른다.
-  const topicSlugs = [...new Set((firstParam(params.topic) ?? "").split(",").map((t) => t.trim()).filter(Boolean))]
+  // 여러 자료를 묶은 링크가 잘리지 않도록 topic은 넉넉히 받는다 (API는 최대 10개까지 허용)
+  const topicSlugs = [...new Set((firstParam(params.topic, 500) ?? "").split(",").map((t) => t.trim()).filter(Boolean))].slice(0, 10)
   const active = await getActiveDownloadResources()
   const matched = topicSlugs.length > 0 ? active.filter((r) => topicSlugs.includes(r.slug)) : active
   const topicClosed = topicSlugs.length > 0 && matched.length === 0
@@ -51,7 +52,8 @@ export default async function DownloadFormPage({ searchParams }: { searchParams:
         </div>
 
         {resources.length > 0 ? (
-          <DownloadForm resources={resources} positions={DOWNLOAD_POSITION_OPTIONS} utm={utm} />
+          // key: 다른 자료 링크로 이동하면 선택 상태를 새로 시작하도록 폼을 다시 만든다
+          <DownloadForm key={resources.map((r) => r.slug).join(",")} resources={resources} positions={DOWNLOAD_POSITION_OPTIONS} utm={utm} />
         ) : (
           <div className="flex flex-col items-center gap-4 rounded-xl bg-[#f9f9f9] px-5 py-8 text-center">
             <p className="m-0 text-base font-bold text-[#15172b]">
