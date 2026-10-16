@@ -22,14 +22,13 @@ const checkboxClass = "mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded border bor
 interface DownloadFormProps {
   resources: { slug: string; title: string }[]
   positions: string[]
-  defaultTopic?: string
   utm: DownloadUtm
 }
 
-export function DownloadForm({ resources, positions, defaultTopic, utm }: DownloadFormProps) {
+export function DownloadForm({ resources, positions, utm }: DownloadFormProps) {
   const router = useRouter()
   const [form, setForm] = useState({
-    topic: resources.some((r) => r.slug === defaultTopic) ? defaultTopic! : (resources[0]?.slug ?? ""),
+    topic: resources[0]?.slug ?? "",
     name: "",
     company: "",
     email: "",
@@ -112,15 +111,25 @@ export function DownloadForm({ resources, positions, defaultTopic, utm }: Downlo
 
   return (
     <form className="flex flex-col gap-4" onSubmit={handleSubmit} noValidate>
-      <Field label="신청 자료" required htmlFor="dlTopic">
-        <select id="dlTopic" value={form.topic} onChange={update("topic")} className={`${inputClass} bg-white`}>
-          {resources.map((r) => (
-            <option key={r.slug} value={r.slug}>
-              {r.title}
-            </option>
-          ))}
-        </select>
-      </Field>
+      {/* 노출 중인 자료가 1개면 고를 게 없으므로 선택칸 대신 고정 표시 */}
+      {resources.length === 1 ? (
+        <div className="flex flex-col gap-1.5">
+          <span className="text-[13px] font-medium text-[#15172b]">신청 자료</span>
+          <p className="m-0 rounded-lg border border-[#e3e5f0] bg-[#f9f9f9] px-3 py-2.5 text-sm font-medium text-[#222]">
+            {resources[0].title}
+          </p>
+        </div>
+      ) : (
+        <Field label="신청 자료" required htmlFor="dlTopic">
+          <select id="dlTopic" value={form.topic} onChange={update("topic")} className={`${inputClass} bg-white`}>
+            {resources.map((r) => (
+              <option key={r.slug} value={r.slug}>
+                {r.title}
+              </option>
+            ))}
+          </select>
+        </Field>
+      )}
 
       <Field label="이름" required htmlFor="dlName">
         <input id="dlName" placeholder="성함을 입력해주세요" value={form.name} onChange={update("name")} className={inputClass} />

@@ -7,7 +7,8 @@ import { DOWNLOAD_POSITION_OPTIONS, getDownloadResource } from "@/lib/download-r
 const GAS_URL = process.env.GAS_DOWNLOAD_WEBAPP_URL
 const GAS_SECRET = process.env.GAS_DOWNLOAD_SHARED_SECRET
 const RESEND_API_KEY = process.env.RESEND_API_KEY
-const RESEND_FROM_EMAIL = process.env.RESEND_FROM_EMAIL || "noreply@mail.piccle.ai"
+// Resend에 인증된 발신 도메인은 hr.assesta.com (개발일지/webinar/2026-09-11.md 참고)
+const RESEND_FROM_EMAIL = process.env.RESEND_FROM_EMAIL || "noreply@hr.assesta.com"
 
 const UTM_KEYS = ["source", "medium", "campaign", "content"] as const
 
@@ -48,7 +49,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "개인정보 수집 및 이용에 동의해주세요." }, { status: 400 })
     }
 
-    const resource = getDownloadResource(topic)
+    const resource = await getDownloadResource(topic)
     if (!resource) {
       return NextResponse.json({ error: "신청할 수 없는 자료입니다. 페이지를 새로고침해 주세요." }, { status: 400 })
     }
