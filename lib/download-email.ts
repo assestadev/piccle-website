@@ -35,11 +35,11 @@ export function buildDownloadEmail({ applicantName, resources }: DownloadEmailIn
     ? `아래 버튼을 눌러 <b>${escapeHtml(resources[0].title)}</b>을 다운로드해 주세요.`
     : "아래 버튼을 눌러 신청하신 자료집을 각각 다운로드해 주세요."
   const buttons = single
-    ? buttonRow(escapeHtml(resources[0].pdfUrl), "PICCLE 자료집 다운로드하기", 30)
+    ? buttonRow(escapeHtml(resources[0].pdfUrl), "PICCLE 자료집 보기", 30)
     : resources
         .map(
           (r, i) => `
-                        <tr><td style="padding-bottom: 8px; font-size: 15px; font-weight: 700; color: #222222; line-height: 150%; font-family: 'Pretendard Variable', Pretendard, sans-serif!important;">${escapeHtml(r.title)}</td></tr>${buttonRow(escapeHtml(r.pdfUrl), "다운로드하기", i === resources.length - 1 ? 30 : 20)}`,
+                        <tr><td style="padding-bottom: 8px; font-size: 15px; font-weight: 700; color: #222222; line-height: 150%; font-family: 'Pretendard Variable', Pretendard, sans-serif!important;">${escapeHtml(r.title)}</td></tr>${buttonRow(escapeHtml(r.pdfUrl), "자료집 보기", i === resources.length - 1 ? 30 : 20)}`,
         )
         .join("")
 
