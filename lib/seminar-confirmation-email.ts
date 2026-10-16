@@ -12,10 +12,10 @@ interface SeminarConfirmationEmailInput {
 }
 
 // PICCLE 로고. Outlook 데스크톱은 인라인 SVG를 렌더링하지 못하므로 인라인 SVG 대신 CDN PNG를 <img>로 사용.
-const PICCLE_LOGO_URL = "https://img.assesta.com/piccle/logo.png"
+export const PICCLE_LOGO_URL = "https://img.assesta.com/piccle/logo.png"
 
 // XSS/레이아웃 깨짐 방지 — 신청자 입력값(이름 등)이 그대로 HTML에 삽입되므로 이스케이프 필수.
-function escapeHtml(value: string) {
+export function escapeHtml(value: string) {
   return String(value ?? "")
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
