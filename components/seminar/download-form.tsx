@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import {
   Field,
@@ -45,6 +45,12 @@ export function DownloadForm({ resources, positions, utm }: DownloadFormProps) {
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState("")
   const [trackedUtm, setTrackedUtm] = useState<DownloadUtm>(utm)
+  // 봇 차단: 함정 칸 값과 페이지를 연 시각 (너무 빠른 제출 판별용)
+  const [website, setWebsite] = useState("")
+  const openedAt = useRef(0)
+  useEffect(() => {
+    openedAt.current = Date.now()
+  }, [])
 
   useEffect(() => {
     try {
@@ -105,6 +111,8 @@ export function DownloadForm({ resources, positions, utm }: DownloadFormProps) {
           privacyAgreed: consent,
           marketingAgreed: marketingConsent,
           utm: trackedUtm,
+          website,
+          elapsedMs: Date.now() - openedAt.current,
         }),
       })
       const data = await res.json()
@@ -120,6 +128,11 @@ export function DownloadForm({ resources, positions, utm }: DownloadFormProps) {
 
   return (
     <form className="flex flex-col gap-4" onSubmit={handleSubmit} noValidate>
+      {/* 함정 칸 — 화면 밖에 숨겨 사람은 보지도 채우지도 않는다. 자동 입력 봇만 채움 */}
+      <div aria-hidden="true" className="absolute left-[-9999px] top-auto h-px w-px overflow-hidden">
+        <label htmlFor="dlWebsite">회사 웹사이트</label>
+        <input id="dlWebsite" name="website" type="text" tabIndex={-1} autoComplete="off" value={website} onChange={(e) => setWebsite(e.target.value)} />
+      </div>
       {/* 자료가 1개면 고를 게 없으므로 고정 표시, 여러 개면 체크박스로 원하는 것만 골라 한 번에 받는다 */}
       {resources.length === 1 ? (
         <div className="flex flex-col gap-1.5">

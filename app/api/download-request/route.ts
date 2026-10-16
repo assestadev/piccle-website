@@ -12,6 +12,45 @@ const RESEND_FROM_EMAIL = process.env.RESEND_FROM_EMAIL || "noreply@hr.assesta.c
 
 const UTM_KEYS = ["source", "medium", "campaign", "content"] as const
 
+// ── 봇·반복 제출 방어 ──
+// 사람은 페이지를 열고 항목을 채우는 데 최소 몇 초가 걸린다 — 그보다 빠른 제출은 자동 프로그램으로 본다
+const MIN_FILL_MS = 3000
+// 다시 신청하는 건 막지 않는다. 다만 기계처럼 반복하는 요청(한 주소로 메일 폭탄, 한 곳에서 대량 제출)만 제한.
+// 서버 인스턴스별 메모리 기록이라 완벽하진 않지만 단순 반복·스크립트 공격은 대부분 걸러진다.
+const LIMITS = {
+  email: { windowMs: 60 * 60_000, max: 5 }, // 같은 이메일: 1시간에 5번
+  ip: { windowMs: 10 * 60_000, max: 10 }, // 같은 접속지: 10분에 10번
+}
+const recentHits = { email: new Map<string, number[]>(), ip: new Map<string, number[]>() }
+
+function hit(kind: keyof typeof LIMITS, key: string, now: number) {
+  const { windowMs, max } = LIMITS[kind]
+  const map = recentHits[kind]
+  for (const [k, list] of map) {
+    const fresh = list.filter((at) => now - at < windowMs)
+    if (fresh.length) map.set(k, fresh)
+    else map.delete(k)
+  }
+  const list = map.get(key) ?? []
+  return { over: list.length >= max, record: () => map.set(key, [...list, now]) }
+}
+
+function isRateLimited(ip: string, email: string) {
+  const now = Date.now()
+  const byIp = hit("ip", ip, now)
+  const byEmail = hit("email", email, now)
+  if (byIp.over || byEmail.over) return true
+  byIp.record()
+  byEmail.record()
+  return false
+}
+
+// 저장에 실패한 신청은 횟수에서 빼서 바로 다시 시도할 수 있게 한다
+function forgetLastHit(email: string) {
+  const list = recentHits.email.get(email)
+  if (list?.length) recentHits.email.set(email, list.slice(0, -1))
+}
+
 async function postToGas(payload: Record<string, unknown>) {
   const res = await fetch(GAS_URL!, {
     method: "POST",
@@ -30,7 +69,14 @@ async function postToGas(payload: Record<string, unknown>) {
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { topics, topic, name, company, email, phone, jobRole, position, interests, hrIssue, privacyAgreed, marketingAgreed, utm } = body
+    const { topics, topic, name, company, email, phone, jobRole, position, interests, hrIssue, privacyAgreed, marketingAgreed, utm, website, elapsedMs } = body
+
+    // 함정 칸(website)은 화면에 보이지 않아 사람은 비워 둔다. 채워졌거나 너무 빨리 제출됐으면 봇으로 보고,
+    // 막힌 걸 눈치채지 못하도록 성공처럼 응답만 하고 저장·발송은 하지 않는다
+    if (website || (typeof elapsedMs === "number" && elapsedMs < MIN_FILL_MS)) {
+      console.warn("자료집 신청 봇 의심 요청 차단:", { honeypot: Boolean(website), elapsedMs })
+      return NextResponse.json({ success: true })
+    }
 
     // 여러 자료를 한 번에 신청할 수 있다 (topics 배열). 예전 화면(캐시)이 보내는 단일 topic도 받아준다
     const requestedSlugs: string[] = [...new Set<string>((Array.isArray(topics) ? topics : [topic]).map((t: unknown) => String(t ?? "").trim()).filter(Boolean))]
@@ -58,7 +104,14 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "신청할 수 없는 자료입니다. 페이지를 새로고침해 주세요." }, { status: 400 })
     }
 
+    const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown"
+    const emailKey = String(email).trim().toLowerCase()
+    if (isRateLimited(ip, emailKey)) {
+      return NextResponse.json({ error: "잠시 후 다시 시도해 주세요." }, { status: 429 })
+    }
+
     if (!GAS_URL || !GAS_SECRET) {
+      forgetLastHit(emailKey)
       console.error("GAS_DOWNLOAD_WEBAPP_URL / GAS_DOWNLOAD_SHARED_SECRET 환경변수가 설정되지 않았습니다.")
       return NextResponse.json({ error: "서버 설정 오류입니다. 잠시 후 다시 시도해주세요." }, { status: 500 })
     }
@@ -85,6 +138,8 @@ export async function POST(request: Request) {
       ...utmValues,
     })
     if (!saved.ok || saved.data.status !== "success") {
+      // 저장 실패는 사용자 잘못이 아니므로 바로 다시 시도할 수 있게 1분 제한 기록을 지운다
+      forgetLastHit(emailKey)
       console.error("자료집 신청 GAS 저장 실패:", saved.data)
       return NextResponse.json({ error: "신청 저장 중 오류가 발생했습니다." }, { status: 502 })
     }
