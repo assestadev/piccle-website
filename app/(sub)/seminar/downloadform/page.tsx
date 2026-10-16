@@ -11,12 +11,13 @@ function firstParam(value: string | string[] | undefined) {
 
 export default async function DownloadFormPage({ searchParams }: { searchParams: SearchParams }) {
   const params = await searchParams
-  // 홍보메일 링크(?topic=)로 들어오면 그 자료만 고정 — 다른 자료로 바꿀 수 없고, 그 자료가 숨김(N)이 됐으면
-  // 다른 자료로 바꿔치기하지 않고 마감 안내를 보여준다. topic 없이 들어오면 노출 중인 자료 전체에서 고른다.
-  const topic = firstParam(params.topic)
+  // 홍보메일 링크(?topic=doc-001 또는 ?topic=doc-001,doc-002)로 들어오면 그 자료들만 보여준다 — 다른 자료는 고를 수 없고,
+  // 지정된 자료가 숨김(N)이 됐으면 다른 자료로 바꿔치기하지 않고 빼거나(전부 숨김이면 마감 안내) 한다.
+  // topic 없이 들어오면 노출 중인 자료 전체에서 고른다.
+  const topicSlugs = [...new Set((firstParam(params.topic) ?? "").split(",").map((t) => t.trim()).filter(Boolean))]
   const active = await getActiveDownloadResources()
-  const matched = topic ? active.filter((r) => r.slug === topic) : active
-  const topicClosed = Boolean(topic) && matched.length === 0
+  const matched = topicSlugs.length > 0 ? active.filter((r) => topicSlugs.includes(r.slug)) : active
+  const topicClosed = topicSlugs.length > 0 && matched.length === 0
   // pdfUrl은 화면에 필요 없으므로 자료명만 클라이언트로 전달
   const resources = matched.map(({ slug, title }) => ({ slug, title }))
   const utm: DownloadUtm = {

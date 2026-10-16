@@ -28,7 +28,6 @@ interface DownloadFormProps {
 export function DownloadForm({ resources, positions, utm }: DownloadFormProps) {
   const router = useRouter()
   const [form, setForm] = useState({
-    topic: resources[0]?.slug ?? "",
     name: "",
     company: "",
     email: "",
@@ -37,6 +36,8 @@ export function DownloadForm({ resources, positions, utm }: DownloadFormProps) {
     position: "",
     hrIssue: "",
   })
+  // 링크로 지정된(또는 노출 중인) 자료는 모두 선택된 상태로 시작 — 필요 없는 것만 해제
+  const [topics, setTopics] = useState<string[]>(resources.map((r) => r.slug))
   const [interest, setInterest] = useState<string[]>([])
   const [consent, setConsent] = useState(false)
   const [marketingConsent, setMarketingConsent] = useState(false)
@@ -61,6 +62,9 @@ export function DownloadForm({ resources, positions, utm }: DownloadFormProps) {
   const update = (key: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
     setForm({ ...form, [key]: key === "phone" ? formatPhone(e.target.value) : e.target.value })
 
+  const toggleTopic = (slug: string) =>
+    setTopics((prev) => (prev.includes(slug) ? prev.filter((v) => v !== slug) : [...prev, slug]))
+
   const toggleInterest = (value: string) =>
     setInterest((prev) => (prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]))
 
@@ -68,7 +72,11 @@ export function DownloadForm({ resources, positions, utm }: DownloadFormProps) {
     e.preventDefault()
     setSubmitError("")
 
-    if (!form.topic || !form.name || !form.company || !form.email || !form.phone || !form.jobRole || !form.position) {
+    if (topics.length === 0) {
+      setSubmitError("받으실 자료를 1개 이상 선택해주세요.")
+      return
+    }
+    if (!form.name || !form.company || !form.email || !form.phone || !form.jobRole || !form.position) {
       setSubmitError("필수 항목을 모두 입력해주세요.")
       return
     }
@@ -92,6 +100,7 @@ export function DownloadForm({ resources, positions, utm }: DownloadFormProps) {
         headers: { "Content-Type": "application/json; charset=utf-8" },
         body: JSON.stringify({
           ...form,
+          topics,
           interests: interest,
           privacyAgreed: consent,
           marketingAgreed: marketingConsent,
@@ -111,7 +120,7 @@ export function DownloadForm({ resources, positions, utm }: DownloadFormProps) {
 
   return (
     <form className="flex flex-col gap-4" onSubmit={handleSubmit} noValidate>
-      {/* 노출 중인 자료가 1개면 고를 게 없으므로 선택칸 대신 고정 표시 */}
+      {/* 자료가 1개면 고를 게 없으므로 고정 표시, 여러 개면 체크박스로 원하는 것만 골라 한 번에 받는다 */}
       {resources.length === 1 ? (
         <div className="flex flex-col gap-1.5">
           <span className="text-[13px] font-medium text-[#15172b]">신청 자료</span>
@@ -120,15 +129,20 @@ export function DownloadForm({ resources, positions, utm }: DownloadFormProps) {
           </p>
         </div>
       ) : (
-        <Field label="신청 자료" required htmlFor="dlTopic">
-          <select id="dlTopic" value={form.topic} onChange={update("topic")} className={`${inputClass} bg-white`}>
+        <div className="flex flex-col gap-1.5">
+          <span className="text-[13px] font-medium text-[#15172b]">
+            신청 자료 (중복 선택 가능) <span className="text-[#2f5eff]">*</span>
+          </span>
+          <div className="flex flex-col gap-2 rounded-lg border border-[#e3e5f0] px-3 py-3">
             {resources.map((r) => (
-              <option key={r.slug} value={r.slug}>
+              <label key={r.slug} className="flex cursor-pointer items-start gap-2 text-sm font-medium text-[#222]">
+                <input type="checkbox" checked={topics.includes(r.slug)} onChange={() => toggleTopic(r.slug)} className={checkboxClass} />
                 {r.title}
-              </option>
+              </label>
             ))}
-          </select>
-        </Field>
+          </div>
+          <p className="m-0 text-xs text-[#9296a6]">선택한 자료의 다운로드 링크를 메일 한 통으로 보내드려요.</p>
+        </div>
       )}
 
       <Field label="이름" required htmlFor="dlName">

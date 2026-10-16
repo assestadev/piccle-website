@@ -146,7 +146,9 @@ function setupGuideSheet() {
     ["- 형식이 틀린 줄(slug 규칙 위반, 중복 slug, https 가 아닌 주소)은 신청 페이지에 나타나지 않습니다."],
     ["- 신청 링크(topic 포함)로 들어오면 그 자료만 고정으로 표시되고 다른 자료로 바꿀 수 없습니다."],
     ["- 그 자료가 N(마감)이면 다른 자료로 바뀌지 않고 마감 안내가 뜹니다."],
+    ["- 링크 하나로 여러 자료를 보여 주려면 topic=doc-001,doc-002 처럼 쉼표로 이어 쓰세요. 신청자가 원하는 것을 골라 메일 한 통으로 받습니다."],
     ["- topic 없이 들어오면 노출 = Y 인 자료 중에서 고르게 됩니다 (1개면 그 자료만 표시)."],
+    ["- 노출 칸이 비어 있으면 N 과 똑같이 숨김 처리됩니다. 신청을 받으려면 반드시 Y 를 선택하세요."],
     ["- 시트를 잠시 못 읽으면 마지막으로 정상이었던 목록을 계속 사용합니다."],
   ]
   sheet.getRange(1, 1, lines.length, 1).setValues(lines)
@@ -217,7 +219,8 @@ function listResources() {
         slug: String(r[0]).trim(),
         title: String(r[1]).trim(),
         pdfUrl: String(r[2]).trim(),
-        active: String(r[3]).trim().toUpperCase() !== "N",
+        // Y일 때만 노출 — 빈칸·오타는 숨김 처리 (입력 중인 줄이 실수로 노출되지 않도록)
+        active: String(r[3]).trim().toUpperCase() === "Y",
       }
     })
   return json({ status: "success", resources: resources })

@@ -30,10 +30,13 @@ async function postToGas(payload: Record<string, unknown>) {
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { topic, name, company, email, phone, jobRole, position, interests, hrIssue, privacyAgreed, marketingAgreed, utm } = body
+    const { topics, topic, name, company, email, phone, jobRole, position, interests, hrIssue, privacyAgreed, marketingAgreed, utm } = body
+
+    // 여러 자료를 한 번에 신청할 수 있다 (topics 배열). 예전 화면(캐시)이 보내는 단일 topic도 받아준다
+    const requestedSlugs: string[] = [...new Set<string>((Array.isArray(topics) ? topics : [topic]).map((t: unknown) => String(t ?? "").trim()).filter(Boolean))]
 
     // 중복 신청은 막지 않는다 — 다시 신청하면 매번 저장 + 메일 재발송
-    if (!topic || !name || !company || !email || !phone || !jobRole || !position) {
+    if (requestedSlugs.length === 0 || requestedSlugs.length > 10 || !name || !company || !email || !phone || !jobRole || !position) {
       return NextResponse.json({ error: "필수 항목을 모두 입력해주세요." }, { status: 400 })
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -49,8 +52,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "개인정보 수집 및 이용에 동의해주세요." }, { status: 400 })
     }
 
-    const resource = await getDownloadResource(topic)
-    if (!resource) {
+    // 하나라도 마감·삭제된 자료가 섞여 있으면 신청 전체를 거절 — 일부만 조용히 빠진 채 메일이 나가지 않도록
+    const resources = await Promise.all(requestedSlugs.map((slug) => getDownloadResource(slug)))
+    if (resources.some((r) => !r)) {
       return NextResponse.json({ error: "신청할 수 없는 자료입니다. 페이지를 새로고침해 주세요." }, { status: 400 })
     }
 
@@ -67,7 +71,7 @@ export async function POST(request: Request) {
 
     const saved = await postToGas({
       action: "append",
-      resourceTitle: resource.title,
+      resourceTitle: resources.map((r) => r!.title).join("; "),
       name,
       company,
       email,
@@ -91,8 +95,7 @@ export async function POST(request: Request) {
       try {
         const { subject, html } = buildDownloadEmail({
           applicantName: name,
-          resourceTitle: resource.title,
-          pdfUrl: resource.pdfUrl,
+          resources: resources.map((r) => ({ title: r!.title, pdfUrl: r!.pdfUrl })),
         })
         const { error } = await new Resend(RESEND_API_KEY).emails.send({ from: RESEND_FROM_EMAIL, to: email, subject, html })
         if (error) console.error("자료집 메일 발송 실패:", error)
