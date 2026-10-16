@@ -32,21 +32,45 @@ function onEdit(e) {
   const range = e && e.range
   if (!range || range.getSheet().getName() !== RESOURCES_SHEET_NAME) return
   const sheet = range.getSheet()
+  ensureLinkFormula(sheet)
   for (let row = range.getRow(); row < range.getRow() + range.getNumRows(); row++) {
     if (row < 2) continue
     const slugCell = sheet.getRange(row, 1)
     const title = String(sheet.getRange(row, 2).getValue()).trim()
-    if (title && !String(slugCell.getValue()).trim()) slugCell.setValue(nextSlug(sheet))
+    const slug = String(slugCell.getValue()).trim()
+    if (title && !slug) {
+      slugCell.setValue(nextSlug(sheet))
+    } else if (slug && countSlug(sheet, slug) > 1) {
+      // 줄을 복사·붙여넣기 하면 입력 규칙을 거치지 않고 slug가 그대로 복제됨 — 방금 고친 줄에 새 번호를 붙인다
+      const fresh = nextSlug(sheet)
+      slugCell.setValue(fresh).setNote("다른 줄과 slug(" + slug + ")가 겹쳐서 " + fresh + " 로 자동 변경했습니다.")
+    }
   }
 }
 
+function countSlug(sheet, slug) {
+  const lastRow = Math.max(sheet.getLastRow(), 2)
+  return sheet.getRange(2, 1, lastRow - 1, 1).getValues().filter(function (r) { return String(r[0]).trim() === slug }).length
+}
+
+// 시트에 남아 있는 doc- 번호 중 가장 큰 번호 + 1 (위에서부터 1, 2, 3… 순서로 매겨짐)
 function nextSlug(sheet) {
+  // 이전 버전이 남긴 '기억해 둔 번호'가 있으면 지운다 — 번호는 시트에 보이는 값만 기준으로 한다
+  sheet.getDeveloperMetadata().forEach(function (m) { if (m.getKey() === 'lastSlugNo') m.remove() })
   const lastRow = Math.max(sheet.getLastRow(), 2)
   const max = sheet.getRange(2, 1, lastRow - 1, 1).getValues().reduce(function (acc, r) {
     const m = String(r[0]).match(/^doc-(\d+)$/)
     return m ? Math.max(acc, Number(m[1])) : acc
   }, 0)
-  return "doc-" + String(max + 1).padStart(3, "0")
+  return 'doc-' + String(max + 1).padStart(3, '0')
+}
+
+// 신청 링크 칸(F열)은 F2 한 칸의 수식이 아래 줄까지 채운다 — 셀 정리 중 지워졌으면 다시 넣는다
+function ensureLinkFormula(sheet) {
+  const cell = sheet.getRange("F2")
+  if (!cell.getFormula()) {
+    cell.setFormula('=ARRAYFORMULA(IF(A2:A="","","' + FORM_BASE_URL + '?topic="&A2:A))')
+  }
 }
 const HEADERS = [
   "신청ID", "신청일시", "신청자료", "이름", "회사명", "이메일", "연락처", "직무", "직책",
@@ -80,7 +104,7 @@ function setupResourcesSheet() {
   sheet.getRange("A1").setNote("자료명을 입력하면 자동으로 채워집니다 (doc-001 형식)\n직접 입력하거나 수정하지 마세요")
   sheet.getRange("F1").setNote("자동 완성되는 신청 페이지 주소\n이 주소에 UTM을 붙여 단축링크를 만드세요")
   // 신청 링크 칸은 수식으로 자동 완성
-  sheet.getRange("F2").setFormula('=ARRAYFORMULA(IF(A2:A="","","' + FORM_BASE_URL + '?topic="&A2:A))')
+  ensureLinkFormula(sheet)
   sheet.getRange(2, 6, sheet.getMaxRows() - 1, 1).setFontColor("#2f5eff")
   sheet.getRange("B1").setNote("폼 선택지·자동메일·신청 DB에 보이는 이름. 언제든 수정 가능")
   sheet.getRange("C1").setNote("자동메일 다운로드 버튼 링크. https:// 로 시작해야 함\n수정 후에는 반드시 테스트 신청 1건으로 링크 확인")
@@ -132,6 +156,9 @@ function setupGuideSheet() {
     [""],
     ["■ 꼭 지켜 주세요"],
     ["- slug 와 신청 링크 칸은 자동입니다. 직접 입력하거나 고치지 마세요. 이름을 바꾸고 싶으면 자료명만 고치세요."],
+    ["- 신청 링크 칸(F열)에는 아무것도 입력하지 마세요. 값이 들어가면 링크가 멈춥니다. 비어 있으면 아무 자료명이나 다시 입력하면 복구됩니다."],
+    ["- slug 번호는 시트에 남아 있는 doc- 번호 다음부터 매겨집니다. 홍보메일에 쓴 자료 줄을 지우면 그 번호가 새 자료에 다시 쓰일 수 있으니, 발송한 자료는 지우지 말고 노출 = N 으로만 숨기세요."],
+    ["- 줄을 복사해 붙여넣어 slug 가 겹치면, 붙여넣은 줄에 새 번호가 자동으로 붙고 메모가 남습니다."],
     ["- 자료 줄은 삭제하지 말고 노출 = N 으로 숨기세요. (지난 신청 기록과 연결됩니다)"],
     ["- 여러 자료를 동시에 Y로 둬도 됩니다. 각 신청 링크는 자기 자료만 보여 줍니다."],
     ["- pdfUrl 을 바꾼 뒤에는 반드시 테스트 신청 1건으로 링크를 확인하세요."],
@@ -153,7 +180,8 @@ function setupGuideSheet() {
   ]
   sheet.getRange(1, 1, lines.length, 1).setValues(lines)
   sheet.getRange("A1").setFontSize(14).setFontWeight("bold")
-  ;["A3", "A7", "A15", "A22", "A27"].forEach(function (a) { sheet.getRange(a).setFontWeight("bold") })
+  // ■ 로 시작하는 소제목만 굵게 (문구를 추가해도 위치가 어긋나지 않도록 내용으로 찾음)
+  lines.forEach(function (line, i) { if (String(line[0]).indexOf("■") === 0) sheet.getRange(i + 1, 1).setFontWeight("bold") })
   sheet.setColumnWidth(1, 820)
 }
 

@@ -42,8 +42,8 @@ function sanitize(raw: unknown): DownloadResource[] {
   })
 }
 
-async function loadResources(): Promise<DownloadResource[]> {
-  if (cache && Date.now() - cache.fetchedAt < CACHE_TTL_MS) return cache.resources
+async function loadResources(forceRefresh = false): Promise<DownloadResource[]> {
+  if (!forceRefresh && cache && Date.now() - cache.fetchedAt < CACHE_TTL_MS) return cache.resources
 
   const url = process.env.GAS_DOWNLOAD_WEBAPP_URL
   const secret = process.env.GAS_DOWNLOAD_SHARED_SECRET
@@ -76,5 +76,8 @@ export async function getActiveDownloadResources() {
 }
 
 export async function getDownloadResource(slug: string | undefined) {
-  return (await loadResources()).find((r) => r.slug === slug && r.active)
+  const find = (list: DownloadResource[]) => list.find((r) => r.slug === slug && r.active)
+  // 페이지와 API는 서로 다른 서버 인스턴스에서 각자 1분씩 목록을 보관할 수 있다 — 방금 시트에 추가된 자료를
+  // 페이지는 보여주는데 API의 보관본엔 없을 수 있으므로, 못 찾으면 한 번 새로 읽어 확인한다
+  return find(await loadResources()) ?? find(await loadResources(true))
 }
