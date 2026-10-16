@@ -1,4 +1,5 @@
 import Image from "next/image"
+import Link from "next/link"
 import { DownloadForm, type DownloadUtm } from "@/components/seminar/download-form"
 import { DOWNLOAD_POSITION_OPTIONS, getActiveDownloadResources } from "@/lib/download-resources"
 
@@ -10,8 +11,14 @@ function firstParam(value: string | string[] | undefined) {
 
 export default async function DownloadFormPage({ searchParams }: { searchParams: SearchParams }) {
   const params = await searchParams
+  // 홍보메일 링크(?topic=)로 들어오면 그 자료만 고정 — 다른 자료로 바꿀 수 없고, 그 자료가 숨김(N)이 됐으면
+  // 다른 자료로 바꿔치기하지 않고 마감 안내를 보여준다. topic 없이 들어오면 노출 중인 자료 전체에서 고른다.
+  const topic = firstParam(params.topic)
+  const active = await getActiveDownloadResources()
+  const matched = topic ? active.filter((r) => r.slug === topic) : active
+  const topicClosed = Boolean(topic) && matched.length === 0
   // pdfUrl은 화면에 필요 없으므로 자료명만 클라이언트로 전달
-  const resources = getActiveDownloadResources().map(({ slug, title }) => ({ slug, title }))
+  const resources = matched.map(({ slug, title }) => ({ slug, title }))
   const utm: DownloadUtm = {
     source: firstParam(params.utm_source),
     medium: firstParam(params.utm_medium),
@@ -43,16 +50,19 @@ export default async function DownloadFormPage({ searchParams }: { searchParams:
         </div>
 
         {resources.length > 0 ? (
-          <DownloadForm
-            resources={resources}
-            positions={DOWNLOAD_POSITION_OPTIONS}
-            defaultTopic={firstParam(params.topic)}
-            utm={utm}
-          />
+          <DownloadForm resources={resources} positions={DOWNLOAD_POSITION_OPTIONS} utm={utm} />
         ) : (
-          <p className="m-0 rounded-xl bg-[#f9f9f9] px-5 py-8 text-center text-base font-bold text-[#15172b]">
-            지금은 신청 가능한 자료집이 없어요.
-          </p>
+          <div className="flex flex-col items-center gap-4 rounded-xl bg-[#f9f9f9] px-5 py-8 text-center">
+            <p className="m-0 text-base font-bold text-[#15172b]">
+              {topicClosed ? "신청이 마감된 자료집이에요." : "지금은 신청 가능한 자료집이 없어요."}
+            </p>
+            <Link
+              href="/seminar"
+              className="inline-flex items-center justify-center whitespace-nowrap rounded-full border border-[#e1e1e1] bg-white px-5 py-2.5 text-sm font-bold text-[#222]"
+            >
+              PICCLE 세미나 보러가기
+            </Link>
+          </div>
         )}
       </main>
     </div>
