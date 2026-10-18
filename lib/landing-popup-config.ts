@@ -24,6 +24,6 @@ export const LANDING_POPUPS: LandingPopupItem[] = [
     linkUrl: "#",
     alt: "시스템 점검에 따른 서비스 이용 제한 안내",
     hideForHours: 24,
-    enabled: true,
+    enabled: false,
   },
 ]
