@@ -8,7 +8,7 @@ import { REGISTRATION_STATUS_MESSAGE, type Seminar } from "@/lib/seminars"
 import { useRegistrationStatus } from "@/components/seminar/seminar-status-badge"
 
 // 숫자만 입력해도 010-0000-0000 형태로 자동 정렬 — 사용자가 하이픈을 직접 넣을 필요 없음
-function formatPhone(raw: string) {
+export function formatPhone(raw: string) {
   const digits = raw.replace(/[^0-9]/g, "").slice(0, 11)
   if (digits.length <= 3) return digits
   if (digits.length <= 7) return `${digits.slice(0, 3)}-${digits.slice(3)}`
@@ -16,17 +16,17 @@ function formatPhone(raw: string) {
 }
 
 // form에 noValidate가 걸려 있어 <input type="email">의 브라우저 기본 검증이 동작하지 않으므로 직접 검사
-function isValidEmail(email: string) {
+export function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 }
 
 // 마찬가지로 noValidate 때문에 <input>의 pattern="01[0-9]-\d{3,4}-\d{4}"이 브라우저에서 검증되지
 // 않으므로, 010-1234처럼 끊긴 채로도 제출되지 않도록 동일 패턴을 여기서 직접 검사
-function isValidPhone(phone: string) {
+export function isValidPhone(phone: string) {
   return /^01[0-9]-\d{3,4}-\d{4}$/.test(phone)
 }
 
-const INTEREST_OPTIONS = [
+export const INTEREST_OPTIONS = [
   "채용,선발도구",
   "역량관리(역량모델링)",
   "성과관리",
@@ -44,7 +44,7 @@ const INTEREST_OPTIONS = [
 // TODO(GAS 연동 예정): 아래 안내 문구는 지금은 하드코딩돼 있음.
 // 인계서 06번 marketing_consent_notice 시트 연동 시, 이 컴포넌트가 시트에서 읽어온
 // 문구를 props로 받도록 바꿔야 함 (법무 검토로 문구가 바뀔 때 코드 배포 없이 반영하기 위함).
-const MARKETING_CONSENT_NOTICE = {
+export const MARKETING_CONSENT_NOTICE = {
   purpose:
     "Piccle 서비스 관련 정보(서비스 설명, 업데이트 소식, 혜택 등) 전송\nPiccle 서비스 관련 이벤트(웨비나, 워크숍, 세미나 등) 소식 전송",
   items: "이름, 회사명, 회사 이메일, 연락처",
@@ -376,10 +376,10 @@ export function RegistrationForm({
   )
 }
 
-const inputClass =
+export const inputClass =
   "w-full rounded-lg border border-[#e3e5f0] px-3 py-2.5 text-sm text-[#222] placeholder:text-[#9296a6] focus:outline-none focus:border-[#2f5eff]"
 
-function Field({
+export function Field({
   label,
   required,
   htmlFor,
