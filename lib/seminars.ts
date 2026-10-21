@@ -221,7 +221,7 @@ export const seminars: Seminar[] = [
     durationSummary: "오프라인 · 180분 (14:00~17:00)",
     durationMinutes: 180,
     // 유료(4만원) 세미나라 커리어포유 결제 페이지에서 신청받음
-    externalRegistrationUrl: "https://www.career4u.net/Lecture/Seminar_010101.asp",
+    externalRegistrationUrl: "https://bit.ly/4dT3LmF",
     speakerPhoto: "/seminar-assets/photo-male.png",
     speaker: "어세스타 김영재 AX사업 본부장",
     quoteTitle: "2027년 HR 계획, 흩어진 진단 결과로 세울 수 있을까요?",
