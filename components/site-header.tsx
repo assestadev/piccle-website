@@ -99,6 +99,16 @@ export function SiteHeader() {
             </button>
           )}
 
+          {/* 모바일(md 미만)에서는 위 nav가 숨겨지므로 "세미나"만 별도로 노출 */}
+          <Link
+            href="/seminar"
+            className={`cursor-pointer text-sm font-medium transition-colors md:hidden ${
+              isSeminarSection ? "font-bold text-[#0f2d6e]" : "text-slate-600 hover:text-[#1e4fa8]"
+            }`}
+          >
+            세미나
+          </Link>
+
           <button
             onClick={() => { window.location.href = "/inquiry" }}
             className="cursor-pointer inline-flex items-center gap-1.5 rounded-lg bg-[#0f2d6e] px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#1e4fa8] sm:px-5 sm:py-2.5"
