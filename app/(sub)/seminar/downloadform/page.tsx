@@ -41,13 +41,13 @@ export default async function DownloadFormPage({ searchParams }: { searchParams:
       <main className="mx-auto flex max-w-[560px] flex-col gap-8 px-4 py-12 min-[900px]:py-16">
         <div className="flex flex-col items-center gap-3 text-center">
           <span className="inline-flex items-center justify-center whitespace-nowrap rounded-full bg-[#eef1fb] px-3 py-1 text-xs font-bold text-[#2f5eff]">
-            무료 자료집
+            무료 리소스
           </span>
-          <h1 className="m-0 text-2xl font-bold leading-tight text-[#15172b] min-[900px]:text-[30px]">PICCLE 자료집 받아보기 📂</h1>
+          <h1 className="m-0 text-2xl font-bold leading-tight text-[#15172b] min-[900px]:text-[30px]">PICCLE 리소스 받아보기 📂</h1>
           <p className="m-0 text-[15px] leading-relaxed text-[#6d7180]">
             아래 정보를 남겨주시면
             <br />
-            입력하신 메일로 자료집 다운로드 링크를 바로 보내드려요.
+            입력하신 메일로 리소스 다운로드 링크를 바로 보내드려요.
           </p>
         </div>
 
@@ -57,7 +57,7 @@ export default async function DownloadFormPage({ searchParams }: { searchParams:
         ) : (
           <div className="flex flex-col items-center gap-4 rounded-xl bg-[#f9f9f9] px-5 py-8 text-center">
             <p className="m-0 text-base font-bold text-[#15172b]">
-              {topicClosed ? "신청이 마감된 자료집이에요." : "지금은 신청 가능한 자료집이 없어요."}
+              {topicClosed ? "신청이 마감된 리소스예요." : "지금은 신청 가능한 리소스가 없어요."}
             </p>
             <Link
               href="/seminar"

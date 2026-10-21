@@ -175,7 +175,7 @@ export function DownloadForm({ resources, positions, utm }: DownloadFormProps) {
           onChange={update("email")}
           className={inputClass}
         />
-        <p className="mt-1 text-xs text-[#9296a6]">입력하신 메일로 자료집 다운로드 링크를 바로 보내드려요.</p>
+        <p className="mt-1 text-xs text-[#9296a6]">입력하신 메일로 리소스 다운로드 링크를 바로 보내드려요.</p>
       </Field>
 
       <Field label="연락처" required htmlFor="dlPhone">
@@ -245,7 +245,7 @@ export function DownloadForm({ resources, positions, utm }: DownloadFormProps) {
       <div className="flex items-start gap-2.5 pt-1">
         <input id="dlConsent" type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} className={checkboxClass} />
         <label htmlFor="dlConsent" className="cursor-pointer text-xs font-normal leading-relaxed text-[#6d7180]">
-          (필수) 입력하신 개인정보(이름, 회사명, 이메일, 연락처, 직무, 직책)는 자료집 발송 및 온라인/오프라인 세미나 안내, 소식지 발송을 위해서 사용됩니다. (보관기간 최대 2년)
+          (필수) 입력하신 개인정보(이름, 회사명, 이메일, 연락처, 직무, 직책)는 리소스 발송 및 온라인/오프라인 세미나 안내, 소식지 발송을 위해서 사용됩니다. (보관기간 최대 2년)
         </label>
       </div>
 
@@ -297,7 +297,7 @@ export function DownloadForm({ resources, positions, utm }: DownloadFormProps) {
         disabled={submitting}
         className="mt-1 w-full cursor-pointer rounded-[10px] bg-[#222] px-5 py-4 text-lg font-bold text-white disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {submitting ? "보내는 중..." : "자료집 메일로 받기"}
+        {submitting ? "보내는 중..." : "리소스 메일로 받기"}
       </button>
     </form>
   )

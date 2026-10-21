@@ -5,11 +5,11 @@ import { SeminarBreadcrumb } from "@/components/seminar/seminar-breadcrumb"
 export default function DownloadCompletePage() {
   return (
     <div style={{ fontFamily: "'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" }}>
-      <SeminarBreadcrumb title="PICCLE 자료집 신청" />
+      <SeminarBreadcrumb title="PICCLE 리소스 신청" />
 
       <main className="flex flex-col items-center gap-2.5 px-6 py-20 text-center min-[900px]:min-h-[420px] min-[900px]:justify-center min-[900px]:py-16">
         <Image src="/seminar-assets/icon-check-circle.svg" alt="" width={32} height={32} />
-        <h1 className="m-0 text-2xl font-bold text-[#15172b] min-[900px]:text-[30px]">자료집을 메일로 보내드렸어요</h1>
+        <h1 className="m-0 text-2xl font-bold text-[#15172b] min-[900px]:text-[30px]">리소스를 메일로 보내드렸어요</h1>
         <p className="m-0 text-base leading-snug text-[#15172b] min-[900px]:text-lg">
           입력하신 메일함에서 다운로드 링크를 확인해 주세요😊
         </p>
