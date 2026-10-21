@@ -1,8 +1,8 @@
 import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { getSeminarBySlug, getSeminarEmailFields, seminars } from "@/lib/seminars"
-import { SEMINAR_BANNER_MARK_ALT, SEMINAR_BANNER_MARK_SRC } from "@/lib/seminar-brand-config"
+import { getDetailSeminarParams, getSeminarBySlug, getSeminarEmailFields } from "@/lib/seminars"
+import { getSeminarBannerMark } from "@/lib/seminar-brand-config"
 import { SeminarBreadcrumb } from "@/components/seminar/seminar-breadcrumb"
 import { RegistrationForm } from "@/components/seminar/registration-form"
 import { SeminarStatusBadge } from "@/components/seminar/seminar-status-badge"
@@ -18,7 +18,7 @@ const PREVIEW_BG_IMAGE: Record<string, string> = {
 }
 
 export function generateStaticParams() {
-  return seminars.map((s) => ({ slug: s.slug }))
+  return getDetailSeminarParams()
 }
 
 export default async function SeminarDetailPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -28,8 +28,11 @@ export default async function SeminarDetailPage({ params }: { params: Promise<{ 
 
   const eventDate = seminar.eventDate ?? seminar.listDate
   const eventTime = seminar.eventTime ?? seminar.listTime
-  const hasDetailContent = Boolean(seminar.eventInfo || seminar.agenda || seminar.recommend)
+  const hasDetailContent = Boolean(
+    seminar.eventInfo || seminar.agenda || seminar.recommend || seminar.schedule || seminar.benefits,
+  )
   const emailFields = getSeminarEmailFields(seminar)
+  const mark = getSeminarBannerMark(seminar.dataType)
 
   return (
     <div style={{ fontFamily: "'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" }}>
@@ -56,11 +59,11 @@ export default async function SeminarDetailPage({ params }: { params: Promise<{ 
               className="object-cover opacity-40"
             />
             <Image
-              src={SEMINAR_BANNER_MARK_SRC}
-              alt={SEMINAR_BANNER_MARK_ALT}
-              width={194}
-              height={20}
-              className="relative h-auto w-[100px] min-[900px]:absolute min-[900px]:left-[66px] min-[900px]:top-[77px] min-[900px]:w-[265px]"
+              src={mark.src}
+              alt={mark.alt}
+              width={mark.width}
+              height={mark.height}
+              className="relative h-[10px] w-auto self-start min-[900px]:absolute min-[900px]:left-[66px] min-[900px]:top-[77px] min-[900px]:h-[27px]"
             />
             <p className="relative m-0 max-w-[60%] text-xs font-medium leading-tight min-[900px]:hidden">
               {seminar.title}
@@ -117,6 +120,11 @@ export default async function SeminarDetailPage({ params }: { params: Promise<{ 
                   <p className="m-0 text-[15px] leading-relaxed text-[#9296a6]">
                     진행 방식 <span className="text-[#222]">{seminar.eventInfo.format}</span>
                   </p>
+                  {seminar.eventInfo.location && (
+                    <p className="m-0 text-[15px] leading-relaxed text-[#9296a6]">
+                      장소 <span className="text-[#222]">{seminar.eventInfo.location}</span>
+                    </p>
+                  )}
                   <p className="m-0 text-[15px] leading-relaxed text-[#9296a6]">
                     참석 대상 <span className="text-[#222]">{seminar.eventInfo.audience}</span>
                   </p>
@@ -152,6 +160,52 @@ export default async function SeminarDetailPage({ params }: { params: Promise<{ 
                     {seminar.recommend.map((item, i) => (
                       <p key={i} className="m-0">
                         ✓ {item}
+                      </p>
+                    ))}
+                  </div>
+                </div>
+              </>
+            )}
+
+            {seminar.schedule && seminar.schedule.length > 0 && (
+              <>
+                <hr className="m-0 w-full border-t border-[#e3e5f0]" />
+                <div className="flex flex-col gap-2.5">
+                  <h2 className="m-0 text-lg font-bold text-[#15172b]">🗓️ 세부 프로그램</h2>
+                  <div className="overflow-hidden rounded-xl border border-[#e3e5f0] bg-white">
+                    <div className="hidden bg-[#f4f5f9] px-5 py-3 text-[13px] font-bold text-[#6d7180] min-[900px]:grid min-[900px]:grid-cols-[170px_1fr_1fr] min-[900px]:gap-4">
+                      <span>시간</span>
+                      <span>세션명</span>
+                      <span>세부 내용</span>
+                    </div>
+                    <div className="divide-y divide-[#eef0f5]">
+                      {seminar.schedule.map((item) => (
+                        <div
+                          key={item.time}
+                          className="flex flex-col gap-1 px-4 py-3.5 min-[900px]:grid min-[900px]:grid-cols-[170px_1fr_1fr] min-[900px]:items-center min-[900px]:gap-4 min-[900px]:px-5"
+                        >
+                          <p className="m-0 text-sm tabular-nums text-[#6d7180]">
+                            {item.time} <span className="text-[#9296a6]">({item.duration})</span>
+                          </p>
+                          <p className="m-0 text-[15px] font-semibold leading-snug text-[#222]">{item.title}</p>
+                          {item.detail && <p className="m-0 text-sm leading-snug text-[#9296a6]">{item.detail}</p>}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {seminar.benefits && seminar.benefits.length > 0 && (
+              <>
+                <hr className="m-0 w-full border-t border-[#e3e5f0]" />
+                <div className="flex flex-col gap-2.5">
+                  <h2 className="m-0 text-lg font-bold text-[#15172b]">🎁 참석자 혜택</h2>
+                  <div className="flex flex-col gap-0.5 text-[15px] leading-relaxed text-[#222]">
+                    {seminar.benefits.map((item, i) => (
+                      <p key={i} className="m-0">
+                        • {item}
                       </p>
                     ))}
                   </div>

@@ -5,7 +5,7 @@ import Link from "next/link"
 import { useEffect, useRef, useState } from "react"
 import type { Seminar } from "@/lib/seminars"
 import { weekOfMonthLabel } from "@/lib/seminars"
-import { SEMINAR_BANNER_MARK_ALT, SEMINAR_BANNER_MARK_SRC } from "@/lib/seminar-brand-config"
+import { getSeminarBannerMark } from "@/lib/seminar-brand-config"
 import { SeminarStatusBadge } from "@/components/seminar/seminar-status-badge"
 
 const AUTOPLAY_MS = 6000
@@ -69,6 +69,10 @@ export function SeminarHero({ seminars }: { seminars: Seminar[] }) {
 
   if (!current) return null
 
+  const mark = getSeminarBannerMark(current.dataType)
+  // 상세 내용 전달 전(detailPending)이면 배너를 링크 없이 노출
+  const BannerWrapper = current.detailPending ? "div" : Link
+
   return (
     <section
       className="mx-auto max-w-[1280px] px-4 py-8 min-[900px]:flex min-[900px]:justify-center min-[900px]:px-6 min-[900px]:py-14"
@@ -84,7 +88,7 @@ export function SeminarHero({ seminars }: { seminars: Seminar[] }) {
         >
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center justify-center whitespace-nowrap rounded-full border border-black/[0.08] px-3 py-1 text-xs font-medium text-[#222]">
-              {weekOfMonthLabel(current.listDateISO)}
+              {weekOfMonthLabel(current.listDateISO, current.dataType)}
             </span>
             <span className="inline-flex items-center justify-center whitespace-nowrap rounded-full bg-[#27afd2] px-3 py-1 text-xs font-bold text-white">
               {current.categoryTag}
@@ -124,7 +128,7 @@ export function SeminarHero({ seminars }: { seminars: Seminar[] }) {
         </div>
 
         <div className="mt-2 min-[900px]:mt-0 min-[900px]:w-[600px] min-[900px]:shrink-0">
-          <Link
+          <BannerWrapper
             href={`/seminar/${current.slug}`}
             className={`relative flex h-[175px] flex-col justify-center gap-1.5 overflow-hidden rounded-[15px] p-5 transition-opacity duration-200 min-[900px]:h-[336px] min-[900px]:rounded-[20px] ${PREVIEW_BG[current.previewBg]}`}
             style={{ opacity: fading ? 0 : 1 }}
@@ -135,7 +139,7 @@ export function SeminarHero({ seminars }: { seminars: Seminar[] }) {
               fill
               className="object-cover opacity-40"
             />
-            <Image src={SEMINAR_BANNER_MARK_SRC} alt={SEMINAR_BANNER_MARK_ALT} width={194} height={20} className="relative h-auto w-[100px] min-[900px]:absolute min-[900px]:left-12 min-[900px]:top-14 min-[900px]:w-[194px]" />
+            <Image src={mark.src} alt={mark.alt} width={mark.width} height={mark.height} className="relative h-[10px] w-auto self-start min-[900px]:absolute min-[900px]:left-12 min-[900px]:top-14 min-[900px]:h-5" />
             <p className="relative m-0 max-w-[60%] text-xs font-medium leading-tight min-[900px]:hidden">
               {current.title}
             </p>
@@ -161,7 +165,7 @@ export function SeminarHero({ seminars }: { seminars: Seminar[] }) {
                 className="h-full w-full object-cover object-top"
               />
             </div>
-          </Link>
+          </BannerWrapper>
         </div>
       </div>
     </section>

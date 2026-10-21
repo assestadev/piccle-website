@@ -10,6 +10,18 @@ export interface EventInfo {
   format: string
   audience: string
   fee: string
+  /** 오프라인 장소. 있으면 상세 "행사 안내"에 표시되고, 신청완료 메일의 "장소"에도 format 대신 이 값이 쓰인다 */
+  location?: string
+}
+
+/** 상세 페이지 "세부 프로그램" 표의 한 줄 */
+export interface ScheduleItem {
+  /** "14:00–14:15" */
+  time: string
+  /** "15분" */
+  duration: string
+  title: string
+  detail?: string
 }
 
 export interface Seminar {
@@ -40,9 +52,25 @@ export interface Seminar {
   eventInfo?: EventInfo
   agenda?: string[]
   recommend?: string[]
+  /** 세부 프로그램(시간표). 주로 오프라인 세미나용 */
+  schedule?: ScheduleItem[]
+  /** 참석자 혜택 */
+  benefits?: string[]
+  /** 진행 시간(분). 자동 "종료" 판정에 사용. 없으면 60분 */
+  durationMinutes?: number
   previewBg: "blue" | "peach"
   /** 수동 마감 플래그. true면 일정 전이라도 신청을 받지 않음 (정원 초과 등 조기 마감용) */
   registrationClosed?: boolean
+  /**
+   * 외부 사이트(유료 결제 등)에서 신청받는 경우의 신청 링크. 있으면 상세 페이지 신청 영역에 폼 대신
+   * "신청하기" 버튼만 노출되고, 자체 신청 API는 이 세미나의 신청을 거절한다.
+   */
+  externalRegistrationUrl?: string
+  /**
+   * 상세 내용 전달 전 예고 노출용. true면 카드/히어로는 보이지만 클릭되지 않고,
+   * 상세·신청완료 페이지와 신청 API에서는 없는 세미나로 취급한다. 상세 내용을 채우면 이 플래그만 지우면 됨.
+   */
+  detailPending?: boolean
 }
 
 /** open: 신청 가능 / closed: 신청 마감(수동 마감 또는 시작 시각 경과) / ended: 웨비나 종료 */
@@ -58,8 +86,8 @@ export const REGISTRATION_STATUS_MESSAGE: Record<Exclude<RegistrationStatus, "op
   ended: "해당 웨비나는 종료되었습니다.",
 }
 
-// 자동 "종료" 판정에 쓰는 진행 시간 — 현재 웨비나는 모두 60분
-const SEMINAR_DURATION_MS = 60 * 60 * 1000
+// 자동 "종료" 판정에 쓰는 기본 진행 시간 — durationMinutes가 없으면 60분(온라인 웨비나 기준)
+const DEFAULT_DURATION_MINUTES = 60
 
 /** 시작 시각(KST)의 epoch ms */
 function getStartMs(seminar: Seminar): number {
@@ -88,7 +116,8 @@ export function sortSeminarsForList(list: Seminar[], now: Date | null): Seminar[
 export function getRegistrationStatus(seminar: Seminar, now: Date | null): RegistrationStatus {
   if (now) {
     const startMs = getStartMs(seminar)
-    if (now.getTime() >= startMs + SEMINAR_DURATION_MS) return "ended"
+    const durationMs = (seminar.durationMinutes ?? DEFAULT_DURATION_MINUTES) * 60 * 1000
+    if (now.getTime() >= startMs + durationMs) return "ended"
     if (now.getTime() >= startMs) return "closed"
   }
   return seminar.registrationClosed ? "closed" : "open"
@@ -176,10 +205,71 @@ export const seminars: Seminar[] = [
     ],
     previewBg: "peach",
   },
+  {
+    // PICCLE SHARE 오프라인 세미나 — 2026-10-21 상세 내용 반영(참고: piccle-webinar.vercel.app/webinar/piccle-share-01)
+    slug: "s01",
+    dataType: "offline",
+    categoryTag: "[HR전략/진단활용]",
+    title: "흩어진 진단 결과를 2027년 채용·육성 계획으로 연결하기",
+    bannerTitleBold: "흩어진 진단 결과를",
+    bannerTitleLines: ["2027년 채용·육성 계획으로 연결하기"],
+    listDate: "2026.11.18(수)",
+    listTime: "14:00",
+    listDateISO: "2026-11-18",
+    eventDate: "2026.11.18(수)",
+    eventTime: "14:00",
+    durationSummary: "오프라인 · 180분 (14:00~17:00)",
+    durationMinutes: 180,
+    // 유료(4만원) 세미나라 커리어포유 결제 페이지에서 신청받음
+    externalRegistrationUrl: "https://www.career4u.net/Lecture/Seminar_010101.asp",
+    speakerPhoto: "/seminar-assets/photo-male.png",
+    speaker: "어세스타 김영재 AX사업 본부장",
+    quoteTitle: "2027년 HR 계획, 흩어진 진단 결과로 세울 수 있을까요?",
+    quoteDesc:
+      "채용부터 온보딩, 리더십, 조직문화까지 각 단계에서 따로 쌓아온 진단 결과를 하나의 흐름으로 연결하는 전략을 소개합니다. PICCLE 실제 도입 사례와 소그룹 토의를 통해, 2027년 계획서에 바로 쓸 수 있는 실행안까지 함께 만들어갑니다.",
+    listDesc:
+      "채용부터 조직문화까지 따로 쌓아온 진단 결과를 하나의 흐름으로 연결하고, 소그룹 토의를 통해 2027년 계획서에 바로 쓸 실행안까지 함께 만들어갑니다.",
+    eventInfo: {
+      date: "2026.11.18(수) 14:00",
+      format: "오프라인 현장 참석",
+      location: "어세스타 본사",
+      audience: "HR·HRD 담당자, 채용 담당자, 조직문화 담당자",
+      fee: "4만원 (선착순 30명)",
+    },
+    agenda: [
+      "2026 HR 이슈 리뷰와 2027 트렌드, 단계별 진단 활용법, PICCLE 실제 도입 사례",
+      "흩어진 검사 결과를 하나의 프로파일로 모으는 과정 시연",
+      "관심 주제별 테이블에서 다른 회사 담당자들과 고민 나누고 12월 실행 계획 정리",
+      "플랫폼 데모 체험, 1:1 상담 및 자유 네트워킹",
+    ],
+    recommend: [
+      "2027년 HRD 계획과 예산을 준비하며 진단 활용 방안을 정리하고 싶으신 HR 담당자",
+      "스펙 대신 무엇으로 지원자를 검증할지, 인적성검사 결과를 면접에 어떻게 쓸지 고민 중이신 채용 담당자",
+      "신임 팀장 육성과 진단 디브리핑 이후의 행동 변화를 확인하고 싶으신 HRD 담당자",
+      "워크숍이 끝난 뒤에도 팀빌딩 효과가 현장에서 이어지게 하고 싶으신 조직문화 담당자",
+    ],
+    schedule: [
+      { time: "14:00–14:15", duration: "15분", title: "오프닝" },
+      { time: "14:15–14:55", duration: "40분", title: "Session 1. 2026 리뷰 & 2027 트렌드", detail: "HR 이슈 및 진단의 역할" },
+      { time: "14:55–15:20", duration: "25분", title: "Session 2. PICCLE 실제 도입 사례" },
+      { time: "15:20–15:55", duration: "35분", title: "Session 3. HR AI 워크플레이스" },
+      { time: "15:55–16:25", duration: "30분", title: "참여형 소그룹 토의 & 발표" },
+      { time: "16:25–16:40", duration: "15분", title: "클로징 & 사내 적용 지원" },
+      { time: "16:40–17:00", duration: "20분", title: "자유 네트워킹 & 데모 체험" },
+    ],
+    benefits: ["핑거푸드 & 음료", "참석자 한정 2027 굿즈"],
+    previewBg: "blue",
+  },
 ]
 
+/** 상세/신청완료 페이지와 신청 API용 조회 — 상세 내용 전달 전(detailPending)인 세미나는 없는 것으로 취급 */
 export function getSeminarBySlug(slug: string): Seminar | undefined {
-  return seminars.find((s) => s.slug === slug)
+  return seminars.find((s) => s.slug === slug && !s.detailPending)
+}
+
+/** 상세 페이지 정적 생성 대상 slug 목록 */
+export function getDetailSeminarParams(): { slug: string }[] {
+  return seminars.filter((s) => !s.detailPending).map((s) => ({ slug: s.slug }))
 }
 
 /** 앞으로 열리는 가까운 일정순 정렬 (히어로 슬라이드용) */
@@ -187,13 +277,13 @@ export function getUpcomingSeminars(): Seminar[] {
   return [...seminars].sort((a, b) => a.listDateISO.localeCompare(b.listDateISO))
 }
 
-/** "10월 3주차" 형태 라벨. 일자만 보고 계산(1~7일=1주차 ...) */
-export function weekOfMonthLabel(isoDate: string): string {
+/** "10월 3주차 웨비나" 형태 라벨(오프라인은 "세미나"). 일자만 보고 계산(1~7일=1주차 ...) */
+export function weekOfMonthLabel(isoDate: string, dataType: Seminar["dataType"] = "online"): string {
   const [, monthStr, dayStr] = isoDate.split("-")
   const month = parseInt(monthStr, 10)
   const day = parseInt(dayStr, 10)
   const week = Math.ceil(day / 7)
-  return `${month}월 ${week}주차 웨비나`
+  return `${month}월 ${week}주차 ${dataType === "offline" ? "세미나" : "웨비나"}`
 }
 
 const WEEKDAY_KO = ["일", "월", "화", "수", "목", "금", "토"]
@@ -244,8 +334,8 @@ export function getSeminarEmailFields(seminar: Seminar) {
     speaker: seminar.speaker,
     // "행사 안내" 카드와 동일한 일시 표기. eventInfo가 없으면 listDate/listTime으로 대체.
     eventDate: seminar.eventInfo?.date ?? `${seminar.eventDate ?? seminar.listDate} ${eventTime}`,
-    // "행사 안내" 카드의 진행 방식/참석 대상과 동일한 값.
-    location: seminar.eventInfo?.format ?? "",
+    // 메일의 "장소" — 오프라인은 "행사 안내"의 장소, 온라인은 진행 방식(Zoom 온라인)과 동일한 값.
+    location: seminar.eventInfo?.location ?? seminar.eventInfo?.format ?? "",
     audience: seminar.eventInfo?.audience ?? "",
     closingDate: formatEventDateForClosing(seminar.listDateISO, eventTime),
     emailHeading: hourNumber != null ? `PICCLE HOUR #${hourNumber} 신청 완료 안내` : "세미나 신청 완료 안내",
