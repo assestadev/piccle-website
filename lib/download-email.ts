@@ -22,24 +22,24 @@ function buttonRow(url: string, label: string, paddingBottom: number) {
                         </tr>`
 }
 
-// 자료집 신청 자동메일 — 웨비나 신청완료 메일(seminar-confirmation-email.ts)과 같은 레이아웃에
+// 리소스 신청 자동메일 — 웨비나 신청완료 메일(seminar-confirmation-email.ts)과 같은 레이아웃에
 // 일정 박스 대신 다운로드 버튼만 넣었다.
 export function buildDownloadEmail({ applicantName, resources }: DownloadEmailInput) {
   const single = resources.length === 1
   const subject = single
     ? `[PICCLE] 신청하신 ${resources[0].title}을 보내드려요`
-    : `[PICCLE] 신청하신 자료집 ${resources.length}종을 보내드려요`
+    : `[PICCLE] 신청하신 리소스 ${resources.length}종을 보내드려요`
 
   const name = escapeHtml(applicantName)
   const guide = single
     ? `아래 버튼을 눌러 <b>${escapeHtml(resources[0].title)}</b>을 다운로드해 주세요.`
-    : "아래 버튼을 눌러 신청하신 자료집을 각각 다운로드해 주세요."
+    : "아래 버튼을 눌러 신청하신 리소스를 각각 다운로드해 주세요."
   const buttons = single
-    ? buttonRow(escapeHtml(resources[0].pdfUrl), "PICCLE 자료집 보기", 30)
+    ? buttonRow(escapeHtml(resources[0].pdfUrl), "PICCLE 리소스 보기", 30)
     : resources
         .map(
           (r, i) => `
-                        <tr><td style="padding-bottom: 8px; font-size: 15px; font-weight: 700; color: #222222; line-height: 150%; font-family: 'Pretendard Variable', Pretendard, sans-serif!important;">${escapeHtml(r.title)}</td></tr>${buttonRow(escapeHtml(r.pdfUrl), "자료집 보기", i === resources.length - 1 ? 30 : 20)}`,
+                        <tr><td style="padding-bottom: 8px; font-size: 15px; font-weight: 700; color: #222222; line-height: 150%; font-family: 'Pretendard Variable', Pretendard, sans-serif!important;">${escapeHtml(r.title)}</td></tr>${buttonRow(escapeHtml(r.pdfUrl), "리소스 보기", i === resources.length - 1 ? 30 : 20)}`,
         )
         .join("")
 
@@ -49,7 +49,7 @@ export function buildDownloadEmail({ applicantName, resources }: DownloadEmailIn
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PICCLE 자료집 신청 완료 안내</title>
+<title>PICCLE 리소스 신청 완료 안내</title>
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
 <style>
@@ -67,14 +67,14 @@ export function buildDownloadEmail({ applicantName, resources }: DownloadEmailIn
             <tr>
                 <td style="background-color: #fff; padding: 0 20px;">
                     <table cellpadding="0" cellspacing="0" style="width: 100% !important; max-width: 640px; margin: 0; padding: 0;">
-                        <tr><td style="padding-bottom: 20px; font-size: 20px; font-weight: 700; color: #222222; line-height: 140%; font-family: 'Pretendard Variable', Pretendard, sans-serif!important;">PICCLE 자료집 신청 완료 안내</td></tr>
+                        <tr><td style="padding-bottom: 20px; font-size: 20px; font-weight: 700; color: #222222; line-height: 140%; font-family: 'Pretendard Variable', Pretendard, sans-serif!important;">PICCLE 리소스 신청 완료 안내</td></tr>
                         <tr><td style="padding-bottom: 30px; line-height: 0; font-size: 0;"><div style="height: 0; line-height: 0; font-size: 0; border-top: 1px solid #ececec;">&nbsp;</div></td></tr>
-                        <tr><td style="padding-bottom: 4px; font-size: 16px; font-weight: 400; color: #222222; line-height: 160%; font-family: 'Pretendard Variable', Pretendard, sans-serif!important;">${name}님, PICCLE 자료집을 신청해주셔서 감사합니다.</td></tr>
+                        <tr><td style="padding-bottom: 4px; font-size: 16px; font-weight: 400; color: #222222; line-height: 160%; font-family: 'Pretendard Variable', Pretendard, sans-serif!important;">${name}님, PICCLE 리소스를 신청해주셔서 감사합니다.</td></tr>
                         <tr><td style="padding-bottom: 30px; font-size: 16px; font-weight: 400; color: #222222; line-height: 160%; font-family: 'Pretendard Variable', Pretendard, sans-serif!important;">${guide}</td></tr>
 ${buttons}
                         <tr><td style="padding-bottom: 30px; font-size: 16px; font-weight: 400; color: #222222; line-height: 160%; font-family: 'Pretendard Variable', Pretendard, sans-serif!important;">감사합니다.</td></tr>
                         <tr><td style="padding-bottom: 30px; font-size: 14px; font-weight: 400; color: #999999; line-height: 160%; font-family: 'Pretendard Variable', Pretendard, sans-serif!important;">문의 | 오경민 책임 연구원(kmoh@assesta.com)</td></tr>
-                        <tr><td style="padding-bottom: 50px; text-align: center; font-size: 13px; font-weight: 400; color: #999999; line-height: 160%; font-family: 'Pretendard Variable', Pretendard, sans-serif!important;">PICCLE 자료집 신청자분들께 발송 드리는 메시지입니다.</td></tr>
+                        <tr><td style="padding-bottom: 50px; text-align: center; font-size: 13px; font-weight: 400; color: #999999; line-height: 160%; font-family: 'Pretendard Variable', Pretendard, sans-serif!important;">PICCLE 리소스 신청자분들께 발송 드리는 메시지입니다.</td></tr>
                     </table>
                 </td>
             </tr>

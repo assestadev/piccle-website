@@ -1,4 +1,4 @@
-// PICCLE 자료집 신청(/seminar/downloadform) 자료 목록.
+// PICCLE 리소스 신청(/seminar/downloadform) 자료 목록.
 // 목록은 코드가 아니라 신청 DB 스프레드시트의 `resources` 탭에서 관리한다 — 담당자가 시트에 한 줄 추가/수정하면
 // 폼의 "신청 자료" 선택지와 자동메일의 다운로드 링크가 함께 바뀐다 (Apps Script: 개발일지/download-form/gas-download.gs).
 // 홍보메일 버튼 링크는 `/seminar/downloadform?topic=<slug>&utm_...` 형태로 만들면 해당 자료가 미리 선택된다.

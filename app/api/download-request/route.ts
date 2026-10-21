@@ -3,7 +3,7 @@ import { Resend } from "resend"
 import { buildDownloadEmail } from "@/lib/download-email"
 import { DOWNLOAD_POSITION_OPTIONS, getDownloadResource } from "@/lib/download-resources"
 
-// 자료집 신청은 웨비나 신청 시트와 따로 관리하기 위해 별도 Apps Script 웹앱(개발일지/download-form/gas-download.gs)을 쓴다.
+// 리소스 신청은 웨비나 신청 시트와 따로 관리하기 위해 별도 Apps Script 웹앱(개발일지/download-form/gas-download.gs)을 쓴다.
 const GAS_URL = process.env.GAS_DOWNLOAD_WEBAPP_URL
 const GAS_SECRET = process.env.GAS_DOWNLOAD_SHARED_SECRET
 const RESEND_API_KEY = process.env.RESEND_API_KEY
@@ -74,7 +74,7 @@ export async function POST(request: Request) {
     // 함정 칸(website)은 화면에 보이지 않아 사람은 비워 둔다. 채워졌거나 너무 빨리 제출됐으면 봇으로 보고,
     // 막힌 걸 눈치채지 못하도록 성공처럼 응답만 하고 저장·발송은 하지 않는다
     if (website || (typeof elapsedMs === "number" && elapsedMs < MIN_FILL_MS)) {
-      console.warn("자료집 신청 봇 의심 요청 차단:", { honeypot: Boolean(website), elapsedMs })
+      console.warn("리소스 신청 봇 의심 요청 차단:", { honeypot: Boolean(website), elapsedMs })
       return NextResponse.json({ success: true })
     }
 
@@ -140,7 +140,7 @@ export async function POST(request: Request) {
     if (!saved.ok || saved.data.status !== "success") {
       // 저장 실패는 사용자 잘못이 아니므로 바로 다시 시도할 수 있게 1분 제한 기록을 지운다
       forgetLastHit(emailKey)
-      console.error("자료집 신청 GAS 저장 실패:", saved.data)
+      console.error("리소스 신청 GAS 저장 실패:", saved.data)
       return NextResponse.json({ error: "신청 저장 중 오류가 발생했습니다." }, { status: 502 })
     }
 
@@ -153,10 +153,10 @@ export async function POST(request: Request) {
           resources: resources.map((r) => ({ title: r!.title, pdfUrl: r!.pdfUrl })),
         })
         const { error } = await new Resend(RESEND_API_KEY).emails.send({ from: RESEND_FROM_EMAIL, to: email, subject, html })
-        if (error) console.error("자료집 메일 발송 실패:", error)
+        if (error) console.error("리소스 메일 발송 실패:", error)
         else mailStatus = "발송"
       } catch (err) {
-        console.error("자료집 메일 발송 중 오류:", err)
+        console.error("리소스 메일 발송 중 오류:", err)
       }
     } else {
       console.error("RESEND_API_KEY 환경변수가 설정되지 않아 메일 발송을 건너뜁니다.")
@@ -164,9 +164,9 @@ export async function POST(request: Request) {
 
     try {
       const updated = await postToGas({ action: "updateMailStatus", requestId: saved.data.id, mailStatus })
-      if (!updated.ok || updated.data.status !== "success") console.error("자료집 메일발송상태 갱신 실패:", updated.data)
+      if (!updated.ok || updated.data.status !== "success") console.error("리소스 메일발송상태 갱신 실패:", updated.data)
     } catch (err) {
-      console.error("자료집 메일발송상태 갱신 실패:", err)
+      console.error("리소스 메일발송상태 갱신 실패:", err)
     }
 
     return NextResponse.json({ success: true })
