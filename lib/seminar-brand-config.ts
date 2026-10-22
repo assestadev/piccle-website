@@ -9,5 +9,16 @@ export const SEMINAR_CARD_MARK_ALT = "PICCLE"
 export const SEMINAR_BANNER_MARK_SRC = "/seminar-assets/piccle-hour-logo-mark.svg"
 export const SEMINAR_BANNER_MARK_ALT = "PICCLE HOUR"
 
+// 오프라인 세미나 배너 전용 마크 (2026-10-21 Figma '추가' 섹션: "PICCLE SHARE" 워드마크, 203x21 비율)
+export const SEMINAR_OFFLINE_BANNER_MARK_SRC = "/seminar-assets/piccle-share-logo-mark.svg"
+export const SEMINAR_OFFLINE_BANNER_MARK_ALT = "PICCLE SHARE"
+
+/** 온라인 = PICCLE HOUR, 오프라인 = PICCLE SHARE. 카드/히어로/상세 배너가 전부 이 함수로 마크를 고른다 */
+export function getSeminarBannerMark(dataType: "online" | "offline") {
+  return dataType === "offline"
+    ? { src: SEMINAR_OFFLINE_BANNER_MARK_SRC, alt: SEMINAR_OFFLINE_BANNER_MARK_ALT, width: 203, height: 21 }
+    : { src: SEMINAR_BANNER_MARK_SRC, alt: SEMINAR_BANNER_MARK_ALT, width: 194, height: 20 }
+}
+
 // 되돌릴 때 참고용 원본 값 (삭제하지 말 것)
 export const PICCLE_LOGO_MARK_SRC = "/seminar-assets/piccle-logo-mark.svg"

@@ -206,8 +206,21 @@ export function RegistrationForm({
             href="/seminar"
             className="w-full rounded-[10px] bg-[#222] px-5 py-3.5 text-base font-bold text-white"
           >
-            다른 웨비나 보기
+            {seminar.dataType === "offline" ? "다른 세미나 보기" : "다른 웨비나 보기"}
           </Link>
+        </div>
+      ) : seminar.externalRegistrationUrl ? (
+        // 외부 사이트(결제)에서 신청받는 세미나 — 마감 안내와 같은 박스 디자인에 외부 신청 버튼만 노출
+        <div className="flex flex-col items-center gap-4 rounded-xl bg-[#f9f9f9] px-5 py-8 text-center">
+          <p className="m-0 text-base font-bold text-[#15172b]">아래 버튼을 눌러 신청해주세요.</p>
+          <a
+            href={seminar.externalRegistrationUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full rounded-[10px] bg-[#222] px-5 py-3.5 text-base font-bold text-white"
+          >
+            신청하기
+          </a>
         </div>
       ) : (
         <form className="flex flex-col gap-3.5" onSubmit={handleSubmit} noValidate>

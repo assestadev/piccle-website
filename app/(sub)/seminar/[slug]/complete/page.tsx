@@ -1,11 +1,11 @@
 import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { getSeminarBySlug, seminars } from "@/lib/seminars"
+import { getDetailSeminarParams, getSeminarBySlug } from "@/lib/seminars"
 import { SeminarBreadcrumb } from "@/components/seminar/seminar-breadcrumb"
 
 export function generateStaticParams() {
-  return seminars.map((s) => ({ slug: s.slug }))
+  return getDetailSeminarParams()
 }
 
 export default async function SeminarCompletePage({ params }: { params: Promise<{ slug: string }> }) {

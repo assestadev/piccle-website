@@ -56,6 +56,14 @@ export async function POST(request: Request) {
     // 마감/종료된 웨비나는 저장·메일 발송 전에 거절 — 화면에서 폼을 숨기는 것만으로는 마감 전에 열어둔 탭의
     // 제출을 막을 수 없음. slug를 보내지 않는 예전 화면(캐시)도 걸러지도록 제목으로도 찾는다.
     const seminar = getSeminarBySlug(slug) ?? seminars.find((s) => s.title === seminarTitle)
+    // 상세 내용 전달 전(detailPending) 세미나는 신청 화면이 없으므로 직접 요청도 거절
+    if (seminar?.detailPending) {
+      return NextResponse.json({ error: "아직 신청을 받지 않는 세미나입니다." }, { status: 409 })
+    }
+    // 외부 사이트(결제)에서 신청받는 세미나는 이 API로 받지 않음
+    if (seminar?.externalRegistrationUrl) {
+      return NextResponse.json({ error: "해당 세미나는 외부 신청 페이지에서 신청해주세요." }, { status: 409 })
+    }
     if (seminar) {
       const status = getRegistrationStatus(seminar, new Date())
       if (status !== "open") {

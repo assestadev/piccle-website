@@ -1,7 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import type { Seminar } from "@/lib/seminars"
-import { SEMINAR_BANNER_MARK_ALT, SEMINAR_BANNER_MARK_SRC } from "@/lib/seminar-brand-config"
+import { getSeminarBannerMark } from "@/lib/seminar-brand-config"
 import { SeminarStatusBadge } from "@/components/seminar/seminar-status-badge"
 
 const PREVIEW_BG: Record<Seminar["previewBg"], string> = {
@@ -15,11 +15,15 @@ const PREVIEW_BG_IMAGE: Record<Seminar["previewBg"], string> = {
 }
 
 export function SeminarCard({ seminar }: { seminar: Seminar }) {
+  const mark = getSeminarBannerMark(seminar.dataType)
+  // 상세 내용 전달 전(detailPending)이면 링크 없이 카드만 노출
+  const Wrapper = seminar.detailPending ? "div" : Link
+
   return (
     <article className="flex-1">
-      <Link
+      <Wrapper
         href={`/seminar/${seminar.slug}`}
-        className="flex flex-col gap-3 min-[900px]:gap-0 min-[900px]:overflow-hidden min-[900px]:rounded-2xl min-[900px]:border min-[900px]:border-[#e3e5f0] min-[900px]:transition-shadow min-[900px]:hover:shadow-[0_8px_24px_-12px_rgba(18,25,63,0.15)]"
+        className={`flex flex-col gap-3 min-[900px]:gap-0 min-[900px]:overflow-hidden min-[900px]:rounded-2xl min-[900px]:border min-[900px]:border-[#e3e5f0] min-[900px]:transition-shadow ${seminar.detailPending ? "" : "min-[900px]:hover:shadow-[0_8px_24px_-12px_rgba(18,25,63,0.15)]"}`}
       >
         <div className="relative h-[193px] overflow-hidden rounded-xl min-[900px]:h-[338px] min-[900px]:rounded-none">
           <div className={`relative flex h-full flex-col justify-center gap-1.5 p-5 ${PREVIEW_BG[seminar.previewBg]}`}>
@@ -29,7 +33,7 @@ export function SeminarCard({ seminar }: { seminar: Seminar }) {
               fill
               className="object-cover opacity-40"
             />
-            <Image src={SEMINAR_BANNER_MARK_SRC} alt={SEMINAR_BANNER_MARK_ALT} width={194} height={20} className="relative h-auto w-[100px] min-[900px]:absolute min-[900px]:left-12 min-[900px]:top-14 min-[900px]:w-[194px]" />
+            <Image src={mark.src} alt={mark.alt} width={mark.width} height={mark.height} className="relative h-[10px] w-auto self-start min-[900px]:absolute min-[900px]:left-12 min-[900px]:top-14 min-[900px]:h-5" />
             <p className="relative m-0 max-w-[60%] text-xs font-bold leading-tight min-[900px]:hidden">
               {seminar.title}
             </p>
@@ -72,7 +76,7 @@ export function SeminarCard({ seminar }: { seminar: Seminar }) {
             {seminar.listDesc ?? seminar.quoteDesc}
           </p>
         </div>
-      </Link>
+      </Wrapper>
     </article>
   )
 }
