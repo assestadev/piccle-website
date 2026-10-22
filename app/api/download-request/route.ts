@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { Resend } from "resend"
+import { createSupabaseClient } from "@/lib/supabase"
 import { buildDownloadEmail } from "@/lib/download-email"
 import { DOWNLOAD_POSITION_OPTIONS, getDownloadResource } from "@/lib/download-resources"
 
@@ -122,16 +123,19 @@ export async function POST(request: Request) {
     )
     if (!utmValues.utm_source) utmValues.utm_source = "direct"
 
+    const resourceTitle = resources.map((r) => r!.title).join("; ")
+    const interestsText = Array.isArray(interests) ? interests.join("; ") : ""
+
     const saved = await postToGas({
       action: "append",
-      resourceTitle: resources.map((r) => r!.title).join("; "),
+      resourceTitle,
       name,
       company,
       email,
       phone,
       jobRole,
       position,
-      interests: Array.isArray(interests) ? interests.join("; ") : "",
+      interests: interestsText,
       hrIssue: hrIssue ?? "",
       privacyAgreed: Boolean(privacyAgreed),
       marketingAgreed: Boolean(marketingAgreed),
@@ -160,6 +164,36 @@ export async function POST(request: Request) {
       }
     } else {
       console.error("RESEND_API_KEY 환경변수가 설정되지 않아 메일 발송을 건너뜁니다.")
+    }
+
+    // 이중 저장: 구글시트(source of truth)에 이미 저장된 신청을 Supabase resource_requests에 백업한다.
+    // 메일 발송 결과까지 한 번에 넣기 위해 발송 뒤에 저장 — anon 키는 insert만 허용(RLS)이라 나중에 고쳐 쓸 수 없음.
+    // 실패해도 신청은 이미 성공한 것이므로 사용자에게 에러를 보여주지 않고 로그만 남긴다 (웨비나 신청과 동일 정책)
+    try {
+      const { error: supabaseError } = await createSupabaseClient()
+        .from("resource_requests")
+        .insert([
+          {
+            application_id: saved.data.id,
+            resource_name: resourceTitle,
+            name,
+            company_name: company,
+            email,
+            phone,
+            job_function: jobRole,
+            job_title: position,
+            // interests는 text[] 컬럼, email_status는 check 제약상 영문 값(sent/failed)만 허용
+            interests: Array.isArray(interests) ? interests.map(String) : [],
+            hr_issue: hrIssue ?? "",
+            privacy_consent: Boolean(privacyAgreed),
+            marketing_consent: Boolean(marketingAgreed),
+            ...utmValues,
+            email_status: mailStatus === "발송" ? "sent" : "failed",
+          },
+        ])
+      if (supabaseError) console.error("리소스 신청 Supabase 이중 저장 실패(구글시트 저장은 성공함):", supabaseError)
+    } catch (err) {
+      console.error("리소스 신청 Supabase 이중 저장 중 오류(구글시트 저장은 성공함):", err)
     }
 
     try {
