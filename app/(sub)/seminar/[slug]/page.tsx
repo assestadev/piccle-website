@@ -181,7 +181,7 @@ export default async function SeminarDetailPage({ params }: { params: Promise<{ 
                   <div className="overflow-hidden rounded-xl border border-[#e3e5f0] bg-white">
                     <div className="hidden bg-[#f4f5f9] px-5 py-3 text-[13px] font-bold text-[#6d7180] min-[900px]:grid min-[900px]:grid-cols-[170px_1fr] min-[900px]:gap-4">
                       <span>시간</span>
-                      <span>세션명</span>
+                      <span>프로그램</span>
                     </div>
                     <div className="divide-y divide-[#eef0f5]">
                       {seminar.schedule.map((item) => (
