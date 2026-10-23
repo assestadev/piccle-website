@@ -41,6 +41,8 @@ export interface Seminar {
   speakerPhoto: string
   /** 신청완료 안내 메일 등에 쓰이는 연사 이름/직책 */
   speaker: string
+  /** true면 배너(히어로/카드/상세)의 연사 사진과 상세 "행사 안내"의 연사 줄을 숨김 */
+  hideSpeaker?: boolean
   quoteTitle?: string
   quoteDesc: string
   /** 웨비나 목록(카드) 페이지 전용 짧은 설명. 없으면 quoteDesc를 그대로 씀 */
@@ -224,6 +226,7 @@ export const seminars: Seminar[] = [
     externalRegistrationUrl: "https://bit.ly/4dT3LmF",
     speakerPhoto: "/seminar-assets/photo-male.png",
     speaker: "어세스타 김영재 AX사업 본부장",
+    hideSpeaker: true,
     quoteTitle: "2027년 HR 계획, 흩어진 진단 결과로 세울 수 있을까요?",
     quoteDesc:
       "채용부터 온보딩, 리더십, 조직문화까지 각 단계에서 따로 쌓아온 진단 결과를 하나의 흐름으로 연결하는 전략을 소개합니다. PICCLE 실제 도입 사례와 소그룹 토의를 통해, 2027년 계획서에 바로 쓸 수 있는 실행안까지 함께 만들어갑니다.",

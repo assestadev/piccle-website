@@ -50,9 +50,11 @@ export function SeminarCard({ seminar }: { seminar: Seminar }) {
               <br />
               {seminar.listTime}
             </p>
-            <div className="absolute bottom-[14px] right-4 h-[78px] w-[78px] overflow-hidden rounded-full bg-white min-[900px]:bottom-12 min-[900px]:right-10 min-[900px]:h-[150px] min-[900px]:w-[150px]">
-              <Image src={seminar.speakerPhoto} alt="" width={150} height={150} className="h-full w-full object-cover object-top" />
-            </div>
+            {!seminar.hideSpeaker && (
+              <div className="absolute bottom-[14px] right-4 h-[78px] w-[78px] overflow-hidden rounded-full bg-white min-[900px]:bottom-12 min-[900px]:right-10 min-[900px]:h-[150px] min-[900px]:w-[150px]">
+                <Image src={seminar.speakerPhoto} alt="" width={150} height={150} className="h-full w-full object-cover object-top" />
+              </div>
+            )}
           </div>
           <div className="absolute left-2.5 top-2.5 flex items-center gap-1.5">
             <span className="inline-flex items-center justify-center rounded-full bg-white px-3 py-1 text-xs font-bold text-[#0f2d6e]">
