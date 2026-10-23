@@ -179,22 +179,18 @@ export default async function SeminarDetailPage({ params }: { params: Promise<{ 
                 <div className="flex flex-col gap-2.5">
                   <h2 className="m-0 text-lg font-bold text-[#15172b]">🗓️ 세부 프로그램</h2>
                   <div className="overflow-hidden rounded-xl border border-[#e3e5f0] bg-white">
-                    <div className="hidden bg-[#f4f5f9] px-5 py-3 text-[13px] font-bold text-[#6d7180] min-[900px]:grid min-[900px]:grid-cols-[170px_1fr_1fr] min-[900px]:gap-4">
+                    <div className="hidden bg-[#f4f5f9] px-5 py-3 text-[13px] font-bold text-[#6d7180] min-[900px]:grid min-[900px]:grid-cols-[170px_1fr] min-[900px]:gap-4">
                       <span>시간</span>
                       <span>세션명</span>
-                      <span>세부 내용</span>
                     </div>
                     <div className="divide-y divide-[#eef0f5]">
                       {seminar.schedule.map((item) => (
                         <div
                           key={item.time}
-                          className="flex flex-col gap-1 px-4 py-3.5 min-[900px]:grid min-[900px]:grid-cols-[170px_1fr_1fr] min-[900px]:items-center min-[900px]:gap-4 min-[900px]:px-5"
+                          className="flex flex-col gap-1 px-4 py-3.5 min-[900px]:grid min-[900px]:grid-cols-[170px_1fr] min-[900px]:items-center min-[900px]:gap-4 min-[900px]:px-5"
                         >
-                          <p className="m-0 text-sm tabular-nums text-[#6d7180]">
-                            {item.time} <span className="text-[#9296a6]">({item.duration})</span>
-                          </p>
+                          <p className="m-0 text-sm tabular-nums text-[#6d7180]">{item.time}</p>
                           <p className="m-0 text-[15px] font-semibold leading-snug text-[#222]">{item.title}</p>
-                          {item.detail && <p className="m-0 text-sm leading-snug text-[#9296a6]">{item.detail}</p>}
                         </div>
                       ))}
                     </div>

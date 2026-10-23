@@ -16,12 +16,9 @@ export interface EventInfo {
 
 /** 상세 페이지 "세부 프로그램" 표의 한 줄 */
 export interface ScheduleItem {
-  /** "14:00–14:15" */
+  /** "14:00-14:15" */
   time: string
-  /** "15분" */
-  duration: string
   title: string
-  detail?: string
 }
 
 export interface Seminar {
@@ -252,13 +249,13 @@ export const seminars: Seminar[] = [
       "워크숍이 끝난 뒤에도 팀빌딩 효과가 현장에서 이어지게 하고 싶으신 조직문화 담당자",
     ],
     schedule: [
-      { time: "14:00–14:15", duration: "15분", title: "오프닝" },
-      { time: "14:15–14:55", duration: "40분", title: "Session 1. 2026 리뷰 & 2027 트렌드", detail: "HR 이슈 및 진단의 역할" },
-      { time: "14:55–15:20", duration: "25분", title: "Session 2. PICCLE 실제 도입 사례" },
-      { time: "15:20–15:55", duration: "35분", title: "Session 3. HR AI 워크플레이스" },
-      { time: "15:55–16:25", duration: "30분", title: "참여형 소그룹 토의 & 발표" },
-      { time: "16:25–16:40", duration: "15분", title: "클로징 & 사내 적용 지원" },
-      { time: "16:40–17:00", duration: "20분", title: "자유 네트워킹 & 데모 체험" },
+      { time: "14:00-14:15", title: "오프닝" },
+      { time: "14:15-14:55", title: "Session 1. 2026 리뷰 & 2027 트렌드, HR 이슈 및 진단의 역할" },
+      { time: "14:55-15:20", title: "Session 2. PICCLE 실제 도입 사례" },
+      { time: "15:20-15:55", title: "Session 3. HR AI 워크플레이스" },
+      { time: "15:55-16:25", title: "참여형 소그룹 토의&발표" },
+      { time: "16:25-16:40", title: "클로징&사내 적용 지원" },
+      { time: "16:40-17:00", title: "자유 네트워킹&데모 체험" },
     ],
     benefits: ["핑거푸드 & 음료", "참석자 한정 2027 굿즈", "참석자 전용 자료집 제공"],
     previewBg: "blue",
