@@ -156,15 +156,17 @@ export function SeminarHero({ seminars }: { seminars: Seminar[] }) {
               <br />
               {current.listTime}
             </p>
-            <div className="absolute bottom-[14px] right-4 h-[78px] w-[78px] overflow-hidden rounded-full bg-white min-[900px]:bottom-8 min-[900px]:right-10 min-[900px]:h-[150px] min-[900px]:w-[150px]">
-              <Image
-                src={current.speakerPhoto}
-                alt=""
-                width={150}
-                height={150}
-                className="h-full w-full object-cover object-top"
-              />
-            </div>
+            {!current.hideSpeaker && (
+              <div className="absolute bottom-[14px] right-4 h-[78px] w-[78px] overflow-hidden rounded-full bg-white min-[900px]:bottom-8 min-[900px]:right-10 min-[900px]:h-[150px] min-[900px]:w-[150px]">
+                <Image
+                  src={current.speakerPhoto}
+                  alt=""
+                  width={150}
+                  height={150}
+                  className="h-full w-full object-cover object-top"
+                />
+              </div>
+            )}
           </BannerWrapper>
         </div>
       </div>

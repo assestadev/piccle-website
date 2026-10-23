@@ -81,12 +81,16 @@ export default async function SeminarDetailPage({ params }: { params: Promise<{ 
               <br />
               {eventTime}
             </p>
-            <div className="absolute bottom-[18px] right-5 h-[78px] w-[78px] overflow-hidden rounded-full bg-white min-[900px]:bottom-[96px] min-[900px]:right-[55px] min-[900px]:h-[205px] min-[900px]:w-[205px]">
-              <Image src={seminar.speakerPhoto} alt="" width={205} height={205} className="h-full w-full object-cover object-top" />
-            </div>
-            <p className="hidden min-[900px]:absolute min-[900px]:bottom-[54px] min-[900px]:right-[55px] min-[900px]:block min-[900px]:w-[205px] min-[900px]:text-center min-[900px]:text-base min-[900px]:text-[#666]">
-              {seminar.speaker}
-            </p>
+            {!seminar.hideSpeaker && (
+              <>
+                <div className="absolute bottom-[18px] right-5 h-[78px] w-[78px] overflow-hidden rounded-full bg-white min-[900px]:bottom-[96px] min-[900px]:right-[55px] min-[900px]:h-[205px] min-[900px]:w-[205px]">
+                  <Image src={seminar.speakerPhoto} alt="" width={205} height={205} className="h-full w-full object-cover object-top" />
+                </div>
+                <p className="hidden min-[900px]:absolute min-[900px]:bottom-[54px] min-[900px]:right-[55px] min-[900px]:block min-[900px]:w-[205px] min-[900px]:text-center min-[900px]:text-base min-[900px]:text-[#666]">
+                  {seminar.speaker}
+                </p>
+              </>
+            )}
           </div>
 
           <div className="flex flex-col gap-6 rounded-[20px] bg-[#f9f9f9] p-6 min-[900px]:gap-8 min-[900px]:p-10">
@@ -111,9 +115,11 @@ export default async function SeminarDetailPage({ params }: { params: Promise<{ 
                 <hr className="m-0 w-full border-t border-[#e3e5f0]" />
                 <div className="flex flex-col gap-2.5">
                   <h2 className="m-0 text-lg font-bold text-[#15172b]">📢 행사 안내</h2>
-                  <p className="m-0 text-[15px] leading-relaxed text-[#9296a6]">
-                    연사 <span className="text-[#222]">{seminar.speaker}</span>
-                  </p>
+                  {!seminar.hideSpeaker && (
+                    <p className="m-0 text-[15px] leading-relaxed text-[#9296a6]">
+                      연사 <span className="text-[#222]">{seminar.speaker}</span>
+                    </p>
+                  )}
                   <p className="m-0 text-[15px] leading-relaxed text-[#9296a6]">
                     일시 <span className="text-[#222]">{seminar.eventInfo.date}</span>
                   </p>
